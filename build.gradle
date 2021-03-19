@@ -3,10 +3,6 @@ plugins {
     id 'checkstyle'
 }
 
-checkstyle {
-    configDir = file("$rootProject.projectDir/config/checkstyle") 
-}
-
 repositories {
     mavenCentral() 
 }

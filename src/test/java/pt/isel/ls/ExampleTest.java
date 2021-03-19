@@ -1,10 +1,8 @@
 package pt.isel.ls;
 
 import org.junit.Test;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
 import static org.junit.Assert.assertEquals;
 
 public class ExampleTest {
