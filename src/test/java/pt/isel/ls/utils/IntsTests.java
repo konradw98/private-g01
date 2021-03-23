@@ -20,8 +20,7 @@ public class IntsTests {
         int[] v = {1, 2, 3};
 
         // Act
-        int ix = Ints.indexOfBinary(v, 0, 3, 4);
-
+        int ix = Ints.indexOfBinary(v, 0, 2, 4);
         // Assert
         assertTrue(ix < 0);
     }
