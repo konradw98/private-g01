@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class DBtest {
@@ -86,6 +87,27 @@ public class DBtest {
         rs.close();
 
         assertTrue(numOfStudentsBefore==numOfStudentsAfter+1);
+    }
+
+    @Test
+    public void connectionTest () throws SQLException {
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
+        dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
+        dataSource.setPassword("password");
+        dataSource.setUser("postgres");
+        Connection conn = dataSource.getConnection();
+
+        assertNotNull(conn);
+
+    }
+
+    @Test(expected = SQLException.class)
+    public void exceptionTest () throws SQLException {
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
+        dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
+        dataSource.setPassword("wrongPassword");
+        dataSource.setUser("postgres");
+        Connection conn = dataSource.getConnection();
     }
 
 }
