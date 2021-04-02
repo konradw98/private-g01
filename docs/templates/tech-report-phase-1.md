@@ -1,36 +1,36 @@
-# Relatório técnico da Fase 1
+# Phase 1 Technical Report
 
-## Introdução
+## Introduction
 
-Este documento contém os aspectos relevantes do desenho e implementação da fase 1 do projecto de LS.
+This document contains the relevant aspects of the design and implementation of phase 1 of the LS project.
 
-## Modelação da base de dados
+## Modelling the database
 
-### Modelação conceptual ###
+### Conceptual modelling ###
 
-O seguinte diagrama apresenta a modelo entidade-associação para a informação gerida pelo sistema. 
+The following diagram shows the entity-association model for the information managed by the system. 
 
 (_include an image or a link to the conceptual diagram_)
 
-Destacam-se os seguintes aspectos deste modelo:
+The following aspects of this model stand out:
 
 * (_include a list of relevant design issues_)
 
-O modelo conceptual apresenta ainda as seguintes restrições:
+The conceptual model also has the following constraints:
 
 * (_include a list of relevant design issues_)
     
-### Modelação física ###
+### Physical modelling ###
 
-O modelo físico da base de dados está presente em (_link to the SQL script with the schema definition_).
+The physical model of the database is present in (_link to the SQL script with the schema definition_).
 
-Destacam-se os seguintes aspectos deste modelo:
+The following aspects of this model stand out:
 
 * (_include a list of relevant design issues_)
 
-## Organização do software
+## Software organisation
 
-### Processamento de comandos
+### Command processing
 
 (_describe the command handling interface_)
 
@@ -38,25 +38,25 @@ Destacam-se os seguintes aspectos deste modelo:
 
 (_describe how command parameters are obtained and validated_)
 
-### Encaminhamento dos comandos
+### Routing of commands
 
 (_describe how the router works and how path parameters are extracted_)
 
-### Gestão de ligações
+### Connection management
 
 (_describe how connections are created, used and disposed_, namely its relation with transaction scopes).
 
-### Acesso a dados
+### Data access
 
 (_describe any created classes to help on data access_).
 
 (_identify any non-trivial used SQL statements_).
 
-### Processamento de erros
+### Error processing
 
 (_describe how errors are handled and communicated to the application user_).
 
-## Avaliação crítica
+## Critical evaluation
 
 (_enumerate the functionality that is not concluded and the identified defects_)
 
