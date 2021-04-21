@@ -1,6 +1,9 @@
 package pt.isel.ls;
 
-public class PathTemplate<T> {
+import java.util.Arrays;
+import java.util.List;
+
+public class PathTemplate {
     private String path;
 
     public PathTemplate(String path) {
@@ -13,5 +16,9 @@ public class PathTemplate<T> {
 
     public void setPathTemplate(String path) {
         this.path = path;
+    }
+
+    public List<String> splitSegmentsFromPathTemplate() {
+        return Arrays.asList(path.substring(1).split("/"));
     }
 }
