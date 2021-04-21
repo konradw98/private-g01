@@ -10,5 +10,6 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'vendor/main', include: '*.jar')
     testImplementation fileTree(dir: 'vendor/test', include: '*.jar')
+    compile group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
 }
 

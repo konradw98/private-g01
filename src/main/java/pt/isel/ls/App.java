@@ -7,8 +7,7 @@ public class App {
 
         Router router = new Router();
         Path path = new Path("/users/1");
-        PathTemplate pathTemplate = new PathTemplate("/users/{1}");
-        router.addRoute(Method.GET, pathTemplate, new GetUserByIdHandler());
+        router.addHandlers();
 
         RouteResult routeResult = router.findRoute(Method.GET, path).get();
         CommandResult commandResult = routeResult.getHandler().execute(new CommandRequest(routeResult.getParameters()));
@@ -17,6 +16,13 @@ public class App {
                     commandResult.getResultSet().getString("email") + " " +
                     commandResult.getResultSet().getString("name"));
         }
+
+        /*while (commandResult.getResultSet().next()) {
+            System.out.println(commandResult.getResultSet().getInt("rid") + " " +
+                    commandResult.getResultSet().getString("start_location") + " " +
+                    commandResult.getResultSet().getString("end_location") + " " +
+                    commandResult.getResultSet().getString("distance"));
+        }*/
 
 
     }
