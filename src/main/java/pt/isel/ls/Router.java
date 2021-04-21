@@ -1,5 +1,6 @@
 package pt.isel.ls;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -23,15 +24,19 @@ public class Router {
             List<String> pathSegments = path.splitSegmentsFromPath();
             for (PathTemplate pathTemplate : mapOfHandlers.get(method).keySet()) {
                 List<String> pathTemplateSegments = pathTemplate.splitSegmentsFromPathTemplate();
+                ArrayList<String> parameters = new ArrayList<>();
                 if (pathTemplateSegments.size() == pathSegments.size()) {
                     int i = 0;
                     for (; i < pathSegments.size(); i++) {
-                        if (pathTemplateSegments.get(i).charAt(0) != '{'
-                                && !pathSegments.get(i).equals(pathTemplateSegments.get(i))) {
-                            ifSame = false;
-                        }
+                        if (pathTemplateSegments.get(i).charAt(0) != '{') {
+                            if (!pathSegments.get(i).equals(pathTemplateSegments.get(i))) {
+                                ifSame = false;
+                            }
+                        } else parameters.add(pathSegments.get(i));
                     }
-                    if (ifSame) return Optional.of(new RouteResult(mapOfHandlers.get(method).get(pathTemplate)));
+                    if (ifSame)
+                        return Optional.of(new RouteResult(mapOfHandlers.get(method).get(pathTemplate), parameters));
+                    else parameters.clear();
                 } else ifSame = false;
             }
         }
