@@ -32,7 +32,7 @@ public class PostSportHandler implements CommandHandler {
         pstmt.setString(2, param2);
         pstmt.executeUpdate();
 
-        String sql1 = "SELECT * FROM sports";
+        String sql1 = "SELECT MAX(sid) FROM sports";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
         return new CommandResult(pstmt1.executeQuery());
     }

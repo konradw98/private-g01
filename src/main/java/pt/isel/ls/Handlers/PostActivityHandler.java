@@ -35,7 +35,7 @@ public class PostActivityHandler implements CommandHandler{
         pstmt.setInt(5,paramRid);
         pstmt.executeUpdate();
 
-        String sql1 = "SELECT * FROM users";
+        String sql1 = "SELECT MAX(aid) FROM activities";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
         return new CommandResult(pstmt1.executeQuery());
     }

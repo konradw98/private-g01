@@ -23,14 +23,14 @@ public class PostUserHandler implements CommandHandler {
         String param1=commandRequest.getParameters().get(0).substring(5).replace('+',' ');
         String param2=commandRequest.getParameters().get(1).substring(6).replace('+',' ');
 
-        String sql = "INSERT INTO users(email,name) values(?,?)";
+        String sql = "INSERT INTO users(name, email) values(?,?)";
         PreparedStatement pstmt = conn.prepareStatement(sql);
 
         pstmt.setString(1, param1);
         pstmt.setString(2, param2);
         pstmt.executeUpdate();
 
-        String sql1 = "SELECT * FROM users";
+        String sql1 = "SELECT MAX(uid) FROM users";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
         return new CommandResult(pstmt1.executeQuery());
     }

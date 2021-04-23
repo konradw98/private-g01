@@ -30,7 +30,7 @@ public class PostRouteHandler implements CommandHandler {
         pstmt.setInt(3, param3);
         pstmt.executeUpdate();
 
-        String sql1 = "SELECT * FROM users";
+        String sql1 = "SELECT MAX(rid) FROM routes";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
         return new CommandResult(pstmt1.executeQuery());
     }
