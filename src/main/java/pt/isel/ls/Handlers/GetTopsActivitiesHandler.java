@@ -29,7 +29,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
             Date paramDate = Date.valueOf(commandRequest.getParameters().get(2).substring(5));
             int paramRid = Integer.parseInt(commandRequest.getParameters().get(3).substring(4));
 
-            String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? ORDER BY duration_time ASC";
+            String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? ORDER BY duration_time "+paramOrderBy;
 
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(3, paramRid);
@@ -42,7 +42,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
         } else if (parameters.size() == 3) {
             if (parameters.get(3).charAt(0) == 'd') {
                 Date paramDate = Date.valueOf(commandRequest.getParameters().get(2).substring(5));
-                String sql = "SELECT * FROM activities WHERE sid=? AND date=? ORDER BY duration_time ASC";
+                String sql = "SELECT * FROM activities WHERE sid=? AND date=? ORDER BY duration_time "+paramOrderBy;
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setDate(2, paramDate);
                 pstmt.setInt(1, paramSid);
@@ -53,7 +53,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
             }
             else if (parameters.get(3).charAt(0) == 'r') {
                 int paramRid = Integer.parseInt(commandRequest.getParameters().get(3).substring(4));
-                String sql = "SELECT * FROM activities WHERE sid=? AND rid=? ORDER BY duration_time ASC";
+                String sql = "SELECT * FROM activities WHERE sid=? AND rid=? ORDER BY duration_time "+paramOrderBy;
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setInt(2, paramRid);
                 pstmt.setInt(1, paramSid);
@@ -63,7 +63,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                 return optional;
             }
         } else if (parameters.size() == 2) {
-            String sql = "SELECT * FROM activities WHERE sid=? ORDER BY duration_time ASC";
+            String sql = "SELECT * FROM activities WHERE sid=? ORDER BY duration_time "+paramOrderBy;
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, paramSid);
             pstmt.setInt(1, paramSid);
