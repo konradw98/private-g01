@@ -20,18 +20,17 @@ public class App {
                     commandResult.getResultSet().getString("name"));
         }
 
-        path = new Path("/routes");
-        String pobrany = "startLocation=Lizbona&endLocation=Ostrow+Wielkoposlki&distance=10";
+        path = new Path("/sports");
+        String pobrany = "name=basketball&description=shooting+a+basketball+through+the+defenders+hoop";
         List<String> parametersList = Arrays.asList(pobrany.split("&"));
         ArrayList<String> parameters = new ArrayList<>(parametersList);
-        routeResult = router.findRoute(Method.GET, path).get();
+        routeResult = router.findRoute(Method.POST, path).get();
         commandResult = routeResult.getHandler().execute(new CommandRequest(routeResult.getParameters(), parameters));
 
         while (commandResult.getResultSet().next()) {
-            System.out.println(commandResult.getResultSet().getInt("rid") + " " +
-                    commandResult.getResultSet().getString("start_location") + " " +
-                    commandResult.getResultSet().getString("end_location") + " " +
-                    commandResult.getResultSet().getString("distance"));
+            System.out.println(commandResult.getResultSet().getInt("sid") + " " +
+                    commandResult.getResultSet().getString("name") + " " +
+                    commandResult.getResultSet().getString("description"));
         }
 
         path = new Path("/users");
