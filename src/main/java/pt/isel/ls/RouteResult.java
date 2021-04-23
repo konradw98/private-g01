@@ -17,7 +17,7 @@ public class RouteResult {
         return handler;
     }
 
-    public ArrayList<String> getParameters() {
+    public ArrayList<String> getPathParameters() {
         return parameters;
     }
 }

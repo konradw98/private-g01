@@ -7,33 +7,37 @@ import pt.isel.ls.CommandResult;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Optional;
 
 public class PostSportHandler implements CommandHandler {
 
     @Override
-    public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+    public Optional<CommandResult> execute(CommandRequest commandRequest) throws SQLException {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
         dataSource.setPassword("password");
         dataSource.setUser("postgres");
         Connection conn = dataSource.getConnection();
 
-        ArrayList<String> pathParameters = commandRequest.getPathParameters();
+        String param1 = "";
+        String param2 = "";
 
-        String param1=commandRequest.getParameters().get(0).substring(5).replace('+',' ');
-        String param2=commandRequest.getParameters().get(1).substring(12).replace('+',' ');
+        for (String param : commandRequest.getParameters()) {
+            if (param.contains("name")) param1 = param.substring(5).replace('+', ' ');
+            else if (param.contains("description")) param2 = param.substring(12).replace('+', ' ');
+        }
+
+        if (param1.equals("") || param2.equals("")) return Optional.empty();
 
         String sql = "INSERT INTO sports(name,description) values(?,?)";
         PreparedStatement pstmt = conn.prepareStatement(sql);
 
-        //pstmt.setInt(1, 916);
         pstmt.setString(1, param1);
         pstmt.setString(2, param2);
         pstmt.executeUpdate();
 
         String sql1 = "SELECT MAX(sid) FROM sports";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
-        return new CommandResult(pstmt1.executeQuery());
+        return Optional.of(new CommandResult(pstmt1.executeQuery()));
     }
 }

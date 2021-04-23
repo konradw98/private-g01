@@ -5,6 +5,7 @@ import pt.isel.ls.Handlers.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class App {
@@ -27,18 +28,29 @@ public class App {
                 default -> throw new IllegalStateException("Unexpected value: " + command[0]);
             };
 
-            RouteResult routeResult = router.findRoute(method, new Path(command[1])).get();
-            CommandRequest commandRequest;
-            if (command.length == 2) {
-                //TODO: change getParameters to getPathParameters
-                commandRequest = new CommandRequest(routeResult.getParameters());
-            } else if (command.length == 3) {
-                ArrayList<String> parameters = new ArrayList<>(Arrays.asList(command[2].split("&")));
-                commandRequest = new CommandRequest(routeResult.getParameters(), parameters);
-            } else throw new IllegalStateException("Wrong command: " + line);
+            Optional<RouteResult> optional = router.findRoute(method, new Path(command[1]));
+            if (optional.isPresent()) {
+                RouteResult routeResult = optional.get();
+                CommandRequest commandRequest;
+                if (command.length == 2) {
+                    //TODO: change getParameters to getPathParameters
+                    commandRequest = new CommandRequest(routeResult.getPathParameters());
+                } else if (command.length == 3) {
+                    ArrayList<String> parameters = new ArrayList<>(Arrays.asList(command[2].split("&")));
+                    commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters);
+                } else {
+                    System.out.println("Wrong command: " + line);
+                    break;
+                }
 
-            CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
-            printResult(routeResult, commandResult);
+                Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
+                if (optionalCommandResult.isPresent()) {
+                    CommandResult commandResult = optionalCommandResult.get();
+                    printResult(routeResult, commandResult);
+                } else System.out.println("Wrong command: " + line);
+            } else System.out.println("Wrong command: " + line);
+            //TODO: should we throw an exception or try again
+
             line = scanner.nextLine();
         }
     }

@@ -4,7 +4,8 @@ import pt.isel.ls.CommandRequest;
 import pt.isel.ls.CommandResult;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 public interface CommandHandler {
-    CommandResult execute(CommandRequest commandRequest) throws SQLException;
+    Optional<CommandResult> execute(CommandRequest commandRequest) throws SQLException;
 }

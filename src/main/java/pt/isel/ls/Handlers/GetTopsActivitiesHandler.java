@@ -9,31 +9,61 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class GetTopsActivitiesHandler implements CommandHandler {
 
     @Override
-    public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+    public Optional<CommandResult> execute(CommandRequest commandRequest) throws SQLException {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
         dataSource.setPassword("password");
         dataSource.setUser("postgres");
         Connection conn = dataSource.getConnection();
+        int paramSid = Integer.parseInt(commandRequest.getParameters().get(0).substring(4));
+        String paramOrderBy = commandRequest.getParameters().get(1).substring(8);
+        PreparedStatement pstmt;
 
         ArrayList<String> parameters = commandRequest.getParameters();
+        if (parameters.size() == 4) {
+            Date paramDate = Date.valueOf(commandRequest.getParameters().get(2).substring(5));
+            int paramRid = Integer.parseInt(commandRequest.getParameters().get(3).substring(4));
 
-        int paramSid=Integer.parseInt(commandRequest.getParameters().get(0).substring(4));
-        String paramOrderBy=commandRequest.getParameters().get(1).substring(8);
-        Date paramDate=Date.valueOf(commandRequest.getParameters().get(2).substring(5));
-        int paramRid=Integer.parseInt(commandRequest.getParameters().get(3).substring(4));
+            String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? ORDER BY duration_time ASC";
 
-        String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? ORDER BY duration_time ASC";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setInt(1, paramSid);
-        pstmt.setDate(2,paramDate);
-        pstmt.setInt(3,paramRid);
-        //pstmt.setString(4,paramOrderBy);
-        return new CommandResult(pstmt.executeQuery());
-
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(3, paramRid);
+            pstmt.setDate(2, paramDate);
+            pstmt.setInt(1, paramSid);
+            // pstmt.setString(4,paramOrderBy);
+            return Optional.of(new CommandResult(pstmt.executeQuery()));
+        } else if (parameters.size() == 3) {
+            if (parameters.get(3).charAt(0) == 'd') {
+                Date paramDate = Date.valueOf(commandRequest.getParameters().get(2).substring(5));
+                String sql = "SELECT * FROM activities WHERE sid=? AND date=? ORDER BY duration_time ASC";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setDate(2, paramDate);
+                pstmt.setInt(1, paramSid);
+                // pstmt.setString(4,paramOrderBy);
+                return Optional.of(new CommandResult(pstmt.executeQuery()));
+            }
+            else if (parameters.get(3).charAt(0) == 'r') {
+                int paramRid = Integer.parseInt(commandRequest.getParameters().get(3).substring(4));
+                String sql = "SELECT * FROM activities WHERE sid=? AND rid=? ORDER BY duration_time ASC";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setInt(2, paramRid);
+                pstmt.setInt(1, paramSid);
+                // pstmt.setString(4,paramOrderBy);
+                return Optional.of(new CommandResult(pstmt.executeQuery()));
+            }
+        } else if (parameters.size() == 2) {
+            String sql = "SELECT * FROM activities WHERE sid=? ORDER BY duration_time ASC";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, paramSid);
+            pstmt.setInt(1, paramSid);
+            // pstmt.setString(4,paramOrderBy);
+            return Optional.of(new CommandResult(pstmt.executeQuery()));
+        }
+        return Optional.empty();
     }
 }
