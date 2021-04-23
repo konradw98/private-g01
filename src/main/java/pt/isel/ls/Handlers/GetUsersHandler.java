@@ -21,6 +21,8 @@ public class GetUsersHandler implements CommandHandler {
         //deleting student that does not exist in table yet (value 0 means no rows were affected)
         String sql = "SELECT * FROM users";
         PreparedStatement pstmt = conn.prepareStatement(sql);
-        return Optional.of(new CommandResult(pstmt.executeQuery()));
+        Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
+        conn.close();
+        return optional;
     }
 }

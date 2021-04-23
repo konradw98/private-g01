@@ -27,7 +27,10 @@ public class PostUserHandler implements CommandHandler {
             else if (param.contains("email")) param2 = param.substring(6).replace('+', ' ');
         }
 
-        if (param1.equals("") || param2.equals("")) return Optional.empty();
+        if (param1.equals("") || param2.equals("")) {
+            conn.close();
+            return Optional.empty();
+        }
 
         String sql = "INSERT INTO users(name, email) values(?,?)";
         PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -38,6 +41,8 @@ public class PostUserHandler implements CommandHandler {
 
         String sql1 = "SELECT MAX(uid) FROM users";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
-        return Optional.of(new CommandResult(pstmt1.executeQuery()));
+        Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt1.executeQuery()));
+        conn.close();
+        return optional;
     }
 }

@@ -1,5 +1,6 @@
 package pt.isel.ls;
 
+import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.Handlers.*;
 
 import java.sql.SQLException;
@@ -13,6 +14,11 @@ public class App {
 
         Router router = new Router();
         router.addHandlers();
+
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
+        dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
+        dataSource.setPassword("password");
+        dataSource.setUser("postgres");
 
         Scanner scanner = new Scanner(System.in);
         String line = scanner.nextLine();
@@ -30,24 +36,28 @@ public class App {
 
             Optional<RouteResult> optional = router.findRoute(method, new Path(command[1]));
             if (optional.isPresent()) {
+
                 RouteResult routeResult = optional.get();
                 CommandRequest commandRequest;
                 if (command.length == 2) {
-                    //TODO: change getParameters to getPathParameters
-                    commandRequest = new CommandRequest(routeResult.getPathParameters());
+                    commandRequest = new CommandRequest(routeResult.getPathParameters(), dataSource);
                 } else if (command.length == 3) {
                     ArrayList<String> parameters = new ArrayList<>(Arrays.asList(command[2].split("&")));
-                    commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters);
+                    commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters, dataSource);
                 } else {
                     System.out.println("Wrong command: " + line);
                     break;
                 }
+                try {
+                    Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
+                    if (optionalCommandResult.isPresent()) {
+                        CommandResult commandResult = optionalCommandResult.get();
+                        printResult(routeResult, commandResult);
+                    } else System.out.println("Wrong command: " + line);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
 
-                Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
-                if (optionalCommandResult.isPresent()) {
-                    CommandResult commandResult = optionalCommandResult.get();
-                    printResult(routeResult, commandResult);
-                } else System.out.println("Wrong command: " + line);
             } else System.out.println("Wrong command: " + line);
             //TODO: should we throw an exception or try again
 

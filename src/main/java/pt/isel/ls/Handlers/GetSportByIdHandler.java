@@ -25,6 +25,8 @@ public class GetSportByIdHandler implements CommandHandler {
         String sql = "SELECT * FROM sports WHERE sid=?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
-        return Optional.of(new CommandResult(pstmt.executeQuery()));
+        Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
+        conn.close();
+        return optional;
     }
 }

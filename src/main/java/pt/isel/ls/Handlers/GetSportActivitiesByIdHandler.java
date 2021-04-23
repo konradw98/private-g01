@@ -26,6 +26,8 @@ public class GetSportActivitiesByIdHandler implements CommandHandler {
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
         pstmt.setInt(2, Integer.parseInt(parameters.get(1)));
-        return Optional.of(new CommandResult(pstmt.executeQuery()));
+        Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
+        conn.close();
+        return optional;
     }
 }

@@ -36,7 +36,9 @@ public class GetTopsActivitiesHandler implements CommandHandler {
             pstmt.setDate(2, paramDate);
             pstmt.setInt(1, paramSid);
             // pstmt.setString(4,paramOrderBy);
-            return Optional.of(new CommandResult(pstmt.executeQuery()));
+            Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
+            conn.close();
+            return optional;
         } else if (parameters.size() == 3) {
             if (parameters.get(3).charAt(0) == 'd') {
                 Date paramDate = Date.valueOf(commandRequest.getParameters().get(2).substring(5));
@@ -45,7 +47,9 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                 pstmt.setDate(2, paramDate);
                 pstmt.setInt(1, paramSid);
                 // pstmt.setString(4,paramOrderBy);
-                return Optional.of(new CommandResult(pstmt.executeQuery()));
+                Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
+                conn.close();
+                return optional;
             }
             else if (parameters.get(3).charAt(0) == 'r') {
                 int paramRid = Integer.parseInt(commandRequest.getParameters().get(3).substring(4));
@@ -54,7 +58,9 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                 pstmt.setInt(2, paramRid);
                 pstmt.setInt(1, paramSid);
                 // pstmt.setString(4,paramOrderBy);
-                return Optional.of(new CommandResult(pstmt.executeQuery()));
+                Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
+                conn.close();
+                return optional;
             }
         } else if (parameters.size() == 2) {
             String sql = "SELECT * FROM activities WHERE sid=? ORDER BY duration_time ASC";
@@ -62,8 +68,11 @@ public class GetTopsActivitiesHandler implements CommandHandler {
             pstmt.setInt(1, paramSid);
             pstmt.setInt(1, paramSid);
             // pstmt.setString(4,paramOrderBy);
-            return Optional.of(new CommandResult(pstmt.executeQuery()));
+            Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
+            conn.close();
+            return optional;
         }
+        conn.close();
         return Optional.empty();
     }
 }

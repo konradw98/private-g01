@@ -1,18 +1,24 @@
 package pt.isel.ls;
 
+import org.postgresql.ds.PGSimpleDataSource;
+
+import java.sql.Connection;
 import java.util.ArrayList;
 
 public class CommandRequest {
     private ArrayList<String> pathParameters;
     private ArrayList<String> parameters;
+    private PGSimpleDataSource dataSource;
 
-    public CommandRequest(ArrayList<String> pathParameters, ArrayList<String> parameters) {
+    public CommandRequest(ArrayList<String> pathParameters, ArrayList<String> parameters, PGSimpleDataSource dataSource) {
         this.pathParameters = pathParameters;
         this.parameters = parameters;
+        this.dataSource = dataSource;
     }
 
-    public CommandRequest(ArrayList<String> pathParameters) {
+    public CommandRequest(ArrayList<String> pathParameters, PGSimpleDataSource dataSource) {
         this.pathParameters = pathParameters;
+        this.dataSource = dataSource;
     }
 
     public ArrayList<String> getParameters() {
@@ -29,5 +35,9 @@ public class CommandRequest {
 
     public void setPathParameters(ArrayList<String> parameters) {
         this.pathParameters = parameters;
+    }
+
+    public PGSimpleDataSource getDataSource() {
+        return dataSource;
     }
 }

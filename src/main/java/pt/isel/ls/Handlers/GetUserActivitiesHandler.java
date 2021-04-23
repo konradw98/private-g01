@@ -24,6 +24,8 @@ public class GetUserActivitiesHandler implements CommandHandler {
         String sql = "SELECT * FROM activities WHERE uid=?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
-        return Optional.of(new CommandResult(pstmt.executeQuery()));
+        Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
+        conn.close();
+        return optional;
     }
 }

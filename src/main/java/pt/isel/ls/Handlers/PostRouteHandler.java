@@ -28,7 +28,10 @@ public class PostRouteHandler implements CommandHandler {
             else if(param.contains("distance")) param3 = Integer.parseInt(param.substring(9).replace('+', ' '));
         }
 
-        if (param1.equals("") || param2.equals("") || param3 < 0) return Optional.empty();
+        if (param1.equals("") || param2.equals("") || param3 < 0) {
+            conn.close();
+            return Optional.empty();
+        }
 
         String sql = "INSERT INTO routes(start_location, end_location, distance) values(?, ?, ?)";
         PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -40,6 +43,8 @@ public class PostRouteHandler implements CommandHandler {
 
         String sql1 = "SELECT MAX(rid) FROM routes";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
-        return Optional.of(new CommandResult(pstmt1.executeQuery()));
+        Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt1.executeQuery()));
+        conn.close();
+        return optional;
     }
 }

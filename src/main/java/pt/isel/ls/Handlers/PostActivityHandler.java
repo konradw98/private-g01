@@ -36,7 +36,10 @@ public class PostActivityHandler implements CommandHandler {
             for (String param : commandRequest.getParameters()) {
                 if (param.contains("rid")) paramRid = Integer.parseInt(param.substring(4));
             }
-            if (paramRid == 0) return Optional.empty();
+            if (paramRid == 0) {
+                conn.close();
+                return Optional.empty();
+            }
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(5, paramRid);
         } else if (commandRequest.getParameters().size() < 4) {
@@ -52,6 +55,8 @@ public class PostActivityHandler implements CommandHandler {
 
         String sql1 = "SELECT MAX(aid) FROM activities";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
-        return Optional.of(new CommandResult(pstmt1.executeQuery()));
+        Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt1.executeQuery()));
+        conn.close();
+        return optional;
     }
 }
