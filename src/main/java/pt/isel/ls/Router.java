@@ -15,9 +15,17 @@ public class Router {
     public void addHandlers() {
         addRoute(Method.GET, new PathTemplate("/users"), new GetUsersHandler());
         addRoute(Method.GET, new PathTemplate("/users/{uid}"), new GetUserByIdHandler());
-        addRoute(Method.GET, new PathTemplate("/route"), new GetRoutesHandler());
-        addRoute(Method.GET, new PathTemplate("/route/{rid}"), new GetRouteByIDHandler());
+        addRoute(Method.GET, new PathTemplate("/routes"), new GetRoutesHandler());
+        addRoute(Method.GET, new PathTemplate("/routes/{rid}"), new GetRouteByIDHandler());
+        addRoute(Method.GET, new PathTemplate("/sports"), new GetSportHandler());
+        addRoute(Method.GET, new PathTemplate("/sports/{sid}"), new GetSportByIdHandler());
+        addRoute(Method.GET, new PathTemplate("/sports/{sid}/activities"), new GetSportActivitiesHandler());
+        addRoute(Method.GET, new PathTemplate("/sports/{sid}/activities/{aid}"), new GetSportActivitiesByIdHandler());
+        addRoute(Method.GET, new PathTemplate("/users/{uid}/activities"), new GetUserActivitiesHandler());
+        addRoute(Method.GET, new PathTemplate("/users/{uid}/activities/{aid}"), new GetUserActivitiesByIdHandler());
         addRoute(Method.POST, new PathTemplate("/users"), new PostUserHandler());
+        addRoute(Method.POST, new PathTemplate("/routes"), new PostRouteHandler());
+        addRoute(Method.POST, new PathTemplate("/sports"), new PostSportHandler());
     }
 
     public void addRoute(Method method, PathTemplate pathTemplate, CommandHandler commandHandler) {

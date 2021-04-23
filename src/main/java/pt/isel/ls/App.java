@@ -20,12 +20,19 @@ public class App {
                     commandResult.getResultSet().getString("name"));
         }
 
-        path = new Path("/users");
-        String pobrany = "name=Jan+Kowalski&email=jankowalski@email.com";
+        path = new Path("/routes");
+        String pobrany = "startLocation=Lizbona&endLocation=Ostrow+Wielkoposlki&distance=10";
         List<String> parametersList = Arrays.asList(pobrany.split("&"));
         ArrayList<String> parameters = new ArrayList<>(parametersList);
-        routeResult = router.findRoute(Method.POST, path).get();
+        routeResult = router.findRoute(Method.GET, path).get();
         commandResult = routeResult.getHandler().execute(new CommandRequest(routeResult.getParameters(), parameters));
+
+        while (commandResult.getResultSet().next()) {
+            System.out.println(commandResult.getResultSet().getInt("rid") + " " +
+                    commandResult.getResultSet().getString("start_location") + " " +
+                    commandResult.getResultSet().getString("end_location") + " " +
+                    commandResult.getResultSet().getString("distance"));
+        }
 
         path = new Path("/users");
         router.addHandlers();
