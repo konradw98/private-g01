@@ -17,7 +17,7 @@ public class GetUserByIdHandler implements CommandHandler {
         dataSource.setUser("postgres");
         Connection conn = dataSource.getConnection();
 
-        ArrayList<String> parameters = commandRequest.getParameters();
+        ArrayList<String> parameters = commandRequest.getPathParameters();
 
         String sql = "SELECT * FROM users WHERE uid=?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
