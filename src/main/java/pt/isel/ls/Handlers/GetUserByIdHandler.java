@@ -1,13 +1,15 @@
-package pt.isel.ls;
+package pt.isel.ls.Handlers;
 
 import org.postgresql.ds.PGSimpleDataSource;
+import pt.isel.ls.CommandRequest;
+import pt.isel.ls.CommandResult;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class GetSportByIdHandler implements CommandHandler {
+public class GetUserByIdHandler implements CommandHandler {
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
@@ -17,9 +19,9 @@ public class GetSportByIdHandler implements CommandHandler {
         dataSource.setUser("postgres");
         Connection conn = dataSource.getConnection();
 
-        ArrayList<String> parameters = commandRequest.getParameters();
+        ArrayList<String> parameters = commandRequest.getPathParameters();
 
-        String sql = "SELECT * FROM sport WHERE sid=?";
+        String sql = "SELECT * FROM users WHERE uid=?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
         return new CommandResult(pstmt.executeQuery());

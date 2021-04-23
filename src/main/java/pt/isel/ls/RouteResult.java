@@ -1,5 +1,7 @@
 package pt.isel.ls;
 
+import pt.isel.ls.Handlers.CommandHandler;
+
 import java.util.ArrayList;
 
 public class RouteResult {

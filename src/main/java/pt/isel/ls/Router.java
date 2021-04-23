@@ -1,6 +1,7 @@
 package pt.isel.ls;
 
 import com.google.common.collect.ArrayListMultimap;
+import pt.isel.ls.Handlers.*;
 
 import java.util.*;
 

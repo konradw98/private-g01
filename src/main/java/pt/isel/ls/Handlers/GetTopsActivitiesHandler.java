@@ -1,4 +1,4 @@
-package pt.isel.ls;
+package pt.isel.ls.Handlers;
 
 public class GetTopsActivitiesHandler {
 
