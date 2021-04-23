@@ -18,7 +18,7 @@ public class GetRoutesHandler implements CommandHandler {
         Connection conn = dataSource.getConnection();
 
         //deleting student that does not exist in table yet (value 0 means no rows were affected)
-        String sql = "SELECT * FROM route";
+        String sql = "SELECT * FROM routes";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         return new CommandResult(pstmt.executeQuery());
     }

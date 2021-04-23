@@ -20,7 +20,7 @@ public class GetSportHandler implements CommandHandler {
         Connection conn = dataSource.getConnection();
 
         //deleting student that does not exist in table yet (value 0 means no rows were affected)
-        String sql = "SELECT * FROM sport";
+        String sql = "SELECT * FROM sports";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         return new CommandResult(pstmt.executeQuery());
 

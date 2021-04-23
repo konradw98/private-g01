@@ -20,7 +20,7 @@ public class GetSportActivitiesHandler implements CommandHandler {
 
         ArrayList<String> parameters = commandRequest.getParameters();
 
-        String sql = "SELECT * FROM activity WHERE sid=?";
+        String sql = "SELECT * FROM activities WHERE sid=?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
         return new CommandResult(pstmt.executeQuery());

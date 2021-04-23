@@ -20,7 +20,7 @@ public class GetRouteByIDHandler implements CommandHandler {
 
         ArrayList<String> parameters = commandRequest.getPathParameters();
 
-        String sql = "SELECT * FROM route WHERE rid=?";
+        String sql = "SELECT * FROM routes WHERE rid=?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
         return new CommandResult(pstmt.executeQuery());

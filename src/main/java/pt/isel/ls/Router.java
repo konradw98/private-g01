@@ -17,6 +17,7 @@ public class Router {
         addRoute(Method.GET, new PathTemplate("/users/{uid}"), new GetUserByIdHandler());
         addRoute(Method.GET, new PathTemplate("/route"), new GetRoutesHandler());
         addRoute(Method.GET, new PathTemplate("/route/{rid}"), new GetRouteByIDHandler());
+        addRoute(Method.POST, new PathTemplate("/users"), new PostUserHandler());
     }
 
     public void addRoute(Method method, PathTemplate pathTemplate, CommandHandler commandHandler) {

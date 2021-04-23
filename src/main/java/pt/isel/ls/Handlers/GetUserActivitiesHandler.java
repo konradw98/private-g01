@@ -20,7 +20,7 @@ public class GetUserActivitiesHandler implements CommandHandler {
 
         ArrayList<String> parameters = commandRequest.getParameters();
 
-        String sql = "SELECT * FROM activity WHERE uid=?";
+        String sql = "SELECT * FROM activities WHERE uid=?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
         return new CommandResult(pstmt.executeQuery());
