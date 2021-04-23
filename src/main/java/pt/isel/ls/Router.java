@@ -26,6 +26,7 @@ public class Router {
         addRoute(Method.POST, new PathTemplate("/users"), new PostUserHandler());
         addRoute(Method.POST, new PathTemplate("/routes"), new PostRouteHandler());
         addRoute(Method.POST, new PathTemplate("/sports"), new PostSportHandler());
+        addRoute(Method.POST, new PathTemplate("/sports/{sid}/activities"),new PostActivityHandler());
     }
 
     public void addRoute(Method method, PathTemplate pathTemplate, CommandHandler commandHandler) {
