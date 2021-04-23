@@ -29,7 +29,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
             Date paramDate = Date.valueOf(commandRequest.getParameters().get(2).substring(5));
             int paramRid = Integer.parseInt(commandRequest.getParameters().get(3).substring(4));
 
-            String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? ORDER BY duration_time ASC";
+            String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? ORDER BY duration_time "+paramOrderBy;
 
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(3, paramRid);
