@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class App {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
 
         Router router = new Router();
         router.addHandlers();

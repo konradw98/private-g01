@@ -13,13 +13,10 @@ import java.util.Optional;
 public class GetUserActivitiesHandler implements CommandHandler {
     @Override
     public Optional<CommandResult> execute(CommandRequest commandRequest) throws SQLException {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
-        dataSource.setPassword("password");
-        dataSource.setUser("postgres");
-        Connection conn = dataSource.getConnection();
 
-        ArrayList<String> parameters = commandRequest.getParameters();
+        Connection conn = commandRequest.getDataSource().getConnection();
+
+        ArrayList<String> parameters = commandRequest.getPathParameters();
 
         String sql = "SELECT * FROM activities WHERE uid=?";
         PreparedStatement pstmt = conn.prepareStatement(sql);

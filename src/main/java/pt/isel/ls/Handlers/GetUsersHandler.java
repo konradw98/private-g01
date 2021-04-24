@@ -12,11 +12,8 @@ import java.util.Optional;
 public class GetUsersHandler implements CommandHandler {
     @Override
     public Optional<CommandResult> execute(CommandRequest commandRequest) throws SQLException {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
-        dataSource.setPassword("password");
-        dataSource.setUser("postgres");
-        Connection conn = dataSource.getConnection();
+
+        Connection conn = commandRequest.getDataSource().getConnection();
 
         //deleting student that does not exist in table yet (value 0 means no rows were affected)
         String sql = "SELECT * FROM users";

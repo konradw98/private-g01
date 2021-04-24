@@ -15,11 +15,9 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
     @Override
     public Optional<CommandResult> execute(CommandRequest commandRequest) throws SQLException {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
-        dataSource.setPassword("password");
-        dataSource.setUser("postgres");
-        Connection conn = dataSource.getConnection();
+
+        Connection conn = commandRequest.getDataSource().getConnection();
+
         int paramSid = Integer.parseInt(commandRequest.getParameters().get(0).substring(4));
         String paramOrderBy = commandRequest.getParameters().get(1).substring(8);
         PreparedStatement pstmt;

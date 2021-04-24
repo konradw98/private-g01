@@ -13,11 +13,8 @@ public class PostSportHandler implements CommandHandler {
 
     @Override
     public Optional<CommandResult> execute(CommandRequest commandRequest) throws SQLException {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
-        dataSource.setPassword("password");
-        dataSource.setUser("postgres");
-        Connection conn = dataSource.getConnection();
+
+        Connection conn = commandRequest.getDataSource().getConnection();
 
         String param1 = "";
         String param2 = "";
