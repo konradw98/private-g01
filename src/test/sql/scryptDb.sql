@@ -13,7 +13,7 @@ CREATE TABLE routes(
     rid SERIAL UNIQUE,
     start_location VARCHAR(50) NOT NULL,
     end_location VARCHAR(50) NOT NULL,
-    distance INT NOT NULL);
+    distance DECIMAL NOT NULL);
 
 CREATE TABLE activities (
     aid SERIAL UNIQUE,
