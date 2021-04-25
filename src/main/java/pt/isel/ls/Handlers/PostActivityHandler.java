@@ -1,6 +1,5 @@
 package pt.isel.ls.Handlers;
 
-import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.CommandResult;
 
@@ -17,6 +16,21 @@ public class PostActivityHandler implements CommandHandler {
         int paramTime = -1;
         Date paramDate = null;
 
+        //checking the max uid and rid
+        String sqlCheck = "SELECT MAX(sid) FROM sports";
+        PreparedStatement pstmtCheck = conn.prepareStatement(sqlCheck);
+        ResultSet resultSet = pstmtCheck.executeQuery();
+        resultSet.next();
+        int maxSID = resultSet.getInt(1);
+
+        sqlCheck = "SELECT MAX(uid) FROM users";
+        pstmtCheck = conn.prepareStatement(sqlCheck);
+        resultSet = pstmtCheck.executeQuery();
+        resultSet.next();
+        int maxUID = resultSet.getInt(1);
+
+        String sql;
+        PreparedStatement pstmt;
         for (String param : commandRequest.getParameters()) {
             if (param.contains("uid")) paramUid = Integer.parseInt(param.substring(4).replace('+', ' '));
             else if (param.contains("time")) paramTime = Integer.parseInt(param.substring(9).replace('+', ' '));
@@ -25,20 +39,41 @@ public class PostActivityHandler implements CommandHandler {
 
         int paramSid = Integer.parseInt(commandRequest.getPathParameters().get(0));
 
-        String sql;
-        PreparedStatement pstmt;
+        String wrongParameterName = "";
+        boolean ifWrongParameters = false;
+        if (paramUid < 1 || paramUid > maxUID) {
+            wrongParameterName += " uid = " + paramUid;
+            ifWrongParameters = true;
+        }
+        if (paramSid < 1 || paramSid > maxSID) {
+            wrongParameterName += " sid = " + paramSid;
+            ifWrongParameters = true;
+        }
+
         if (commandRequest.getParameters().size() == 4) {
             sql = "INSERT INTO activities(date,duration_time,sid,uid,rid) values(?,?,?,?,?)";
             int paramRid = 0;
             for (String param : commandRequest.getParameters()) {
                 if (param.contains("rid")) paramRid = Integer.parseInt(param.substring(4));
             }
-            if (paramRid == 0) {
+            sqlCheck = "SELECT MAX(rid) FROM routes";
+            pstmtCheck = conn.prepareStatement(sqlCheck);
+            resultSet = pstmtCheck.executeQuery();
+            resultSet.next();
+            int maxRID = resultSet.getInt(1);
+
+            if (paramRid < 1 || paramRid > maxRID) {
                 conn.close();
+                wrongParameterName += " rid = " + paramRid;
+                System.out.println("Wrong parameter:" + wrongParameterName);
                 return Optional.empty();
             }
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(5, paramRid);
+        } else if (ifWrongParameters) {
+            conn.close();
+            System.out.println("Wrong parameter:" + wrongParameterName);
+            return Optional.empty();
         } else if (commandRequest.getParameters().size() < 4) {
             sql = "INSERT INTO activities(date,duration_time,sid,uid) values(?,?,?,?)";
             pstmt = conn.prepareStatement(sql);

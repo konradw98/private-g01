@@ -33,7 +33,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
             pstmt.setInt(3, paramRid);
             pstmt.setDate(2, paramDate);
             pstmt.setInt(1, paramSid);
-            // pstmt.setString(4,paramOrderBy);
+            pstmt.setString(4,paramOrderBy);
             Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
             conn.close();
             return optional;
@@ -44,7 +44,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setDate(2, paramDate);
                 pstmt.setInt(1, paramSid);
-                // pstmt.setString(4,paramOrderBy);
+                pstmt.setString(4,paramOrderBy);
                 Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
                 conn.close();
                 return optional;
@@ -55,7 +55,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setInt(2, paramRid);
                 pstmt.setInt(1, paramSid);
-                // pstmt.setString(4,paramOrderBy);
+                pstmt.setString(4,paramOrderBy);
                 Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
                 conn.close();
                 return optional;
@@ -65,7 +65,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, paramSid);
             pstmt.setInt(1, paramSid);
-            // pstmt.setString(4,paramOrderBy);
+            pstmt.setString(4,paramOrderBy);
             Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
             conn.close();
             return optional;

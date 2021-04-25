@@ -3,6 +3,7 @@ package pt.isel.ls;
 import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.Handlers.*;
 
+import javax.sound.midi.Soundbank;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,39 +28,41 @@ public class App {
 
         while (!line.equals("EXIT")) {
             command = line.split(" ");
-            method = switch (command[0]) {
-                case "GET" -> Method.GET;
-                case "POST" -> Method.POST;
-                case "EXIT" -> Method.EXIT;
-                default -> throw new IllegalStateException("Unexpected value: " + command[0]);
-            };
 
-            Optional<RouteResult> optional = router.findRoute(method, new Path(command[1]));
-            if (optional.isPresent()) {
+            if (command.length > 1) {
+                method = switch (command[0]) {
+                    case "GET" -> Method.GET;
+                    case "POST" -> Method.POST;
+                    case "EXIT" -> Method.EXIT;
+                    //TODO: leave exit or just in while
+                    default -> throw new IllegalStateException("Unexpected value: " + command[0]);
+                };
 
-                RouteResult routeResult = optional.get();
-                CommandRequest commandRequest;
-                if (command.length == 2) {
-                    commandRequest = new CommandRequest(routeResult.getPathParameters(), dataSource);
-                } else if (command.length == 3) {
-                    ArrayList<String> parameters = new ArrayList<>(Arrays.asList(command[2].split("&")));
-                    commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters, dataSource);
-                } else {
-                    System.out.println("Wrong command: " + line);
-                    break;
-                }
-                try {
-                    Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
-                    if (optionalCommandResult.isPresent()) {
-                        CommandResult commandResult = optionalCommandResult.get();
-                        printResult(routeResult, commandResult);
-                    } else System.out.println("Wrong command: " + line);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                Optional<RouteResult> optional = router.findRoute(method, new Path(command[1]));
+                if (optional.isPresent()) {
+                    RouteResult routeResult = optional.get();
+                    CommandRequest commandRequest;
+                    if (command.length == 2) {
+                        commandRequest = new CommandRequest(routeResult.getPathParameters(), dataSource);
+                    } else if (command.length == 3) {
+                        ArrayList<String> parameters = new ArrayList<>(Arrays.asList(command[2].split("&")));
+                        commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters, dataSource);
+                    } else {
+                        System.out.println("Wrong command: " + line);
+                        break;
+                    }
+                    try {
+                        Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
+                        if (optionalCommandResult.isPresent()) {
+                            CommandResult commandResult = optionalCommandResult.get();
+                            printResult(routeResult, commandResult);
+                        } else System.out.println("Wrong command: " + line);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
 
+                } else System.out.println("Wrong command: " + line);
             } else System.out.println("Wrong command: " + line);
-            //TODO: should we throw an exception or try again
 
             line = scanner.nextLine();
         }

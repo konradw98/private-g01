@@ -21,6 +21,9 @@ public class GetRouteByIDHandler implements CommandHandler {
         pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
         Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
         conn.close();
+        if (!optional.get().getResultSet().next()) {
+            System.out.println("Wrong parameter: rid = " + parameters.get(0));
+        }
         return optional;
     }
 }

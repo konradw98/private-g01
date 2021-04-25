@@ -25,6 +25,9 @@ public class GetUserActivitiesByIdHandler implements CommandHandler {
         pstmt.setInt(2, Integer.parseInt(parameters.get(1)));
         Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
         conn.close();
+        if (!optional.get().getResultSet().next()) {
+            System.out.println("Wrong parameter: uid = " + parameters.get(0) + ", aid = " + parameters.get(1));
+        }
         return optional;
     }
 
