@@ -4,6 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.postgresql.ds.PGSimpleDataSource;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -133,7 +136,83 @@ public class Phase1Tests {
         assertEquals(expectedResult, firstUser);
 
     }
+    @Test
+    public void getUsersTest() throws SQLException{
+        Path path = new Path("/users/");
+        Method method = Method.GET;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), dataSource);
+        Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
+        CommandResult commandResult = optionalCommandResult.get();
+        int numberOfUsers=0;
+        while (commandResult.getResultSet().next()) {
+            numberOfUsers++;
+        }
+        String sql="SELECT COUNT(uid) FROM users";
+        Connection conn=dataSource.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        int result=0;
+        ResultSet resultSet= pstmt.executeQuery();
+        if(resultSet.next()){
+            result=resultSet.getInt(1);
+        }
 
+        assertEquals(numberOfUsers,result);
+
+    }
+
+    @Test
+    public void getRoutesTest() throws SQLException{
+        Path path = new Path("/routes");
+        Method method = Method.GET;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), dataSource);
+        Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
+        CommandResult commandResult = optionalCommandResult.get();
+        int numberOfRoutes=0;
+        while (commandResult.getResultSet().next()) {
+            numberOfRoutes++;
+        }
+        String sql="SELECT COUNT(rid) FROM routes";
+        Connection conn=dataSource.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        int result=0;
+        ResultSet resultSet= pstmt.executeQuery();
+        if(resultSet.next()){
+            result=resultSet.getInt(1);
+        }
+
+        assertEquals(numberOfRoutes,result);
+
+    }
+
+    @Test
+    public void getSportsTest() throws SQLException{
+        Path path = new Path("/sports");
+        Method method = Method.GET;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), dataSource);
+        Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
+        CommandResult commandResult = optionalCommandResult.get();
+        int numberOfSports=0;
+        while (commandResult.getResultSet().next()) {
+            numberOfSports++;
+        }
+        String sql="SELECT COUNT(sid) FROM sports";
+        Connection conn=dataSource.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        int result=0;
+        ResultSet resultSet= pstmt.executeQuery();
+        if(resultSet.next()){
+            result=resultSet.getInt(1);
+        }
+
+        assertEquals(numberOfSports,result);
+
+    }
 
 
 
