@@ -37,12 +37,36 @@ public class Phase1Tests {
     }
 
     @Test
-    public void wrongPathParamsTest() throws SQLException {
+    public void wrongPathParamsNegativeDistanceTest() throws SQLException {
         Path path = new Path("/routes");
         Method method = Method.POST;
         Optional<RouteResult> optional = router.findRoute(method, path);
         RouteResult routeResult = optional.get();
         ArrayList<String> parameters = new ArrayList<>(Arrays.asList(("start_location=Wroclaw&end_location=Warszawa&distance=-1").split("&")));
+        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters, dataSource);
+        Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
+        assertEquals(Optional.empty(), optionalCommandResult);
+    }
+
+    @Test
+    public void wrongPathParamsTypoInNameTest() throws SQLException {
+        Path path = new Path("/users");
+        Method method = Method.POST;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        ArrayList<String> parameters = new ArrayList<>(Arrays.asList(("nam=John&email=mail").split("&")));
+        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters, dataSource);
+        Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
+        assertEquals(Optional.empty(), optionalCommandResult);
+    }
+
+    @Test
+    public void wrongPathParamsActivitiesIdTest() throws SQLException {
+        Path path = new Path("/sports/1/activities");
+        Method method = Method.POST;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        ArrayList<String> parameters = new ArrayList<>(Arrays.asList(("uid=100&duration=00:10:30&date=2021-04-21&rid=1").split("&")));
         CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters, dataSource);
         Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
         assertEquals(Optional.empty(), optionalCommandResult);
@@ -109,6 +133,8 @@ public class Phase1Tests {
         assertEquals(expectedResult, firstUser);
 
     }
+
+
 
 
 }
