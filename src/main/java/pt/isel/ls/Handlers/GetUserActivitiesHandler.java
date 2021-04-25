@@ -1,6 +1,5 @@
 package pt.isel.ls.Handlers;
 
-import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.CommandResult;
 
@@ -13,9 +12,7 @@ import java.util.Optional;
 public class GetUserActivitiesHandler implements CommandHandler {
     @Override
     public Optional<CommandResult> execute(CommandRequest commandRequest) throws SQLException {
-
         Connection conn = commandRequest.getDataSource().getConnection();
-
         ArrayList<String> parameters = commandRequest.getPathParameters();
 
         String sql = "SELECT * FROM activities WHERE uid=?";

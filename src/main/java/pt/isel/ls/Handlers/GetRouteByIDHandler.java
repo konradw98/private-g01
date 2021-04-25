@@ -15,21 +15,22 @@ public class GetRouteByIDHandler implements CommandHandler {
     public Optional<CommandResult> execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
         ArrayList<String> parameters = commandRequest.getPathParameters();
+        int rid = Integer.parseInt(parameters.get(0));
 
         String sql1 = "SELECT MAX(rid) FROM routes";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
         ResultSet resultSet = pstmt1.executeQuery();
         resultSet.next();
 
-        if (resultSet.getInt(1) < Integer.parseInt(parameters.get(0))) {
-            System.out.println("Wrong parameter: rid = " + parameters.get(0));
+        if (resultSet.getInt(1) < rid) {
+            System.out.println("Wrong parameter: rid = " + rid);
             conn.close();
             return Optional.empty();
         }
 
         String sql = "SELECT * FROM routes WHERE rid=?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
+        pstmt.setInt(1, rid);
         Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
         conn.close();
         return optional;

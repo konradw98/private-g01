@@ -1,6 +1,5 @@
 package pt.isel.ls.Handlers;
 
-import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.CommandResult;
 
@@ -20,31 +19,9 @@ public class GetUserActivitiesByIdHandler implements CommandHandler {
 
         int uid = Integer.parseInt(parameters.get(0));
         int aid = Integer.parseInt(parameters.get(1));
+        String wrongParameters = checkParameters(uid, aid, conn);
 
-        String sql1 = "SELECT MAX(uid) FROM users";
-        PreparedStatement pstmt1 = conn.prepareStatement(sql1);
-        ResultSet resultSet = pstmt1.executeQuery();
-        resultSet.next();
-        int maxUID = resultSet.getInt(1);
-
-        sql1 = "SELECT MAX(aid) FROM activities";
-        pstmt1 = conn.prepareStatement(sql1);
-        resultSet = pstmt1.executeQuery();
-        resultSet.next();
-
-        boolean ifWrongParameters = false;
-        String wrongParameters = "";
-        if (resultSet.getInt(1) < aid) {
-            wrongParameters += " aid = " + aid;
-            ifWrongParameters = true;
-        }
-
-        if (maxUID < uid) {
-            wrongParameters += " uid = " + uid;
-            ifWrongParameters = true;
-        }
-
-        if (ifWrongParameters) {
+        if (!wrongParameters.equals("")) {
             conn.close();
             System.out.println("Wrong parameter:" + wrongParameters);
             return Optional.empty();
@@ -58,6 +35,29 @@ public class GetUserActivitiesByIdHandler implements CommandHandler {
         conn.close();
 
         return optional;
+    }
+
+    private String checkParameters(int uid, int aid, Connection conn) throws SQLException {
+        String sql1 = "SELECT MAX(uid) FROM users";
+        PreparedStatement pstmt1 = conn.prepareStatement(sql1);
+        ResultSet resultSet = pstmt1.executeQuery();
+        resultSet.next();
+        int maxUID = resultSet.getInt(1);
+
+        sql1 = "SELECT MAX(aid) FROM activities";
+        pstmt1 = conn.prepareStatement(sql1);
+        resultSet = pstmt1.executeQuery();
+        resultSet.next();
+
+        String wrongParameters = "";
+        if (resultSet.getInt(1) < aid) {
+            wrongParameters += " aid = " + aid;
+        }
+
+        if (maxUID < uid) {
+            wrongParameters += " uid = " + uid;
+        }
+        return wrongParameters;
     }
 
 }
