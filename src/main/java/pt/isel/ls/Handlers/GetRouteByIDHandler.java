@@ -22,7 +22,7 @@ public class GetRouteByIDHandler implements CommandHandler {
         ResultSet resultSet = pstmt1.executeQuery();
         resultSet.next();
 
-        if (resultSet.getInt(1) < rid) {
+        if (resultSet.getInt(1) < rid || rid < 1) {
             System.out.println("Wrong parameter: rid = " + rid);
             conn.close();
             return Optional.empty();

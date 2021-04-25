@@ -23,7 +23,7 @@ public class GetSportByIdHandler implements CommandHandler {
         ResultSet resultSet = pstmt1.executeQuery();
         resultSet.next();
 
-        if (resultSet.getInt(1) < sid) {
+        if (resultSet.getInt(1) < sid || sid < 1) {
             System.out.println("Wrong parameter: sid = " + sid);
             conn.close();
             return Optional.empty();

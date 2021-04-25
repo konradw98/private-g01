@@ -26,7 +26,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
         for (String param : parameters) {
             if (param.contains("sid")) sid = Integer.parseInt(param.substring(4));
-            else if (param.contains("orderBy")) orderBy = param.substring(9).replace('+', ' ');
+            else if (param.contains("orderBy")) orderBy = param.substring(8).replace('+', ' ');
             else if (param.contains("date")) date = Date.valueOf(param.substring(5));
             else if (param.contains("rid")) rid = Integer.parseInt(param.substring(4));
         }
@@ -110,7 +110,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
         if (sid < 1 || maxSID < sid) {
             wrongParameters += " sid = " + sid;
         }
-        if (!orderBy.toLowerCase(Locale.ENGLISH).equals("asc") || !orderBy.toLowerCase(Locale.ENGLISH).equals("desc")) {
+        if (!orderBy.toLowerCase(Locale.ENGLISH).equals("asc") && !orderBy.toLowerCase(Locale.ENGLISH).equals("desc")) {
             wrongParameters += " order by = " + orderBy;
         }
         return wrongParameters;

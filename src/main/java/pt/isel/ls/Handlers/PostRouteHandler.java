@@ -14,12 +14,12 @@ public class PostRouteHandler implements CommandHandler {
         Connection conn = commandRequest.getDataSource().getConnection();
         String startLocation = "";
         String endLocation = "";
-        int distance = -1;
+        float distance = -1;
 
         for (String param : commandRequest.getParameters()) {
             if (param.contains("startLocation")) startLocation = param.substring(14).replace('+', ' ');
             else if (param.contains("endLocation")) endLocation = param.substring(12).replace('+', ' ');
-            else if (param.contains("distance")) distance = Integer.parseInt(param.substring(9).replace('+', ' '));
+            else if (param.contains("distance")) distance = Float.parseFloat(param.substring(9).replace('+', ' '));
         }
 
         String wrongParameters = checkParameters(startLocation, endLocation, distance);
@@ -34,7 +34,7 @@ public class PostRouteHandler implements CommandHandler {
 
         pstmt.setString(1, startLocation);
         pstmt.setString(2, endLocation);
-        pstmt.setInt(3, distance);
+        pstmt.setFloat(3, distance);
         pstmt.executeUpdate();
 
         String sql1 = "SELECT MAX(rid) FROM routes";
@@ -44,14 +44,14 @@ public class PostRouteHandler implements CommandHandler {
         return optional;
     }
 
-    private String checkParameters(String startLocation, String endLocation, int distance) {
+    private String checkParameters(String startLocation, String endLocation, float distance) {
         String wrongParameters = "";
         if (startLocation.equals("")) {
-            wrongParameters += " start location = " + startLocation;
+            wrongParameters += " start location";
         }
 
         if (endLocation.equals("")) {
-            wrongParameters += " end location = " + endLocation;
+            wrongParameters += " end location";
         }
 
         if (distance < 0) {

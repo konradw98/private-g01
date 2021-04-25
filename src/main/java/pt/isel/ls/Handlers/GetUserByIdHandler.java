@@ -23,7 +23,7 @@ public class GetUserByIdHandler implements CommandHandler {
         ResultSet resultSet = pstmt1.executeQuery();
         resultSet.next();
 
-        if (resultSet.getInt(1) < uid) {
+        if (resultSet.getInt(1) < uid || uid < 1) {
             System.out.println("Wrong parameter: uid = " + uid);
             conn.close();
             return Optional.empty();

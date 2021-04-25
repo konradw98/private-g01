@@ -66,7 +66,7 @@ public class InteractiveMode {
             while (commandResult.getResultSet().next()) {
                 System.out.println("start location: " + commandResult.getResultSet().getString("start_location") + " " +
                         " - end location: " + commandResult.getResultSet().getString("end_location") + " " +
-                        " - distance: " + commandResult.getResultSet().getString("distance"));
+                        " - distance: " + commandResult.getResultSet().getString("distance") + "km");
             }
         } else if (routeResult.getHandler() instanceof GetSportHandler || routeResult.getHandler() instanceof GetSportByIdHandler) {
             while (commandResult.getResultSet().next()) {

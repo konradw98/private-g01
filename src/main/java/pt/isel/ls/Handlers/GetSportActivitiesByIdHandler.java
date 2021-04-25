@@ -53,7 +53,7 @@ public class GetSportActivitiesByIdHandler implements CommandHandler {
             wrongParameters += " aid = " + aid;
         }
 
-        if (maxSID < sid) {
+        if (maxSID < sid || sid < 1) {
             wrongParameters += " sid = " + sid;
         }
 

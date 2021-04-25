@@ -45,11 +45,11 @@ public class PostUserHandler implements CommandHandler {
     private String checkParameters(String name, String email) {
         String wrongParameters = "";
         if (name.equals("")) {
-            wrongParameters += " name = " + name;
+            wrongParameters += " name";
         }
 
         if (email.equals("")) {
-            wrongParameters += " email = " + email;
+            wrongParameters += " email";
         }
 
         return wrongParameters;

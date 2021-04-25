@@ -47,11 +47,11 @@ public class PostSportHandler implements CommandHandler {
     private String checkParameters(String name, String description) {
         String wrongParameters = "";
         if (name.equals("")) {
-            wrongParameters += " name = " + name;
+            wrongParameters += " name";
         }
 
         if (description.equals("")) {
-            wrongParameters += " description = " + description;
+            wrongParameters += " description";
         }
 
         return wrongParameters;

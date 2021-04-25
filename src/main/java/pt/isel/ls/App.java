@@ -1,13 +1,6 @@
 package pt.isel.ls;
 
 import org.postgresql.ds.PGSimpleDataSource;
-import pt.isel.ls.Handlers.*;
-
-import javax.sound.midi.Soundbank;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.Scanner;
 
 public class App {

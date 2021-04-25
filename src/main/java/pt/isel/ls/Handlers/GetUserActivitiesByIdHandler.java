@@ -50,11 +50,11 @@ public class GetUserActivitiesByIdHandler implements CommandHandler {
         resultSet.next();
 
         String wrongParameters = "";
-        if (resultSet.getInt(1) < aid) {
+        if (resultSet.getInt(1) < aid || aid < 1) {
             wrongParameters += " aid = " + aid;
         }
 
-        if (maxUID < uid) {
+        if (maxUID < uid || uid < 1) {
             wrongParameters += " uid = " + uid;
         }
         return wrongParameters;

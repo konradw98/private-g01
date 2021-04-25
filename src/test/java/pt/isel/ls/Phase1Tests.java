@@ -32,7 +32,7 @@ public class Phase1Tests {
 
 
     @Test
-    public void wrongPathTest() {
+    public void wrongPathNoSlashTest() {
         Path path = new Path("users/1");
         Method method = Method.GET;
         Optional<RouteResult> optional = router.findRoute(method, path);
@@ -45,7 +45,7 @@ public class Phase1Tests {
         Method method = Method.POST;
         Optional<RouteResult> optional = router.findRoute(method, path);
         RouteResult routeResult = optional.get();
-        ArrayList<String> parameters = new ArrayList<>(Arrays.asList(("start_location=Wroclaw&end_location=Warszawa&distance=-1").split("&")));
+        ArrayList<String> parameters = new ArrayList<>(Arrays.asList(("startLocation=Wroclaw&endLocation=Warszawa&distance=-1.0").split("&")));
         CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters, dataSource);
         Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
         assertEquals(Optional.empty(), optionalCommandResult);
@@ -65,14 +65,29 @@ public class Phase1Tests {
 
     @Test
     public void wrongPathParamsActivitiesIdTest() throws SQLException {
-        Path path = new Path("/sports/1/activities");
+
+        Path correctPath = new Path("/sports/1/activities");
+        Path wrongSidPath = new Path("/sports/1000/activities");
         Method method = Method.POST;
-        Optional<RouteResult> optional = router.findRoute(method, path);
+        ArrayList<String> parameters = new ArrayList<>(Arrays.asList(("uid=1&duration=00:10:30&date=2021-04-21&rid=1").split("&")));
+        ArrayList<String> wrongUidParameters = new ArrayList<>(Arrays.asList(("uid=1000&duration=00:10:30&date=2021-04-21&rid=1").split("&")));
+        ArrayList<String> wrongRidParameters = new ArrayList<>(Arrays.asList(("uid=1&duration=00:10:30&date=2021-04-21&rid=1000").split("&")));
+
+        Optional<RouteResult> optional = router.findRoute(method, correctPath);
         RouteResult routeResult = optional.get();
-        ArrayList<String> parameters = new ArrayList<>(Arrays.asList(("uid=100&duration=00:10:30&date=2021-04-21&rid=1").split("&")));
-        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters, dataSource);
-        Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
-        assertEquals(Optional.empty(), optionalCommandResult);
+        CommandRequest wrongUidCommandRequest = new CommandRequest(routeResult.getPathParameters(), wrongUidParameters, dataSource);
+        Optional<CommandResult> wrongUidOptionalCommandResult = routeResult.getHandler().execute(wrongUidCommandRequest);
+        assertEquals(Optional.empty(), wrongUidOptionalCommandResult);
+
+        CommandRequest wrongRidCommandRequest = new CommandRequest(routeResult.getPathParameters(), wrongRidParameters, dataSource);
+        Optional<CommandResult> wrongRidOptionalCommandResult = routeResult.getHandler().execute(wrongRidCommandRequest);
+        assertEquals(Optional.empty(), wrongRidOptionalCommandResult);
+
+        Optional<RouteResult> wrongPathOptional = router.findRoute(method, wrongSidPath);
+        RouteResult wrongPathRouteResult = wrongPathOptional.get();
+        CommandRequest wrongPathCommandRequest = new CommandRequest(wrongPathRouteResult.getPathParameters(), parameters, dataSource);
+        Optional<CommandResult> wrongPathOptionalCommandResult = wrongPathRouteResult.getHandler().execute(wrongPathCommandRequest);
+        assertEquals(Optional.empty(), wrongPathOptionalCommandResult);
     }
 
     @Test(expected = SQLException.class)
@@ -117,7 +132,83 @@ public class Phase1Tests {
     }
 
     @Test
-    public void getUserTest() throws SQLException{
+    public void postRouteTest() throws SQLException {
+        Path path = new Path("/routes");
+        Method method = Method.POST;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        ArrayList<String> parameters1 = new ArrayList<>(Arrays.asList(("distance=3051.0&startLocation=Poland&endLocation=Portugal").split("&")));
+        CommandRequest commandRequest1 = new CommandRequest(routeResult.getPathParameters(), parameters1, dataSource);
+        Optional<CommandResult> optionalCommandResult1 = routeResult.getHandler().execute(commandRequest1);
+        CommandResult commandResult1 = optionalCommandResult1.get();
+        int numberOfUsersAfterFirstPost = -1;
+        if (commandResult1.getResultSet().next()) numberOfUsersAfterFirstPost = commandResult1.getResultSet().getInt(1);
+
+        ArrayList<String> parameters2 = new ArrayList<>(Arrays.asList(("distance=3014.3&startLocation=Wroclaw&endLocation=Lisbon").split("&")));
+        CommandRequest commandRequest2 = new CommandRequest(routeResult.getPathParameters(), parameters2, dataSource);
+        Optional<CommandResult> optionalCommandResult2 = routeResult.getHandler().execute(commandRequest2);
+        CommandResult commandResult2 = optionalCommandResult2.get();
+        int numberOfUsersAfterSecondPost = -1;
+        if (commandResult2.getResultSet().next())
+            numberOfUsersAfterSecondPost = commandResult2.getResultSet().getInt(1);
+
+        assertEquals(numberOfUsersAfterFirstPost + 1, numberOfUsersAfterSecondPost);
+    }
+
+
+    @Test
+    public void postSportWithRandomOrderedParamsTest() throws SQLException {
+        Path path = new Path("/sports");
+        Method method = Method.POST;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        ArrayList<String> parameters1 = new ArrayList<>(Arrays.asList(("description=travelling+over+snow+on+ski&name=skiing").split("&")));
+        CommandRequest commandRequest1 = new CommandRequest(routeResult.getPathParameters(), parameters1, dataSource);
+        Optional<CommandResult> optionalCommandResult1 = routeResult.getHandler().execute(commandRequest1);
+        CommandResult commandResult1 = optionalCommandResult1.get();
+        int numberOfUsersAfterFirstPost = -1;
+        if (commandResult1.getResultSet().next()) numberOfUsersAfterFirstPost = commandResult1.getResultSet().getInt(1);
+
+        ArrayList<String> parameters2 = new ArrayList<>(Arrays.asList(("description=sliding+downhill+on+a+snowboard&name=snowboarding").split("&")));
+        CommandRequest commandRequest2 = new CommandRequest(routeResult.getPathParameters(), parameters2, dataSource);
+        Optional<CommandResult> optionalCommandResult2 = routeResult.getHandler().execute(commandRequest2);
+        CommandResult commandResult2 = optionalCommandResult2.get();
+        int numberOfUsersAfterSecondPost = -1;
+        if (commandResult2.getResultSet().next())
+            numberOfUsersAfterSecondPost = commandResult2.getResultSet().getInt(1);
+
+        assertEquals(numberOfUsersAfterFirstPost + 1, numberOfUsersAfterSecondPost);
+    }
+
+    @Test
+    public void postActivityTest() throws SQLException {
+
+        Path path = new Path("/sports/3/activities");
+        Method method = Method.POST;
+        ArrayList<String> parameters1 = new ArrayList<>(Arrays.asList(("uid=1&duration=01:01:01&date=2001-01-01&rid=1").split("&")));
+        ArrayList<String> parameters2 = new ArrayList<>(Arrays.asList(("uid=2&duration=02:02:02&date=2002-02-02&rid=2").split("&")));
+
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+
+        CommandRequest commandRequest1 = new CommandRequest(routeResult.getPathParameters(), parameters1, dataSource);
+        Optional<CommandResult> optionalCommandResult1 = routeResult.getHandler().execute(commandRequest1);
+        CommandResult commandResult1 = optionalCommandResult1.get();
+        int numberOfUsersAfterFirstPost = -1;
+        if (commandResult1.getResultSet().next()) numberOfUsersAfterFirstPost = commandResult1.getResultSet().getInt(1);
+
+        CommandRequest commandRequest2 = new CommandRequest(routeResult.getPathParameters(), parameters2, dataSource);
+        Optional<CommandResult> optionalCommandResult2 = routeResult.getHandler().execute(commandRequest2);
+        CommandResult commandResult2 = optionalCommandResult2.get();
+        int numberOfUsersAfterSecondPost = -1;
+        if (commandResult2.getResultSet().next())
+            numberOfUsersAfterSecondPost = commandResult2.getResultSet().getInt(1);
+
+        assertEquals(numberOfUsersAfterFirstPost + 1, numberOfUsersAfterSecondPost);
+    }
+
+    @Test
+    public void getUserTest() throws SQLException {
         String expectedResult = "First User user@gmail.com";
         Path path = new Path("/users/1");
         Method method = Method.GET;
@@ -126,18 +217,18 @@ public class Phase1Tests {
         CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), dataSource);
         Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
         CommandResult commandResult = optionalCommandResult.get();
-        String firstUser="";
+        String firstUser = "";
         while (commandResult.getResultSet().next()) {
             firstUser = (commandResult.getResultSet().getString("name") + " " +
                     commandResult.getResultSet().getString("email"));
         }
-        System.out.println(firstUser);
 
         assertEquals(expectedResult, firstUser);
 
     }
+
     @Test
-    public void getUsersTest() throws SQLException{
+    public void getUsersTest() throws SQLException {
         Path path = new Path("/users/");
         Method method = Method.GET;
         Optional<RouteResult> optional = router.findRoute(method, path);
@@ -145,25 +236,25 @@ public class Phase1Tests {
         CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), dataSource);
         Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
         CommandResult commandResult = optionalCommandResult.get();
-        int numberOfUsers=0;
+        int numberOfUsers = 0;
         while (commandResult.getResultSet().next()) {
             numberOfUsers++;
         }
-        String sql="SELECT COUNT(uid) FROM users";
-        Connection conn=dataSource.getConnection();
+        String sql = "SELECT MAX(uid) FROM users";
+        Connection conn = dataSource.getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql);
-        int result=0;
-        ResultSet resultSet= pstmt.executeQuery();
-        if(resultSet.next()){
-            result=resultSet.getInt(1);
+        int result = 0;
+        ResultSet resultSet = pstmt.executeQuery();
+        if (resultSet.next()) {
+            result = resultSet.getInt(1);
         }
 
-        assertEquals(numberOfUsers,result);
+        assertEquals(numberOfUsers, result);
 
     }
 
     @Test
-    public void getRoutesTest() throws SQLException{
+    public void getRoutesTest() throws SQLException {
         Path path = new Path("/routes");
         Method method = Method.GET;
         Optional<RouteResult> optional = router.findRoute(method, path);
@@ -171,25 +262,25 @@ public class Phase1Tests {
         CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), dataSource);
         Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
         CommandResult commandResult = optionalCommandResult.get();
-        int numberOfRoutes=0;
+        int numberOfRoutes = 0;
         while (commandResult.getResultSet().next()) {
             numberOfRoutes++;
         }
-        String sql="SELECT COUNT(rid) FROM routes";
-        Connection conn=dataSource.getConnection();
+        String sql = "SELECT MAX(rid) FROM routes";
+        Connection conn = dataSource.getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql);
-        int result=0;
-        ResultSet resultSet= pstmt.executeQuery();
-        if(resultSet.next()){
-            result=resultSet.getInt(1);
+        int result = 0;
+        ResultSet resultSet = pstmt.executeQuery();
+        if (resultSet.next()) {
+            result = resultSet.getInt(1);
         }
 
-        assertEquals(numberOfRoutes,result);
+        assertEquals(numberOfRoutes, result);
 
     }
 
     @Test
-    public void getSportsTest() throws SQLException{
+    public void getSportsTest() throws SQLException {
         Path path = new Path("/sports");
         Method method = Method.GET;
         Optional<RouteResult> optional = router.findRoute(method, path);
@@ -197,23 +288,47 @@ public class Phase1Tests {
         CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), dataSource);
         Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
         CommandResult commandResult = optionalCommandResult.get();
-        int numberOfSports=0;
+        int numberOfSports = 0;
         while (commandResult.getResultSet().next()) {
             numberOfSports++;
         }
-        String sql="SELECT COUNT(sid) FROM sports";
-        Connection conn=dataSource.getConnection();
+        String sql = "SELECT MAX(sid) FROM sports";
+        Connection conn = dataSource.getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql);
-        int result=0;
-        ResultSet resultSet= pstmt.executeQuery();
-        if(resultSet.next()){
-            result=resultSet.getInt(1);
+        int result = 0;
+        ResultSet resultSet = pstmt.executeQuery();
+        if (resultSet.next()) {
+            result = resultSet.getInt(1);
         }
 
-        assertEquals(numberOfSports,result);
+        assertEquals(numberOfSports, result);
 
     }
 
+    @Test
+    public void getTopsActivitiesTest() throws SQLException {
+
+        String expectedResult = "2021-05-02, 24:00:00, 2, 1, 1";
+        Path path = new Path("/tops/activities");
+        Method method = Method.GET;
+        ArrayList<String> parameters = new ArrayList<>(Arrays.asList(("sid=2&orderBy=desc").split("&")));
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters, dataSource);
+        Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
+        CommandResult commandResult = optionalCommandResult.get();
+        String result = "";
+        while (commandResult.getResultSet().next()) {
+            result = (commandResult.getResultSet().getString("date") + ", " +
+                    commandResult.getResultSet().getString("duration_time") + ", " +
+                    commandResult.getResultSet().getInt("sid") + ", " +
+                    commandResult.getResultSet().getInt("uid") + ", " +
+                    commandResult.getResultSet().getInt("rid"));
+        }
+
+        assertEquals(expectedResult, result);
+
+    }
 
 
 }
