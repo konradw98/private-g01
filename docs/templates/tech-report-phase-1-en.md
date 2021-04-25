@@ -10,23 +10,27 @@ This document contains the relevant design and implementation aspects of LS proj
 
 The following diagram holds the Entity-Relationship model for the information managed by the system.
 
-(_include an image or a link to the conceptual diagram_)
+![alt text](https://github.com/konradw98/private-g01/docs/DB_SCHEMA_LS.png)
 
 We highlight the following aspects:
 
-* (_include a list of relevant design issues_)
+* Problem with mapping relationships between tables.
 
 The conceptual model has the following restrictions:
 
-* (_include a list of relevant design issues_)
+* Does not map how pk behaves. 
+* Does not show format at date.
+
     
 ### Physical Model ###
 
-The physical model of the database is available in (_link to the SQL script with the schema definition_).
+The physical model of the database is available in [DB SCRYPT](https://github.com/konradw98/private-g01/src/test/sql/scryptDb.sql).
 
 We highlight the following aspects of this model:
 
-* (_include a list of relevant design issues_)
+* Problem with application of self-incrementing PK.
+* Select appropriate data types.
+* Select appropriate constraints for example not null type.
 
 ## Software organization
 
