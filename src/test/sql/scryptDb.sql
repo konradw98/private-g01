@@ -10,15 +10,15 @@ CREATE TABLE users(
     name VARCHAR(50) NOT NULL );
 
 CREATE TABLE routes(
-        rid SERIAL UNIQUE,
-        start_location VARCHAR(50) NOT NULL,
-        end_location VARCHAR(50) NOT NULL,
-        distance INT NOT NULL);
+    rid SERIAL UNIQUE,
+    start_location VARCHAR(50) NOT NULL,
+    end_location VARCHAR(50) NOT NULL,
+    distance INT NOT NULL);
 
 CREATE TABLE activities (
-aid SERIAL UNIQUE,
-date date NOT NULL,
-duration_time TIME NOT NULL,
-sid INT REFERENCES sports(sid)NOT NULL,
-uid INT REFERENCES users(uid) NOT NULL,
-rid INT REFERENCES routes(rid));
+    aid SERIAL UNIQUE,
+    date date NOT NULL,
+    duration_time TIME NOT NULL,
+    sid INT REFERENCES sports(sid)NOT NULL,
+    uid INT REFERENCES users(uid) NOT NULL,
+    rid INT REFERENCES routes(rid));
