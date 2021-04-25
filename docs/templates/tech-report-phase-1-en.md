@@ -46,15 +46,20 @@ We highlight the following aspects of this model:
 
 (_describe how the router works and how path parameters are extracted_)
 
+
 ### Connection Management
 
 (_describe how connections are created, used and disposed_, namely its relation with transaction scopes).
+
+We use PGSimpleDataSource as DataSource, we create an object of Connection class using getConnection() method, we make queries on the database using PreparedStatement, we close the connection each time in handler.
+
 
 ### Data Access
 
 (_describe any created classes to help on data access_).
 
-(_identify any non-trivial used SQL statements_).
+* SELECT MAX(uid/sid/rid) FROM users/sports/routes;
+* SELECT * FROM activities WHERE sid=? AND date=? AND rid=? ORDER BY duration_time ASC/DESC;
 
 ### Error Handling/Processing
 
