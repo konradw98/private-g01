@@ -6,6 +6,7 @@ import pt.isel.ls.CommandResult;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -24,9 +25,10 @@ public class GetUserByIdHandler implements CommandHandler {
         pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
         Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
         conn.close();
-        if (!optional.get().getResultSet().next()) {
+
+        /*if (!optional.get().getResultSet().wasNull()) {
             System.out.println("Wrong parameter: uid = " + parameters.get(0));
-        }
+        }*/
         return optional;
     }
 }
