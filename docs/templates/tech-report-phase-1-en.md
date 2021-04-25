@@ -10,7 +10,7 @@ This document contains the relevant design and implementation aspects of LS proj
 
 The following diagram holds the Entity-Relationship model for the information managed by the system.
 
-![alt text](https://github.com/konradw98/private-g01/docs/DB_SCHEMA_LS.png)
+![alt text](https://github.com/konradw98/private-g01/blob/main/docs/templates/DB_SCHEMA_LS.png)
 
 We highlight the following aspects:
 
@@ -24,7 +24,7 @@ The conceptual model has the following restrictions:
     
 ### Physical Model ###
 
-The physical model of the database is available in [DB SCRYPT](https://github.com/konradw98/private-g01/src/test/sql/scryptDb.sql).
+The physical model of the database is available in [DB SCRYPT](https://github.com/konradw98/private-g01/blob/main/src/test/sql/scryptDb.sql).
 
 We highlight the following aspects of this model:
 
