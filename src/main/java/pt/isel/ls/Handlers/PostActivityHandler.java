@@ -13,7 +13,8 @@ public class PostActivityHandler implements CommandHandler {
         Connection conn = commandRequest.getDataSource().getConnection();
 
         int paramUid = 0;
-        int paramTime = -1;
+        //int paramTime = -1;
+        Time paramTime=null;
         Date paramDate = null;
 
         //checking the max uid and rid
@@ -33,7 +34,9 @@ public class PostActivityHandler implements CommandHandler {
         PreparedStatement pstmt;
         for (String param : commandRequest.getParameters()) {
             if (param.contains("uid")) paramUid = Integer.parseInt(param.substring(4).replace('+', ' '));
-            else if (param.contains("time")) paramTime = Integer.parseInt(param.substring(9).replace('+', ' '));
+           // else if (param.contains("time")) paramTime = Integer.parseInt(param.substring(9).replace('+', ' '));
+            else if (param.contains("duration")) paramTime = Time.valueOf(param.substring(9).replace('+', ' '));
+
             else if (param.contains("date")) paramDate = Date.valueOf(param.substring(5).replace('+', ' '));
         }
 
@@ -80,7 +83,7 @@ public class PostActivityHandler implements CommandHandler {
         } else return Optional.empty();
 
         pstmt.setDate(1, paramDate);
-        pstmt.setInt(2, paramTime);
+        pstmt.setTime(2, paramTime);
         pstmt.setInt(3, paramSid);
         pstmt.setInt(4, paramUid);
         pstmt.executeUpdate();
