@@ -209,6 +209,29 @@ public class Phase1Tests {
 
     @Test
     public void getUserTest() throws SQLException {
+
+        //make sure that database has the desired user
+        String maxSql = "SELECT MAX(uid) FROM users";
+        Connection conn = dataSource.getConnection();
+        PreparedStatement maxPreparedStatement = conn.prepareStatement(maxSql);
+        int maxUid = 0;
+        ResultSet maxResultSet = maxPreparedStatement.executeQuery();
+        if (maxResultSet.next()) {
+            maxUid = maxResultSet.getInt(1);
+        }
+
+        if(maxUid<1) {
+            String insertSql = "INSERT INTO users(name, email) VALUES(name='First User', " +
+                    "email='user@gmail.com');";
+            PreparedStatement insertPreparedStatement = conn.prepareStatement(insertSql);
+            insertPreparedStatement.execute();
+        }
+        else {
+            String updateSql = "UPDATE users SET name ='First User', email='user@gmail.com' WHERE uid = 1;";
+            PreparedStatement updatePreparedStatement = conn.prepareStatement(updateSql);
+            updatePreparedStatement.execute();
+        }
+
         String expectedResult = "First User user@gmail.com";
         Path path = new Path("/users/1");
         Method method = Method.GET;
@@ -308,10 +331,33 @@ public class Phase1Tests {
     @Test
     public void getTopsActivitiesTest() throws SQLException {
 
+        //make sure that database has the desired activity
+        String sql = "SELECT * FROM activities WHERE sid=2 AND date='2021-05-02' AND rid=1";
+        Connection conn = dataSource.getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        int activitiesNum = 0;
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            activitiesNum = resultSet.getInt(1);
+        }
+
+        if(activitiesNum<1) {
+            String insertSql = "INSERT INTO activities(date, duration_time, sid, uid, rid) VALUES(date='2021-05-02', duration_time='24:00:00',sid=2, uid=1, rid=1)";
+            PreparedStatement insertPreparedStatement = conn.prepareStatement(insertSql);
+            insertPreparedStatement.execute();
+            conn.close();
+        }
+        else {
+            String updateSql = "UPDATE activities SET date='2021-05-02', duration_time='24:00:00', uid=1, rid=1 WHERE sid = 2;";
+            PreparedStatement updatePreparedStatement = conn.prepareStatement(updateSql);
+            updatePreparedStatement.execute();
+            conn.close();
+        }
+
         String expectedResult = "2021-05-02, 24:00:00, 2, 1, 1";
         Path path = new Path("/tops/activities");
         Method method = Method.GET;
-        ArrayList<String> parameters = new ArrayList<>(Arrays.asList(("sid=2&orderBy=desc").split("&")));
+        ArrayList<String> parameters = new ArrayList<>(Arrays.asList(("sid=2&orderBy=desc&date=2021-05-02&rid=1").split("&")));
         Optional<RouteResult> optional = router.findRoute(method, path);
         RouteResult routeResult = optional.get();
         CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters, dataSource);
