@@ -6,7 +6,7 @@ CREATE TABLE sports (
 
 CREATE TABLE users(
     uid SERIAL UNIQUE,
-    email VARCHAR(50) NOT NULL,
+    email VARCHAR(50)  UNIQUE NOT NULL,
     name VARCHAR(50) NOT NULL );
 
 CREATE TABLE routes(
