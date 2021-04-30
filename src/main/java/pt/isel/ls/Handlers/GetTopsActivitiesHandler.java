@@ -1,7 +1,6 @@
 package pt.isel.ls.Handlers;
 
 import pt.isel.ls.CommandRequest;
-import pt.isel.ls.CommandResult;
 
 import java.sql.*;
 import java.util.ArrayList;

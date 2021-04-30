@@ -1,7 +1,7 @@
 package pt.isel.ls.Handlers;
 
 import pt.isel.ls.CommandRequest;
-import pt.isel.ls.CommandResult;
+import pt.isel.ls.CommandResults.CommandResult;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class GetRouteByIDHandler implements CommandHandler {
     @Override
-    public Optional<CommandResult> execute(CommandRequest commandRequest) throws SQLException {
+    public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
         ArrayList<String> parameters = commandRequest.getPathParameters();
         int rid = Integer.parseInt(parameters.get(0));
