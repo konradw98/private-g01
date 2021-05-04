@@ -23,8 +23,7 @@ public class GetUserActivitiesByIdHandler implements CommandHandler {
 
         if (!wrongParameters.equals("")) {
             conn.close();
-            System.out.println("Wrong parameter:" + wrongParameters);
-            return new WrongParametersResult();
+            return new WrongParametersResult(wrongParameters);
         }
 
         String sql = "SELECT * FROM activities WHERE uid=? AND aid=?";
@@ -51,7 +50,7 @@ public class GetUserActivitiesByIdHandler implements CommandHandler {
             activities.add(activity);
         }
         if (activities.size() == 0) {
-            return new WrongParametersResult();
+            return new WrongParametersResult(wrongParameters);
         } else return new GetActivitiesResult(activities);
     }
 

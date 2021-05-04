@@ -27,7 +27,7 @@ public class PostUserHandler implements CommandHandler {
         String wrongParameters = checkParameters(name, email);
         if (!wrongParameters.equals("")) {
             conn.close();
-            return new WrongParametersResult();
+            return new WrongParametersResult(wrongParameters);
         }
 
         String sql = "INSERT INTO users(name, email) values(?,?)";
@@ -44,7 +44,7 @@ public class PostUserHandler implements CommandHandler {
         if (resultSet.next()) {
             int uid = resultSet.getInt("uid");
             return new PostResult(uid, "uid");
-        } else return new WrongParametersResult();
+        } else return new WrongParametersResult(wrongParameters);
     }
 
     private String checkParameters(String name, String email) {

@@ -28,8 +28,7 @@ public class PostRouteHandler implements CommandHandler {
         String wrongParameters = checkParameters(startLocation, endLocation, distance);
         if (!wrongParameters.equals("")) {
             conn.close();
-            System.out.println("Wrong parameters:" + wrongParameters);
-            return new WrongParametersResult();
+            return new WrongParametersResult(wrongParameters);
         }
 
         String sql = "INSERT INTO routes(start_location, end_location, distance) values(?, ?, ?)";
@@ -47,7 +46,7 @@ public class PostRouteHandler implements CommandHandler {
         if (resultSet.next()) {
             int rid = resultSet.getInt("rid");
             return new PostResult(rid, "rid");
-        } else return new WrongParametersResult();
+        } else return new WrongParametersResult(wrongParameters);
         
     }
 

@@ -1,6 +1,10 @@
 package pt.isel.ls.Handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.CommandResults.CommandResult;
+import pt.isel.ls.CommandResults.GetActivitiesResult;
+import pt.isel.ls.CommandResults.WrongParametersResult;
+import pt.isel.ls.Models.Activity;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,7 +18,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
 
     @Override
-    public Optional<CommandResult> execute(CommandRequest commandRequest) throws SQLException {
+    public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
         int sid = 0;
         String orderBy = "";
@@ -36,8 +40,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
             wrongParameters += checkRID(rid, conn);
             if (!wrongParameters.equals("")) {
                 conn.close();
-                System.out.println("Wrong parameter:" + wrongParameters);
-                return Optional.empty();
+                return new WrongParametersResult(wrongParameters);
             }
 
             String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? ORDER BY duration_time " + orderBy;
@@ -45,57 +48,78 @@ public class GetTopsActivitiesHandler implements CommandHandler {
             pstmt.setInt(3, rid);
             pstmt.setDate(2, date);
             pstmt.setInt(1, sid);
-            Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
+            ResultSet resultSet = pstmt.executeQuery();
             conn.close();
-            return optional;
+            return executeActivitiesResult(resultSet);
+
         } else if (parameters.size() == MID_AMOUNT_OF_PARAMETERS) {
             if (date != null) {
                 if (!wrongParameters.equals("")) {
                     conn.close();
-                    System.out.println("Wrong parameter:" + wrongParameters);
-                    return Optional.empty();
+                    return new WrongParametersResult(wrongParameters);
                 }
 
                 String sql = "SELECT * FROM activities WHERE sid=? AND date=? ORDER BY duration_time " + orderBy;
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setDate(2, date);
                 pstmt.setInt(1, sid);
-                Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
+                ResultSet resultSet = pstmt.executeQuery();
                 conn.close();
-                return optional;
+                return executeActivitiesResult(resultSet);
+
             } else if (rid != 0) {
                 wrongParameters += checkRID(rid, conn);
                 if (!wrongParameters.equals("")) {
                     conn.close();
-                    System.out.println("Wrong parameter:" + wrongParameters);
-                    return Optional.empty();
+                    return new WrongParametersResult(wrongParameters);
                 }
 
                 String sql = "SELECT * FROM activities WHERE sid=? AND rid=? ORDER BY duration_time " + orderBy;
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setInt(2, rid);
                 pstmt.setInt(1, sid);
-                Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
+                ResultSet resultSet = pstmt.executeQuery();
                 conn.close();
-                return optional;
+                return executeActivitiesResult(resultSet);
             }
         } else if (parameters.size() == MIN_AMOUNT_OF_PARAMETERS) {
             if (!wrongParameters.equals("")) {
                 conn.close();
-                System.out.println("Wrong parameter:" + wrongParameters);
-                return Optional.empty();
+                return new WrongParametersResult(wrongParameters);
             }
 
             String sql = "SELECT * FROM activities WHERE sid=? ORDER BY duration_time " + orderBy;
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, sid);
             pstmt.setInt(1, sid);
-            Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt.executeQuery()));
+            ResultSet resultSet = pstmt.executeQuery();
             conn.close();
-            return optional;
+            return executeActivitiesResult(resultSet);
         }
         conn.close();
-        return Optional.empty();
+        return new WrongParametersResult(wrongParameters);
+    }
+
+    private CommandResult executeActivitiesResult(ResultSet resultSet) throws SQLException {
+        int aid, sid, rid, uid;
+        Date date;
+        Time duration_time;
+        Activity activity;
+        ArrayList<Activity> activities = new ArrayList<>();
+
+        while (resultSet.next()) {
+            aid = resultSet.getInt("aid");
+            date = resultSet.getDate("date");
+            duration_time = resultSet.getTime("duration_time");
+            sid = resultSet.getInt("sid");
+            uid = resultSet.getInt("uid");
+            rid = resultSet.getInt("rid");
+            activity = new Activity(aid, date, duration_time, sid, uid, rid);
+            activities.add(activity);
+        }
+        if (activities.size() == 0) {
+            return new WrongParametersResult();
+        } else return new GetActivitiesResult(activities);
     }
 
     private String checkParametersWithoutRID(int sid, String orderBy, Connection conn) throws SQLException {

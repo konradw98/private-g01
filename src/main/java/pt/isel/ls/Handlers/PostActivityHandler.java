@@ -1,6 +1,9 @@
 package pt.isel.ls.Handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.CommandResults.CommandResult;
+import pt.isel.ls.CommandResults.PostResult;
+import pt.isel.ls.CommandResults.WrongParametersResult;
 
 import java.sql.*;
 import java.util.Optional;
@@ -8,7 +11,7 @@ import java.util.Optional;
 public class PostActivityHandler implements CommandHandler {
     private static final int MAX_AMOUNT_OF_PARAMETERS = 4;
     @Override
-    public Optional<CommandResult> execute(CommandRequest commandRequest) throws SQLException {
+    public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
         int uid = 0;
         Time duration = null;
@@ -35,19 +38,22 @@ public class PostActivityHandler implements CommandHandler {
 
             if (!wrongParameters.equals("")) {
                 conn.close();
-                System.out.println("Wrong parameters:" + wrongParameters);
-                return Optional.empty();
+                return new WrongParametersResult();
             }
+
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(5, rid);
+
         } else if (!wrongParameters.equals("")) {
             conn.close();
-            System.out.println("Wrong parameters:" + wrongParameters);
-            return Optional.empty();
+            return new WrongParametersResult();
+
         } else if (commandRequest.getParameters().size() < MAX_AMOUNT_OF_PARAMETERS) {
+
             sql = "INSERT INTO activities(date,duration_time,sid,uid) values(?,?,?,?)";
             pstmt = conn.prepareStatement(sql);
-        } else return Optional.empty();
+
+        } else return new WrongParametersResult();
 
         pstmt.setDate(1, date);
         pstmt.setTime(2, duration);
@@ -57,9 +63,13 @@ public class PostActivityHandler implements CommandHandler {
 
         String sql1 = "SELECT MAX(aid) FROM activities";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
-        Optional<CommandResult> optional = Optional.of(new CommandResult(pstmt1.executeQuery()));
+        ResultSet resultSet = pstmt1.executeQuery();
         conn.close();
-        return optional;
+
+        if (resultSet.next()) {
+            int aid = resultSet.getInt("aid");
+            return new PostResult(aid, "aid");
+        } else return new WrongParametersResult();
     }
 
     private String checkParametersWithoutRID(int sid, int uid, Connection conn) throws SQLException {

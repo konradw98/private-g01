@@ -29,8 +29,7 @@ public class PostSportHandler implements CommandHandler {
 
         if (!wrongParameters.equals("")) {
             conn.close();
-            System.out.println("Wrong parameters:" + wrongParameters);
-            return new WrongParametersResult();
+            return new WrongParametersResult(wrongParameters);
         }
 
         String sql = "INSERT INTO sports(name,description) values(?,?)";
@@ -47,7 +46,7 @@ public class PostSportHandler implements CommandHandler {
         if (resultSet.next()) {
             int sid = resultSet.getInt("sid");
             return new PostResult(sid, "sid");
-        } else return new WrongParametersResult();
+        } else return new WrongParametersResult(wrongParameters);
     }
 
     private String checkParameters(String name, String description) {
