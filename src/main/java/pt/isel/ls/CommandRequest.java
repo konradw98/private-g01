@@ -6,17 +6,17 @@ import java.sql.Connection;
 import java.util.ArrayList;
 
 public class CommandRequest {
-    private ArrayList<String> pathParameters;
+    private ArrayList<Integer> pathParameters;
     private ArrayList<String> parameters;
     private PGSimpleDataSource dataSource;
 
-    public CommandRequest(ArrayList<String> pathParameters, ArrayList<String> parameters, PGSimpleDataSource dataSource) {
+    public CommandRequest(ArrayList<Integer> pathParameters, ArrayList<String> parameters, PGSimpleDataSource dataSource) {
         this.pathParameters = pathParameters;
         this.parameters = parameters;
         this.dataSource = dataSource;
     }
 
-    public CommandRequest(ArrayList<String> pathParameters, PGSimpleDataSource dataSource) {
+    public CommandRequest(ArrayList<Integer> pathParameters, PGSimpleDataSource dataSource) {
         this.pathParameters = pathParameters;
         this.dataSource = dataSource;
     }
@@ -29,11 +29,11 @@ public class CommandRequest {
         this.parameters = parameters;
     }
 
-    public ArrayList<String> getPathParameters() {
+    public ArrayList<Integer> getPathParameters() {
         return pathParameters;
     }
 
-    public void setPathParameters(ArrayList<String> parameters) {
+    public void setPathParameters(ArrayList<Integer> parameters) {
         this.pathParameters = parameters;
     }
 

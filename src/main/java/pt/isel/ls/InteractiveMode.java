@@ -33,10 +33,10 @@ public class InteractiveMode {
                     CommandRequest commandRequest;
 
                     if (command.length == GET_COMMAND_PARAMETERS) {
-                        commandRequest = new CommandRequest(routeResult.getPathParameters(), dataSource);
+                        commandRequest = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()), dataSource);
                     } else if (command.length == POST_COMMAND_PARAMETERS) {
                         ArrayList<String> parameters = new ArrayList<>(Arrays.asList(command[PARAMETERS_INDEX].split("&")));
-                        commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters, dataSource);
+                        commandRequest = new CommandRequest(new ArrayList<Integer>(routeResult.getPathParameters().values()), parameters, dataSource);
                     } else {
                         System.out.println("Wrong command: " + line);
                         return;
