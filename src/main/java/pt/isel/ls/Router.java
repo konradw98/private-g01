@@ -28,6 +28,7 @@ public class Router {
         addRoute(Method.POST, new PathTemplate("/sports"), new PostSportHandler());
         addRoute(Method.POST, new PathTemplate("/sports/{sid}/activities"),new PostActivityHandler());
         addRoute(Method.GET, new PathTemplate("/tops/activities"), new GetTopsActivitiesHandler());
+        addRoute(Method.EXIT, new PathTemplate("/"), new ExitHandler());
 
     }
 
@@ -47,7 +48,7 @@ public class Router {
                     boolean ifSame = true;
                     int i = 0;
                     for (; i < pathSegments.size(); i++) {
-                        if (pathTemplateSegments.get(i).charAt(0) != '{') {
+                        if (pathTemplateSegments.get(i).length() > 0 && pathTemplateSegments.get(i).charAt(0) != '{') {
                             if (!pathSegments.get(i).equals(pathTemplateSegments.get(i))) {
                                 ifSame = false;
                                 break;

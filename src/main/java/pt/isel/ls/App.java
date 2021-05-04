@@ -16,7 +16,7 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         String line = scanner.nextLine();
 
-        while (!line.equals("EXIT")) {
+        while (true) {
             InteractiveMode.run(line, router, dataSource);
             line = scanner.nextLine();
         }
