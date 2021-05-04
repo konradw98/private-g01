@@ -46,7 +46,7 @@ public class PostSportHandler implements CommandHandler {
             ResultSet resultSet = pstmt1.executeQuery();
             conn.close();
             if (resultSet.next()) {
-                int sid = resultSet.getInt("sid");
+                int sid = resultSet.getInt("max");
                 return new PostResult(sid, "sid");
             } else return new WrongParametersResult(wrongParameters);
 

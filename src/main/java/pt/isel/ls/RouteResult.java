@@ -6,9 +6,9 @@ import java.util.HashMap;
 
 public class RouteResult {
     private final CommandHandler handler;
-    private final HashMap<String, Integer> parameters;
+    private final HashMap<String, String> parameters;
 
-    public RouteResult(CommandHandler handler, HashMap<String, Integer> parameters) {
+    public RouteResult(CommandHandler handler, HashMap<String, String> parameters) {
         this.handler = handler;
         this.parameters = parameters;
     }
@@ -17,7 +17,7 @@ public class RouteResult {
         return handler;
     }
 
-    public HashMap<String, Integer> getPathParameters() {
+    public HashMap<String, String> getPathParameters() {
         return parameters;
     }
 }

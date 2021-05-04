@@ -1,7 +1,7 @@
 package pt.isel.ls;
 
 import org.postgresql.ds.PGSimpleDataSource;
-import pt.isel.ls.Handlers.*;
+import pt.isel.ls.CommandResults.CommandResult;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ public class InteractiveMode {
             switch (command[METHOD_INDEX]) {
                 case "GET" -> method = Method.GET;
                 case "POST" -> method = Method.POST;
+                case "EXIT" -> method = Method.EXIT;
                 default -> System.out.println("Wrong value: " + command[METHOD_INDEX]);
             }
 
@@ -36,18 +37,15 @@ public class InteractiveMode {
                         commandRequest = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()), dataSource);
                     } else if (command.length == POST_COMMAND_PARAMETERS) {
                         ArrayList<String> parameters = new ArrayList<>(Arrays.asList(command[PARAMETERS_INDEX].split("&")));
-                        commandRequest = new CommandRequest(new ArrayList<Integer>(routeResult.getPathParameters().values()), parameters, dataSource);
+                        commandRequest = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()), parameters, dataSource);
                     } else {
                         System.out.println("Wrong command: " + line);
                         return;
                     }
 
                     try {
-                        Optional<CommandResult> optionalCommandResult = routeResult.getHandler().execute(commandRequest);
-                        if (optionalCommandResult.isPresent()) {
-                            CommandResult commandResult = optionalCommandResult.get();
-                            printResult(routeResult, commandResult);
-                        } else System.out.println("Wrong command: " + line);
+                        CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
+                        commandResult.print();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -56,38 +54,4 @@ public class InteractiveMode {
         } else System.out.println("Wrong command: " + line);
     }
 
-/*    public static void printResult(RouteResult routeResult, CommandResult commandResult) throws SQLException {
-        if (routeResult.getHandler() instanceof GetUsersHandler || routeResult.getHandler() instanceof GetUserByIdHandler) {
-            while (commandResult.getResultSet().next()) {
-                System.out.println("name: " + commandResult.getResultSet().getString("name") + " " +
-                        " - email: " + commandResult.getResultSet().getString("email"));
-            }
-        } else if (routeResult.getHandler() instanceof GetRoutesHandler || routeResult.getHandler() instanceof GetRouteByIDHandler) {
-            while (commandResult.getResultSet().next()) {
-                System.out.println("start location: " + commandResult.getResultSet().getString("start_location") + " " +
-                        " - end location: " + commandResult.getResultSet().getString("end_location") + " " +
-                        " - distance: " + commandResult.getResultSet().getString("distance") + "km");
-            }
-        } else if (routeResult.getHandler() instanceof GetSportHandler || routeResult.getHandler() instanceof GetSportByIdHandler) {
-            while (commandResult.getResultSet().next()) {
-                System.out.println("name: " + commandResult.getResultSet().getString("name") + " " +
-                        " - description: " + commandResult.getResultSet().getString("description"));
-            }
-        } else if (routeResult.getHandler() instanceof GetSportActivitiesHandler || routeResult.getHandler() instanceof GetSportActivitiesByIdHandler
-                || routeResult.getHandler() instanceof GetUserActivitiesHandler || routeResult.getHandler() instanceof GetUserActivitiesByIdHandler
-                || routeResult.getHandler() instanceof GetTopsActivitiesHandler) {
-            while (commandResult.getResultSet().next()) {
-                System.out.println("date: " + commandResult.getResultSet().getString("date") + " " +
-                        " - duration time: " + commandResult.getResultSet().getString("duration_time") + " " +
-                        " - sport ID: " + commandResult.getResultSet().getString("sid") + " " +
-                        " - user ID: " + commandResult.getResultSet().getString("uid") + " " +
-                        " - route ID: " + commandResult.getResultSet().getString("rid"));
-            }
-        } else if (routeResult.getHandler() instanceof PostActivityHandler || routeResult.getHandler() instanceof PostSportHandler
-                || routeResult.getHandler() instanceof PostUserHandler || routeResult.getHandler() instanceof PostRouteHandler) {
-            if (commandResult.getResultSet().next()) {
-                System.out.println("ID: " + commandResult.getResultSet().getInt(1));
-            }
-        }
-    }*/
 }

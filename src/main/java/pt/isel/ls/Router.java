@@ -41,7 +41,7 @@ public class Router {
             List<String> pathSegments = path.splitSegmentsFromPath();
             for (Tuple<PathTemplate, CommandHandler> tuple : mapOfHandlers.get(method)) {
                 List<String> pathTemplateSegments = tuple.getFirst().splitSegmentsFromPathTemplate();
-                HashMap<String, Integer> parameters = new HashMap<>();
+                HashMap<String, String> parameters = new HashMap<>();
 
                 if (pathTemplateSegments.size() == pathSegments.size()) {
                     boolean ifSame = true;
@@ -52,7 +52,7 @@ public class Router {
                                 ifSame = false;
                                 break;
                             }
-                        } else parameters.put(pathTemplateSegments.get(i), Integer.parseInt(pathSegments.get(i)));
+                        } else parameters.put(pathTemplateSegments.get(i), pathSegments.get(i));
                     }
 
                     if (ifSame)

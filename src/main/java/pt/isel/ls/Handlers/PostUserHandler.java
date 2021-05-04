@@ -45,7 +45,7 @@ public class PostUserHandler implements CommandHandler {
             conn.close();
 
             if (resultSet.next()) {
-                int uid = resultSet.getInt("uid");
+                int uid = resultSet.getInt("max");
                 return new PostResult(uid, "uid");
             } else return new WrongParametersResult(wrongParameters);
 

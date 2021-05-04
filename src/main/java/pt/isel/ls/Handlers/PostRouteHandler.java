@@ -47,7 +47,7 @@ public class PostRouteHandler implements CommandHandler {
             ResultSet resultSet = pstmt1.executeQuery();
             conn.close();
             if (resultSet.next()) {
-                int rid = resultSet.getInt("rid");
+                int rid = resultSet.getInt("max");
                 return new PostResult(rid, "rid");
             } else return new WrongParametersResult(wrongParameters);
 

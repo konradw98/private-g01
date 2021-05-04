@@ -70,7 +70,7 @@ public class PostActivityHandler implements CommandHandler {
             conn.close();
 
             if (resultSet.next()) {
-                int aid = resultSet.getInt("aid");
+                int aid = resultSet.getInt("max");
                 return new PostResult(aid, "aid");
             } else return new WrongParametersResult();
 
