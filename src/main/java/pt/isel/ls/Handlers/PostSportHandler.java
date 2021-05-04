@@ -17,36 +17,42 @@ public class PostSportHandler implements CommandHandler {
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
 
-        String name = "";
-        String description = "";
+        try {
 
-        for (String param : commandRequest.getParameters()) {
-            if (param.contains("name")) name = param.substring(5).replace('+', ' ');
-            else if (param.contains("description")) description = param.substring(12).replace('+', ' ');
-        }
+            String name = "";
+            String description = "";
 
-        String wrongParameters = checkParameters(name, description);
+            for (String param : commandRequest.getParameters()) {
+                if (param.contains("name")) name = param.substring(5).replace('+', ' ');
+                else if (param.contains("description")) description = param.substring(12).replace('+', ' ');
+            }
 
-        if (!wrongParameters.equals("")) {
+            String wrongParameters = checkParameters(name, description);
+
+            if (!wrongParameters.equals("")) {
+                conn.close();
+                return new WrongParametersResult(wrongParameters);
+            }
+
+            String sql = "INSERT INTO sports(name,description) values(?,?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, name);
+            pstmt.setString(2, description);
+            pstmt.executeUpdate();
+
+            String sql1 = "SELECT MAX(sid) FROM sports";
+            PreparedStatement pstmt1 = conn.prepareStatement(sql1);
+            ResultSet resultSet = pstmt1.executeQuery();
             conn.close();
-            return new WrongParametersResult(wrongParameters);
+            if (resultSet.next()) {
+                int sid = resultSet.getInt("sid");
+                return new PostResult(sid, "sid");
+            } else return new WrongParametersResult(wrongParameters);
+
+        }finally {
+            conn.close();
         }
-
-        String sql = "INSERT INTO sports(name,description) values(?,?)";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-
-        pstmt.setString(1, name);
-        pstmt.setString(2, description);
-        pstmt.executeUpdate();
-
-        String sql1 = "SELECT MAX(sid) FROM sports";
-        PreparedStatement pstmt1 = conn.prepareStatement(sql1);
-        ResultSet resultSet = pstmt1.executeQuery();
-        conn.close();
-        if (resultSet.next()) {
-            int sid = resultSet.getInt("sid");
-            return new PostResult(sid, "sid");
-        } else return new WrongParametersResult(wrongParameters);
     }
 
     private String checkParameters(String name, String description) {

@@ -16,35 +16,42 @@ public class PostUserHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
-        String name = "";
-        String email = "";
 
-        for (String param : commandRequest.getParameters()) {
-            if (param.contains("name")) name = param.substring(5).replace('+', ' ');
-            else if (param.contains("email")) email = param.substring(6).replace('+', ' ');
-        }
+        try {
 
-        String wrongParameters = checkParameters(name, email);
-        if (!wrongParameters.equals("")) {
+            String name = "";
+            String email = "";
+
+            for (String param : commandRequest.getParameters()) {
+                if (param.contains("name")) name = param.substring(5).replace('+', ' ');
+                else if (param.contains("email")) email = param.substring(6).replace('+', ' ');
+            }
+
+            String wrongParameters = checkParameters(name, email);
+            if (!wrongParameters.equals("")) {
+                conn.close();
+                return new WrongParametersResult(wrongParameters);
+            }
+
+            String sql = "INSERT INTO users(name, email) values(?,?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, name);
+            pstmt.setString(2, email);
+            pstmt.executeUpdate();
+
+            String sql1 = "SELECT MAX(uid) FROM users";
+            PreparedStatement pstmt1 = conn.prepareStatement(sql1);
+            ResultSet resultSet = pstmt1.executeQuery();
             conn.close();
-            return new WrongParametersResult(wrongParameters);
+
+            if (resultSet.next()) {
+                int uid = resultSet.getInt("uid");
+                return new PostResult(uid, "uid");
+            } else return new WrongParametersResult(wrongParameters);
+
+        } finally {
+            conn.close();
         }
-
-        String sql = "INSERT INTO users(name, email) values(?,?)";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setString(1, name);
-        pstmt.setString(2, email);
-        pstmt.executeUpdate();
-
-        String sql1 = "SELECT MAX(uid) FROM users";
-        PreparedStatement pstmt1 = conn.prepareStatement(sql1);
-        ResultSet resultSet = pstmt1.executeQuery();
-        conn.close();
-
-        if (resultSet.next()) {
-            int uid = resultSet.getInt("uid");
-            return new PostResult(uid, "uid");
-        } else return new WrongParametersResult(wrongParameters);
     }
 
     private String checkParameters(String name, String email) {

@@ -20,84 +20,89 @@ public class GetTopsActivitiesHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
-        int sid = 0;
-        String orderBy = "";
-        Date date = null;
-        int rid = 0;
-        PreparedStatement pstmt;
-        ArrayList<String> parameters = commandRequest.getParameters();
+        try {
+            int sid = 0;
+            String orderBy = "";
+            Date date = null;
+            int rid = 0;
+            PreparedStatement pstmt;
+            ArrayList<String> parameters = commandRequest.getParameters();
 
-        for (String param : parameters) {
-            if (param.contains("sid")) sid = Integer.parseInt(param.substring(4));
-            else if (param.contains("orderBy")) orderBy = param.substring(8).replace('+', ' ');
-            else if (param.contains("date")) date = Date.valueOf(param.substring(5));
-            else if (param.contains("rid")) rid = Integer.parseInt(param.substring(4));
-        }
-
-        String wrongParameters = checkParametersWithoutRID(sid, orderBy, conn);
-
-        if (parameters.size() == MAX_AMOUNT_OF_PARAMETERS) {
-            wrongParameters += checkRID(rid, conn);
-            if (!wrongParameters.equals("")) {
-                conn.close();
-                return new WrongParametersResult(wrongParameters);
+            for (String param : parameters) {
+                if (param.contains("sid")) sid = Integer.parseInt(param.substring(4));
+                else if (param.contains("orderBy")) orderBy = param.substring(8).replace('+', ' ');
+                else if (param.contains("date")) date = Date.valueOf(param.substring(5));
+                else if (param.contains("rid")) rid = Integer.parseInt(param.substring(4));
             }
 
-            String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? ORDER BY duration_time " + orderBy;
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(3, rid);
-            pstmt.setDate(2, date);
-            pstmt.setInt(1, sid);
-            ResultSet resultSet = pstmt.executeQuery();
-            conn.close();
-            return executeActivitiesResult(resultSet);
+            String wrongParameters = checkParametersWithoutRID(sid, orderBy, conn);
 
-        } else if (parameters.size() == MID_AMOUNT_OF_PARAMETERS) {
-            if (date != null) {
-                if (!wrongParameters.equals("")) {
-                    conn.close();
-                    return new WrongParametersResult(wrongParameters);
-                }
-
-                String sql = "SELECT * FROM activities WHERE sid=? AND date=? ORDER BY duration_time " + orderBy;
-                pstmt = conn.prepareStatement(sql);
-                pstmt.setDate(2, date);
-                pstmt.setInt(1, sid);
-                ResultSet resultSet = pstmt.executeQuery();
-                conn.close();
-                return executeActivitiesResult(resultSet);
-
-            } else if (rid != 0) {
+            if (parameters.size() == MAX_AMOUNT_OF_PARAMETERS) {
                 wrongParameters += checkRID(rid, conn);
                 if (!wrongParameters.equals("")) {
                     conn.close();
                     return new WrongParametersResult(wrongParameters);
                 }
 
-                String sql = "SELECT * FROM activities WHERE sid=? AND rid=? ORDER BY duration_time " + orderBy;
+                String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? ORDER BY duration_time " + orderBy;
                 pstmt = conn.prepareStatement(sql);
-                pstmt.setInt(2, rid);
+                pstmt.setInt(3, rid);
+                pstmt.setDate(2, date);
+                pstmt.setInt(1, sid);
+                ResultSet resultSet = pstmt.executeQuery();
+                conn.close();
+                return executeActivitiesResult(resultSet);
+
+            } else if (parameters.size() == MID_AMOUNT_OF_PARAMETERS) {
+                if (date != null) {
+                    if (!wrongParameters.equals("")) {
+                        conn.close();
+                        return new WrongParametersResult(wrongParameters);
+                    }
+
+                    String sql = "SELECT * FROM activities WHERE sid=? AND date=? ORDER BY duration_time " + orderBy;
+                    pstmt = conn.prepareStatement(sql);
+                    pstmt.setDate(2, date);
+                    pstmt.setInt(1, sid);
+                    ResultSet resultSet = pstmt.executeQuery();
+                    conn.close();
+                    return executeActivitiesResult(resultSet);
+
+                } else if (rid != 0) {
+                    wrongParameters += checkRID(rid, conn);
+                    if (!wrongParameters.equals("")) {
+                        conn.close();
+                        return new WrongParametersResult(wrongParameters);
+                    }
+
+                    String sql = "SELECT * FROM activities WHERE sid=? AND rid=? ORDER BY duration_time " + orderBy;
+                    pstmt = conn.prepareStatement(sql);
+                    pstmt.setInt(2, rid);
+                    pstmt.setInt(1, sid);
+                    ResultSet resultSet = pstmt.executeQuery();
+                    conn.close();
+                    return executeActivitiesResult(resultSet);
+                }
+            } else if (parameters.size() == MIN_AMOUNT_OF_PARAMETERS) {
+                if (!wrongParameters.equals("")) {
+                    conn.close();
+                    return new WrongParametersResult(wrongParameters);
+                }
+
+                String sql = "SELECT * FROM activities WHERE sid=? ORDER BY duration_time " + orderBy;
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setInt(1, sid);
                 pstmt.setInt(1, sid);
                 ResultSet resultSet = pstmt.executeQuery();
                 conn.close();
                 return executeActivitiesResult(resultSet);
             }
-        } else if (parameters.size() == MIN_AMOUNT_OF_PARAMETERS) {
-            if (!wrongParameters.equals("")) {
-                conn.close();
-                return new WrongParametersResult(wrongParameters);
-            }
-
-            String sql = "SELECT * FROM activities WHERE sid=? ORDER BY duration_time " + orderBy;
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, sid);
-            pstmt.setInt(1, sid);
-            ResultSet resultSet = pstmt.executeQuery();
             conn.close();
-            return executeActivitiesResult(resultSet);
+            return new WrongParametersResult(wrongParameters);
+
+        } finally {
+            conn.close();
         }
-        conn.close();
-        return new WrongParametersResult(wrongParameters);
     }
 
     private CommandResult executeActivitiesResult(ResultSet resultSet) throws SQLException {

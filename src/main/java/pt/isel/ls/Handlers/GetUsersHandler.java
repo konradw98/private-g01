@@ -19,26 +19,32 @@ public class GetUsersHandler implements CommandHandler {
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
 
-        String sql = "SELECT * FROM users";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        ResultSet resultSet = pstmt.executeQuery();
-        conn.close();
+        try {
 
-        int uid;
-        String name, email;
-        User user;
-        ArrayList<User> users = new ArrayList<>();
+            String sql = "SELECT * FROM users";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet resultSet = pstmt.executeQuery();
+            conn.close();
 
-        while (resultSet.next()) {
-            uid = resultSet.getInt("uid");
-            name = resultSet.getString("name");
-            email = resultSet.getString("email");
-            user = new User(uid, email, name);
-            users.add(user);
+            int uid;
+            String name, email;
+            User user;
+            ArrayList<User> users = new ArrayList<>();
+
+            while (resultSet.next()) {
+                uid = resultSet.getInt("uid");
+                name = resultSet.getString("name");
+                email = resultSet.getString("email");
+                user = new User(uid, email, name);
+                users.add(user);
+            }
+            if (users.size() == 0) {
+                return new WrongParametersResult();
+            } else return new GetUsersResult(users);
+
+        } finally {
+            conn.close();
         }
-        if (users.size() == 0) {
-            return new WrongParametersResult();
-        } else return new GetUsersResult(users);
 
         //TODO: think about how to differ empty db and wrong parameters
     }

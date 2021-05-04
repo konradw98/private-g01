@@ -20,20 +20,24 @@ public class GetSportByIdHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
-        ArrayList<String> parameters = commandRequest.getPathParameters();
+        try {
+            ArrayList<String> parameters = commandRequest.getPathParameters();
 
-        String sql = "SELECT * FROM sports WHERE sid=?";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
-        ResultSet resultSet = pstmt.executeQuery();
-        conn.close();
+            String sql = "SELECT * FROM sports WHERE sid=?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
+            ResultSet resultSet = pstmt.executeQuery();
+            conn.close();
 
-        if (resultSet.next()) {
-            int sid = resultSet.getInt("sid");
-            String name = resultSet.getString("name");
-            String description = resultSet.getString("description");
-            Sport sport = new Sport(sid, name, description);
-            return new GetSportResult(sport);
-        } else return new WrongParametersResult();
+            if (resultSet.next()) {
+                int sid = resultSet.getInt("sid");
+                String name = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                Sport sport = new Sport(sid, name, description);
+                return new GetSportResult(sport);
+            } else return new WrongParametersResult();
+        } finally {
+            conn.close();
+        }
     }
 }

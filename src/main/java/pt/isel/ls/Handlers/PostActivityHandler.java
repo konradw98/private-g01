@@ -10,66 +10,73 @@ import java.util.Optional;
 
 public class PostActivityHandler implements CommandHandler {
     private static final int MAX_AMOUNT_OF_PARAMETERS = 4;
+
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
-        int uid = 0;
-        Time duration = null;
-        Date date = null;
 
-        String sql;
-        PreparedStatement pstmt;
-        for (String param : commandRequest.getParameters()) {
-            if (param.contains("uid")) uid = Integer.parseInt(param.substring(4).replace('+', ' '));
-            else if (param.contains("duration")) duration = Time.valueOf(param.substring(9).replace('+', ' '));
-            else if (param.contains("date")) date = Date.valueOf(param.substring(5).replace('+', ' '));
-        }
+        try {
+            int uid = 0;
+            Time duration = null;
+            Date date = null;
 
-        int paramSid = Integer.parseInt(commandRequest.getPathParameters().get(0));
-        String wrongParameters = checkParametersWithoutRID(paramSid, uid, conn);
-
-        if (commandRequest.getParameters().size() == MAX_AMOUNT_OF_PARAMETERS) {
-            sql = "INSERT INTO activities(date,duration_time,sid,uid,rid) values(?,?,?,?,?)";
-            int rid = 0;
+            String sql;
+            PreparedStatement pstmt;
             for (String param : commandRequest.getParameters()) {
-                if (param.contains("rid")) rid = Integer.parseInt(param.substring(4));
+                if (param.contains("uid")) uid = Integer.parseInt(param.substring(4).replace('+', ' '));
+                else if (param.contains("duration")) duration = Time.valueOf(param.substring(9).replace('+', ' '));
+                else if (param.contains("date")) date = Date.valueOf(param.substring(5).replace('+', ' '));
             }
-            wrongParameters += checkRID(rid, conn);
 
-            if (!wrongParameters.equals("")) {
+            int paramSid = Integer.parseInt(commandRequest.getPathParameters().get(0));
+            String wrongParameters = checkParametersWithoutRID(paramSid, uid, conn);
+
+            if (commandRequest.getParameters().size() == MAX_AMOUNT_OF_PARAMETERS) {
+                sql = "INSERT INTO activities(date,duration_time,sid,uid,rid) values(?,?,?,?,?)";
+                int rid = 0;
+                for (String param : commandRequest.getParameters()) {
+                    if (param.contains("rid")) rid = Integer.parseInt(param.substring(4));
+                }
+                wrongParameters += checkRID(rid, conn);
+
+                if (!wrongParameters.equals("")) {
+                    conn.close();
+                    return new WrongParametersResult();
+                }
+
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setInt(5, rid);
+
+            } else if (!wrongParameters.equals("")) {
                 conn.close();
                 return new WrongParametersResult();
-            }
 
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(5, rid);
+            } else if (commandRequest.getParameters().size() < MAX_AMOUNT_OF_PARAMETERS) {
 
-        } else if (!wrongParameters.equals("")) {
+                sql = "INSERT INTO activities(date,duration_time,sid,uid) values(?,?,?,?)";
+                pstmt = conn.prepareStatement(sql);
+
+            } else return new WrongParametersResult();
+
+            pstmt.setDate(1, date);
+            pstmt.setTime(2, duration);
+            pstmt.setInt(3, paramSid);
+            pstmt.setInt(4, uid);
+            pstmt.executeUpdate();
+
+            String sql1 = "SELECT MAX(aid) FROM activities";
+            PreparedStatement pstmt1 = conn.prepareStatement(sql1);
+            ResultSet resultSet = pstmt1.executeQuery();
             conn.close();
-            return new WrongParametersResult();
 
-        } else if (commandRequest.getParameters().size() < MAX_AMOUNT_OF_PARAMETERS) {
+            if (resultSet.next()) {
+                int aid = resultSet.getInt("aid");
+                return new PostResult(aid, "aid");
+            } else return new WrongParametersResult();
 
-            sql = "INSERT INTO activities(date,duration_time,sid,uid) values(?,?,?,?)";
-            pstmt = conn.prepareStatement(sql);
-
-        } else return new WrongParametersResult();
-
-        pstmt.setDate(1, date);
-        pstmt.setTime(2, duration);
-        pstmt.setInt(3, paramSid);
-        pstmt.setInt(4, uid);
-        pstmt.executeUpdate();
-
-        String sql1 = "SELECT MAX(aid) FROM activities";
-        PreparedStatement pstmt1 = conn.prepareStatement(sql1);
-        ResultSet resultSet = pstmt1.executeQuery();
-        conn.close();
-
-        if (resultSet.next()) {
-            int aid = resultSet.getInt("aid");
-            return new PostResult(aid, "aid");
-        } else return new WrongParametersResult();
+        } finally {
+            conn.close();
+        }
     }
 
     private String checkParametersWithoutRID(int sid, int uid, Connection conn) throws SQLException {

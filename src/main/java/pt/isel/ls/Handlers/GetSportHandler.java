@@ -19,26 +19,32 @@ public class GetSportHandler implements CommandHandler {
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
 
-        String sql = "SELECT * FROM sports";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        ResultSet resultSet=pstmt.executeQuery();
-        conn.close();
+        try {
+
+            String sql = "SELECT * FROM sports";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet resultSet = pstmt.executeQuery();
+            conn.close();
 
 
-        int sid;
-        String name, description;
-        Sport sport;
-        ArrayList<Sport> sports = new ArrayList<>();
+            int sid;
+            String name, description;
+            Sport sport;
+            ArrayList<Sport> sports = new ArrayList<>();
 
-        while (resultSet.next()) {
-            sid = resultSet.getInt("sid");
-            name = resultSet.getString("name");
-            description = resultSet.getString("description");
-            sport = new Sport(sid,name,description);
-            sports.add(sport);
+            while (resultSet.next()) {
+                sid = resultSet.getInt("sid");
+                name = resultSet.getString("name");
+                description = resultSet.getString("description");
+                sport = new Sport(sid, name, description);
+                sports.add(sport);
+            }
+            if (sports.size() == 0) {
+                return new WrongParametersResult();
+            } else return new GetSportsResult(sports);
+
+        } finally {
+            conn.close();
         }
-        if (sports.size() == 0) {
-            return new WrongParametersResult();
-        } else return new GetSportsResult(sports);
     }
 }

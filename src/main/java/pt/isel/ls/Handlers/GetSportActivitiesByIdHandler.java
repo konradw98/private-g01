@@ -15,42 +15,46 @@ public class GetSportActivitiesByIdHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
-        ArrayList<String> parameters = commandRequest.getPathParameters();
-        int sidParam = Integer.parseInt(parameters.get(0));
-        int aidParam = Integer.parseInt(parameters.get(1));
+        try {
+            ArrayList<String> parameters = commandRequest.getPathParameters();
+            int sidParam = Integer.parseInt(parameters.get(0));
+            int aidParam = Integer.parseInt(parameters.get(1));
 
-        String wrongParameters = checkParameters(sidParam, aidParam, conn);
-        if (!wrongParameters.equals("")) {
+            String wrongParameters = checkParameters(sidParam, aidParam, conn);
+            if (!wrongParameters.equals("")) {
+                conn.close();
+                return new WrongParametersResult(wrongParameters);
+            }
+
+            String sql = "SELECT * FROM activities WHERE sid=? AND aid=?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, sidParam);
+            pstmt.setInt(2, aidParam);
+            ResultSet resultSet = pstmt.executeQuery();
             conn.close();
-            return new WrongParametersResult(wrongParameters);
+
+            int aid, sid, rid, uid;
+            Date date;
+            Time duration_time;
+            Activity activity;
+            ArrayList<Activity> activities = new ArrayList<>();
+
+            while (resultSet.next()) {
+                aid = resultSet.getInt("aid");
+                date = resultSet.getDate("date");
+                duration_time = resultSet.getTime("duration_time");
+                sid = resultSet.getInt("sid");
+                uid = resultSet.getInt("uid");
+                rid = resultSet.getInt("rid");
+                activity = new Activity(aid, date, duration_time, sid, uid, rid);
+                activities.add(activity);
+            }
+            if (activities.size() == 0) {
+                return new WrongParametersResult(wrongParameters);
+            } else return new GetActivitiesResult(activities);
+        } finally {
+            conn.close();
         }
-
-        String sql = "SELECT * FROM activities WHERE sid=? AND aid=?";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setInt(1, sidParam);
-        pstmt.setInt(2, aidParam);
-        ResultSet resultSet = pstmt.executeQuery();
-        conn.close();
-
-        int aid, sid, rid, uid;
-        Date date;
-        Time duration_time;
-        Activity activity;
-        ArrayList<Activity> activities = new ArrayList<>();
-
-        while (resultSet.next()) {
-            aid = resultSet.getInt("aid");
-            date = resultSet.getDate("date");
-            duration_time = resultSet.getTime("duration_time");
-            sid = resultSet.getInt("sid");
-            uid = resultSet.getInt("uid");
-            rid = resultSet.getInt("rid");
-            activity = new Activity(aid, date, duration_time, sid, uid, rid);
-            activities.add(activity);
-        }
-        if (activities.size() == 0) {
-            return new WrongParametersResult(wrongParameters);
-        } else return new GetActivitiesResult(activities);
     }
 
     private String checkParameters(int sid, int aid, Connection conn) throws SQLException {

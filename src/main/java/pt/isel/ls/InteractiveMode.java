@@ -56,7 +56,7 @@ public class InteractiveMode {
         } else System.out.println("Wrong command: " + line);
     }
 
-    public static void printResult(RouteResult routeResult, CommandResult commandResult) throws SQLException {
+/*    public static void printResult(RouteResult routeResult, CommandResult commandResult) throws SQLException {
         if (routeResult.getHandler() instanceof GetUsersHandler || routeResult.getHandler() instanceof GetUserByIdHandler) {
             while (commandResult.getResultSet().next()) {
                 System.out.println("name: " + commandResult.getResultSet().getString("name") + " " +
@@ -89,5 +89,5 @@ public class InteractiveMode {
                 System.out.println("ID: " + commandResult.getResultSet().getInt(1));
             }
         }
-    }
+    }*/
 }
