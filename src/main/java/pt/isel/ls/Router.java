@@ -1,8 +1,7 @@
 package pt.isel.ls;
 
 import com.google.common.collect.ArrayListMultimap;
-import pt.isel.ls.Handlers.*;
-
+import pt.isel.ls.handlers.*;
 import java.util.*;
 
 public class Router {
@@ -16,7 +15,7 @@ public class Router {
         addRoute(Method.GET, new PathTemplate("/users"), new GetUsersHandler());
         addRoute(Method.GET, new PathTemplate("/users/{uid}"), new GetUserByIdHandler());
         addRoute(Method.GET, new PathTemplate("/routes"), new GetRoutesHandler());
-        addRoute(Method.GET, new PathTemplate("/routes/{rid}"), new GetRouteByIDHandler());
+        addRoute(Method.GET, new PathTemplate("/routes/{rid}"), new GetRouteByIdHandler());
         addRoute(Method.GET, new PathTemplate("/sports"), new GetSportHandler());
         addRoute(Method.GET, new PathTemplate("/sports/{sid}"), new GetSportByIdHandler());
         addRoute(Method.GET, new PathTemplate("/sports/{sid}/activities"), new GetSportActivitiesHandler());
@@ -26,7 +25,7 @@ public class Router {
         addRoute(Method.POST, new PathTemplate("/users"), new PostUserHandler());
         addRoute(Method.POST, new PathTemplate("/routes"), new PostRouteHandler());
         addRoute(Method.POST, new PathTemplate("/sports"), new PostSportHandler());
-        addRoute(Method.POST, new PathTemplate("/sports/{sid}/activities"),new PostActivityHandler());
+        addRoute(Method.POST, new PathTemplate("/sports/{sid}/activities"), new PostActivityHandler());
         addRoute(Method.GET, new PathTemplate("/tops/activities"), new GetTopsActivitiesHandler());
         addRoute(Method.EXIT, new PathTemplate("/"), new ExitHandler());
 
@@ -53,12 +52,16 @@ public class Router {
                                 ifSame = false;
                                 break;
                             }
-                        } else parameters.put(pathTemplateSegments.get(i), pathSegments.get(i));
+                        } else {
+                            parameters.put(pathTemplateSegments.get(i), pathSegments.get(i));
+                        }
                     }
 
-                    if (ifSame)
+                    if (ifSame) {
                         return Optional.of(new RouteResult(tuple.getSecond(), parameters));
-                    else parameters.clear();
+                    } else {
+                        parameters.clear();
+                    }
                 }
             }
         }

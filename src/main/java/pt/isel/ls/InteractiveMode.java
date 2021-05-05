@@ -1,8 +1,7 @@
 package pt.isel.ls;
 
 import org.postgresql.ds.PGSimpleDataSource;
-import pt.isel.ls.CommandResults.CommandResult;
-
+import pt.isel.ls.commandresults.CommandResult;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,10 +33,13 @@ public class InteractiveMode {
                     CommandRequest commandRequest;
 
                     if (command.length == GET_COMMAND_PARAMETERS) {
-                        commandRequest = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()), dataSource);
+                        commandRequest = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()),
+                                dataSource);
                     } else if (command.length == POST_COMMAND_PARAMETERS) {
-                        ArrayList<String> parameters = new ArrayList<>(Arrays.asList(command[PARAMETERS_INDEX].split("&")));
-                        commandRequest = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()), parameters, dataSource);
+                        ArrayList<String> parameters = new ArrayList<>(Arrays.asList(command[PARAMETERS_INDEX]
+                                .split("&")));
+                        commandRequest = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()),
+                                parameters, dataSource);
                     } else {
                         System.out.println("Wrong command: " + line);
                         return;
@@ -49,9 +51,13 @@ public class InteractiveMode {
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                } else System.out.println("Wrong command: " + line);
+                } else {
+                    System.out.println("Wrong command: " + line);
+                }
             }
-        } else System.out.println("Wrong command: " + line);
+        } else {
+            System.out.println("Wrong command: " + line);
+        }
     }
 
 }

@@ -1,7 +1,6 @@
 package pt.isel.ls;
 
-import pt.isel.ls.Handlers.CommandHandler;
-
+import pt.isel.ls.handlers.CommandHandler;
 import java.util.HashMap;
 
 public class RouteResult {
