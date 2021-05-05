@@ -1,7 +1,6 @@
 package pt.isel.ls;
 
 import org.postgresql.ds.PGSimpleDataSource;
-
 import java.util.Scanner;
 
 public class App {

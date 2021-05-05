@@ -78,7 +78,7 @@ public class Activity implements Model {
     @Override
     public String toString() {
         return "Activity{"
-                + ", date=" + date
+                + "date=" + date
                 + ", durationTime=" + durationTime
                 + ", sid=" + sid
                 + ", uid=" + uid

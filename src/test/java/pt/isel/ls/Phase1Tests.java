@@ -1,5 +1,6 @@
 package pt.isel.ls;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.postgresql.ds.PGSimpleDataSource;
@@ -116,27 +117,29 @@ public class Phase1Tests {
     }
 
     //exception because of unique mail parameters
-    @Test(expected = SQLException.class)
+    @Test()
     public void postUserTest() throws SQLException {
+        String name1 = RandomStringUtils.random(5, true, false);
+        String email1 = name1 + "@gmail.com";
         Path path = new Path("/users");
         Method method = Method.POST;
         Optional<RouteResult> optional = router.findRoute(method, path);
         RouteResult routeResult = optional.get();
-        ArrayList<String> parameters1 = new ArrayList<>(Arrays.asList(("name=milka&email=milka@gmail.com")
+        ArrayList<String> parameters1 = new ArrayList<>(Arrays.asList(("name=" + name1 + "&email=" + email1)
                 .split("&")));
         CommandRequest commandRequest1 = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()),
                 parameters1, dataSource);
         PostResult commandResult1 = (PostResult) routeResult.getHandler().execute(commandRequest1);
         int numberOfUsersAfterFirstPost = commandResult1.getId();
-        System.out.println(numberOfUsersAfterFirstPost);
 
-        ArrayList<String> parameters2 = new ArrayList<>(Arrays.asList(("name=jo&email=jo@gmail.com")
+        String name2 = RandomStringUtils.random(5, true, false);
+        String email2 = name2 + "@gmail.com";
+        ArrayList<String> parameters2 = new ArrayList<>(Arrays.asList(("name=" + name2 + "&email=" + email2)
                 .split("&")));
         CommandRequest commandRequest2 = new CommandRequest(new ArrayList<>(routeResult.getPathParameters()
                 .values()), parameters2, dataSource);
         PostResult commandResult2 = (PostResult) routeResult.getHandler().execute(commandRequest2);
         int numberOfUsersAfterSecondPost = commandResult2.getId();
-        System.out.println(numberOfUsersAfterSecondPost);
 
         assertEquals(numberOfUsersAfterFirstPost + 1, numberOfUsersAfterSecondPost);
     }
@@ -229,8 +232,8 @@ public class Phase1Tests {
         }
 
         if (maxUid < 1) {
-            String insertSql = "INSERT INTO users(name, email) VALUES(name='First User', "
-                    + "email='user@gmail.com');";
+            String insertSql = "INSERT INTO users(name, email) VALUES('First User', "
+                    + "'user@gmail.com');";
             PreparedStatement insertPreparedStatement = conn.prepareStatement(insertSql);
             insertPreparedStatement.execute();
         } else {
@@ -250,6 +253,119 @@ public class Phase1Tests {
         String firstUser = commandResult.getUser().toString();
 
         assertEquals(expectedResult, firstUser);
+
+    }
+
+    @Test
+    public void getTopsActivitiesTest() throws SQLException {
+
+        //make sure that database has the desired activity
+        String sql = "SELECT * FROM activities WHERE sid=2 AND date='2021-05-02' AND rid=1";
+        Connection conn = dataSource.getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        int activitiesNum = 0;
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            activitiesNum = resultSet.getInt(1);
+        }
+
+        if (activitiesNum < 1) {
+            String insertSql = "INSERT INTO activities(date, duration_time, sid, uid, rid) "
+                    + "VALUES('2021-05-02', '04:00:00', 2, 1, 1)";
+            PreparedStatement insertPreparedStatement = conn.prepareStatement(insertSql);
+            insertPreparedStatement.execute();
+            conn.close();
+        } else {
+            String updateSql = "UPDATE activities SET date='2021-05-02', duration_time='04:00:00', "
+                    + "uid=1, rid=1 WHERE sid = 2;";
+            PreparedStatement updatePreparedStatement = conn.prepareStatement(updateSql);
+            updatePreparedStatement.execute();
+            conn.close();
+        }
+
+        String expectedResult = "[Activity{date=2021-05-02, durationTime=04:00:00, sid=2, uid=1, rid=1}]";
+        Path path = new Path("/tops/activities");
+        Method method = Method.GET;
+        ArrayList<String> parameters =
+                new ArrayList<>(Arrays.asList(("sid=2&orderBy=desc&date=2021-05-02&rid=1").split("&")));
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        CommandRequest commandRequest =
+                new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()), parameters, dataSource);
+        GetActivitiesResult commandResult = (GetActivitiesResult) routeResult.getHandler().execute(commandRequest);
+        String result = commandResult.getActivities().toString();
+
+        assertEquals(expectedResult, result);
+
+    }
+
+    @Test
+    public void getUsersTest() throws SQLException {
+        Path path = new Path("/users/");
+        Method method = Method.GET;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        CommandRequest commandRequest = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()),
+                dataSource);
+        GetUsersResult commandResult = (GetUsersResult) routeResult.getHandler().execute(commandRequest);
+        int numberOfUsers = commandResult.getUsers().size();
+
+        String sql = "SELECT MAX(uid) FROM users";
+        Connection conn = dataSource.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        int result = 0;
+        ResultSet resultSet = pstmt.executeQuery();
+        if (resultSet.next()) {
+            result = resultSet.getInt(1);
+        }
+
+        assertEquals(numberOfUsers, result);
+
+    }
+
+    @Test
+    public void getRoutesTest() throws SQLException {
+        Path path = new Path("/routes");
+        Method method = Method.GET;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        CommandRequest commandRequest = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()),
+                dataSource);
+        GetRouteResults commandResult = (GetRouteResults) routeResult.getHandler().execute(commandRequest);
+        int numberOfRoutes = commandResult.getRoutes().size();
+        String sql = "SELECT MAX(rid) FROM routes";
+        Connection conn = dataSource.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        int result = 0;
+        ResultSet resultSet = pstmt.executeQuery();
+        if (resultSet.next()) {
+            result = resultSet.getInt(1);
+        }
+
+        assertEquals(numberOfRoutes, result);
+
+    }
+
+    @Test
+    public void getSportsTest() throws SQLException {
+        Path path = new Path("/sports");
+        Method method = Method.GET;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        CommandRequest commandRequest = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()),
+                dataSource);
+        GetSportsResult commandResult = (GetSportsResult) routeResult.getHandler().execute(commandRequest);
+        int numberOfSports = commandResult.getSports().size();
+        String sql = "SELECT MAX(sid) FROM sports";
+        Connection conn = dataSource.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        int result = 0;
+        ResultSet resultSet = pstmt.executeQuery();
+        if (resultSet.next()) {
+            result = resultSet.getInt(1);
+        }
+
+        assertEquals(numberOfSports, result);
 
     }
 
