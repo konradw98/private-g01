@@ -30,7 +30,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                 if (param.contains("sid")) {
                     sid = Integer.parseInt(param.substring(4));
                 } else if (param.contains("orderBy")) {
-                    orderBy = param.substring(8).replace('+', ' ');
+                    orderBy = param.substring(8);
                 } else if (param.contains("date")) {
                     date = Date.valueOf(param.substring(5));
                 } else if (param.contains("rid")) {

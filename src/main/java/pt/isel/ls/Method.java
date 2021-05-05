@@ -3,5 +3,6 @@ package pt.isel.ls;
 public enum Method {
     GET,
     POST,
-    EXIT
+    EXIT,
+    WRONG_METHOD
 }
