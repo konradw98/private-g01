@@ -1,6 +1,7 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.PostResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
@@ -16,17 +17,9 @@ public class PostSportHandler implements CommandHandler {
         Connection conn = commandRequest.getDataSource().getConnection();
 
         try {
-
-            String name = "";
-            String description = "";
-
-            for (String param : commandRequest.getParameters()) {
-                if (param.contains("name")) {
-                    name = param.substring(5).replace('+', ' ');
-                } else if (param.contains("description")) {
-                    description = param.substring(12).replace('+', ' ');
-                }
-            }
+            Parameters parameters = commandRequest.getParameters();
+            String name = parameters.get("name");
+            String description = parameters.get("description");
 
             String wrongParameters = checkParameters(name, description);
 
@@ -60,11 +53,11 @@ public class PostSportHandler implements CommandHandler {
 
     private String checkParameters(String name, String description) {
         String wrongParameters = "";
-        if (name.equals("")) {
+        if (name == null) {
             wrongParameters += " name";
         }
 
-        if (description.equals("")) {
+        if (description == null) {
             wrongParameters += " description";
         }
 

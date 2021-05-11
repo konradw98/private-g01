@@ -1,10 +1,12 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.models.Activity;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -19,26 +21,14 @@ public class GetTopsActivitiesHandler implements CommandHandler {
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            int sid = 0;
-            String orderBy = "";
-            Date date = null;
-            int rid = 0;
             PreparedStatement pstmt;
-            ArrayList<String> parameters = commandRequest.getParameters();
+            Parameters parameters = commandRequest.getParameters();
+            String sid = parameters.get("sid");
+            String orderBy = parameters.get("orderBy");
+            String date = parameters.get("date");
+            String rid = parameters.get("rid");
 
-            for (String param : parameters) {
-                if (param.contains("sid")) {
-                    sid = Integer.parseInt(param.substring(4));
-                } else if (param.contains("orderBy")) {
-                    orderBy = param.substring(8);
-                } else if (param.contains("date")) {
-                    date = Date.valueOf(param.substring(5));
-                } else if (param.contains("rid")) {
-                    rid = Integer.parseInt(param.substring(4));
-                }
-            }
-
-            String wrongParameters = checkParametersWithoutRid(sid, orderBy, conn);
+            String wrongParameters = checkParametersWithoutRid(sid, orderBy, date, conn);
 
             if (parameters.size() == MAX_AMOUNT_OF_PARAMETERS) {
                 wrongParameters += checkRid(rid, conn);
@@ -50,9 +40,9 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                 String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? ORDER BY duration_time "
                         + orderBy;
                 pstmt = conn.prepareStatement(sql);
-                pstmt.setInt(3, rid);
-                pstmt.setDate(2, date);
-                pstmt.setInt(1, sid);
+                pstmt.setInt(3, Integer.parseInt(rid));
+                pstmt.setDate(2, Date.valueOf(date));
+                pstmt.setInt(1, Integer.parseInt(sid));
                 ResultSet resultSet = pstmt.executeQuery();
                 conn.close();
                 return executeActivitiesResult(resultSet);
@@ -66,13 +56,13 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
                     String sql = "SELECT * FROM activities WHERE sid=? AND date=? ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
-                    pstmt.setDate(2, date);
-                    pstmt.setInt(1, sid);
+                    pstmt.setDate(2, Date.valueOf(date));
+                    pstmt.setInt(1, Integer.parseInt(sid));
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
                     return executeActivitiesResult(resultSet);
 
-                } else if (rid != 0) {
+                } else if (rid != null) {
                     wrongParameters += checkRid(rid, conn);
                     if (!wrongParameters.equals("")) {
                         conn.close();
@@ -81,8 +71,8 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
                     String sql = "SELECT * FROM activities WHERE sid=? AND rid=? ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
-                    pstmt.setInt(2, rid);
-                    pstmt.setInt(1, sid);
+                    pstmt.setInt(2, Integer.parseInt(rid));
+                    pstmt.setInt(1, Integer.parseInt(sid));
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
                     return executeActivitiesResult(resultSet);
@@ -95,8 +85,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
                 String sql = "SELECT * FROM activities WHERE sid=? ORDER BY duration_time " + orderBy;
                 pstmt = conn.prepareStatement(sql);
-                pstmt.setInt(1, sid);
-                pstmt.setInt(1, sid);
+                pstmt.setInt(1, Integer.parseInt(sid));
                 ResultSet resultSet = pstmt.executeQuery();
                 conn.close();
                 return executeActivitiesResult(resultSet);
@@ -136,7 +125,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
         }
     }
 
-    private String checkParametersWithoutRid(int sid, String orderBy, Connection conn) throws SQLException {
+    private String checkParametersWithoutRid(String sid, String orderBy, String date, Connection conn) throws SQLException {
         String sql1 = "SELECT MAX(sid) FROM sports";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
         ResultSet resultSet = pstmt1.executeQuery();
@@ -144,16 +133,20 @@ public class GetTopsActivitiesHandler implements CommandHandler {
         int maxSid = resultSet.getInt(1);
 
         String wrongParameters = "";
-        if (sid < 1 || maxSid < sid) {
-            wrongParameters += " sid = " + sid;
+        if (sid == null || Integer.parseInt(sid) < 1 || maxSid < Integer.parseInt(sid)) {
+            wrongParameters += " sid";
         }
-        if (!orderBy.toLowerCase(Locale.ENGLISH).equals("asc") && !orderBy.toLowerCase(Locale.ENGLISH).equals("desc")) {
-            wrongParameters += " order by = " + orderBy;
+        if (!orderBy.toLowerCase(Locale.ENGLISH).equals("asc")
+                && !orderBy.toLowerCase(Locale.ENGLISH).equals("desc")) {
+            wrongParameters += " order by";
+        }
+        if (date == null) {
+            wrongParameters += " date";
         }
         return wrongParameters;
     }
 
-    private String checkRid(int rid, Connection conn) throws SQLException {
+    private String checkRid(String rid, Connection conn) throws SQLException {
         String sql1 = "SELECT MAX(rid) FROM routes";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
         ResultSet resultSet = pstmt1.executeQuery();
@@ -161,8 +154,8 @@ public class GetTopsActivitiesHandler implements CommandHandler {
         int maxRid = resultSet.getInt(1);
 
         String wrongParameters = "";
-        if (rid < 1 || maxRid < rid) {
-            wrongParameters += " rid = " + rid;
+        if (rid == null || Integer.parseInt(rid) < 1 || maxRid < Integer.parseInt(rid)) {
+            wrongParameters += " rid";
         }
 
         return wrongParameters;

@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class GetUserByIdHandler implements CommandHandler {
 
@@ -22,8 +21,6 @@ public class GetUserByIdHandler implements CommandHandler {
 
             String sql = "SELECT * FROM users WHERE uid=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            /*System.out.println(Integer.parseInt(parameters.get("uid")));
-            System.out.println(Integer.parseInt(parameters.get("{uid}")));*/
             pstmt.setInt(1, Integer.parseInt(parameters.get("uid")));
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();

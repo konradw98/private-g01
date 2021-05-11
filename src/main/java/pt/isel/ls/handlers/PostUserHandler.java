@@ -1,9 +1,11 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.PostResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,18 +19,12 @@ public class PostUserHandler implements CommandHandler {
 
         try {
 
-            String name = "";
-            String email = "";
-
-            for (String param : commandRequest.getParameters()) {
-                if (param.contains("name")) {
-                    name = param.substring(5).replace('+', ' ');
-                } else if (param.contains("email")) {
-                    email = param.substring(6).replace('+', ' ');
-                }
-            }
+            Parameters parameters = commandRequest.getParameters();
+            String name = parameters.get("name");
+            String email = parameters.get("email");
 
             String wrongParameters = checkParameters(name, email);
+
             if (!wrongParameters.equals("")) {
                 conn.close();
                 return new WrongParametersResult(wrongParameters);
@@ -59,11 +55,11 @@ public class PostUserHandler implements CommandHandler {
 
     private String checkParameters(String name, String email) {
         String wrongParameters = "";
-        if (name.equals("")) {
+        if (name == null) {
             wrongParameters += " name";
         }
 
-        if (email.equals("")) {
+        if (email == null) {
             wrongParameters += " email";
         }
 

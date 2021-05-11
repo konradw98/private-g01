@@ -1,9 +1,11 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.PostResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,22 +17,10 @@ public class PostRouteHandler implements CommandHandler {
         Connection conn = commandRequest.getDataSource().getConnection();
 
         try {
-
-            String startLocation = "";
-            String endLocation = "";
-            float distance = -1;
-
-            for (String param : commandRequest.getParameters()) {
-                if (!param.contains("startLocation")) {
-                    if (param.contains("endLocation")) {
-                        endLocation = param.substring(12).replace('+', ' ');
-                    } else if (param.contains("distance")) {
-                        distance = Float.parseFloat(param.substring(9).replace('+', ' '));
-                    }
-                } else {
-                    startLocation = param.substring(14).replace('+', ' ');
-                }
-            }
+            Parameters parameters = commandRequest.getParameters();
+            String startLocation = parameters.get("startLocation");
+            String endLocation = parameters.get("endLocation");
+            String distance = parameters.get("distance");
 
             String wrongParameters = checkParameters(startLocation, endLocation, distance);
             if (!wrongParameters.equals("")) {
@@ -43,7 +33,7 @@ public class PostRouteHandler implements CommandHandler {
 
             pstmt.setString(1, startLocation);
             pstmt.setString(2, endLocation);
-            pstmt.setFloat(3, distance);
+            pstmt.setFloat(3, Float.parseFloat(distance));
             pstmt.executeUpdate();
 
             String sql1 = "SELECT MAX(rid) FROM routes";
@@ -63,18 +53,18 @@ public class PostRouteHandler implements CommandHandler {
 
     }
 
-    private String checkParameters(String startLocation, String endLocation, float distance) {
+    private String checkParameters(String startLocation, String endLocation, String distance) {
         String wrongParameters = "";
-        if (startLocation.equals("")) {
+        if (startLocation == null) {
             wrongParameters += " start location";
         }
 
-        if (endLocation.equals("")) {
+        if (endLocation == null) {
             wrongParameters += " end location";
         }
 
-        if (distance < 0) {
-            wrongParameters += " distance = " + distance;
+        if (distance == null || Float.parseFloat(distance) <= 0) {
+            wrongParameters += " distance";
         }
         return wrongParameters;
     }

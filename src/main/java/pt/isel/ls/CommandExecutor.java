@@ -3,8 +3,6 @@ package pt.isel.ls;
 import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.commandresults.CommandResult;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 
 public class CommandExecutor {
@@ -62,17 +60,17 @@ public class CommandExecutor {
 
     private static void executeProperCommand(RouteResult routeResult, String[] command, PGSimpleDataSource dataSource) {
         CommandRequest commandRequest;
+       // Parameters parameters = new Parameters(command[PARAMETERS_INDEX]);
 
         //TODO: refactor
         if (command.length == COMMAND_WITHOUT_HEADERS) {
             commandRequest = new CommandRequest(routeResult.getPathParameters(),
                     dataSource);
         } else {
-            // else its POST_COMMAND_PARAMETERS
-            ArrayList<String> parameters = new ArrayList<>(Arrays.asList(command[PARAMETERS_INDEX]
-                    .split("&")));
+            Headers headers = new Headers();
+            Parameters parameters = new Parameters(command[PARAMETERS_INDEX]);
             commandRequest = new CommandRequest(routeResult.getPathParameters(),
-                    parameters, dataSource);
+                    parameters, headers, dataSource);
         }
 
         try {
