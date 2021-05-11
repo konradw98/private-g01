@@ -1,6 +1,7 @@
 package pt.isel.ls.commandresults;
 
 import pt.isel.ls.models.User;
+
 import java.util.ArrayList;
 
 public class GetUsersResult implements CommandResult {
@@ -23,5 +24,16 @@ public class GetUsersResult implements CommandResult {
         for (User user : users) {
             user.print();
         }
+    }
+
+    public String generateJSON() {
+        String json = "[";
+
+        for (User user : users) {
+            json = json + "\n" + user.generateJSON() + ",";
+        }
+        json = json + "\n]";
+
+        return json;
     }
 }

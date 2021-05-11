@@ -14,6 +14,10 @@ public class GetRouteResult implements CommandResult {
         route.print();
     }
 
+    public String generateJSON() {
+        return route.generateJSON();
+    }
+
     public Route getRoute() {
         return route;
     }

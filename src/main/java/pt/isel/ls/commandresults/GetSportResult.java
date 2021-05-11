@@ -14,6 +14,10 @@ public class GetSportResult implements CommandResult {
         sport.print();
     }
 
+    public String generateJSON() {
+        return sport.generateJSON();
+    }
+
     public Sport getSport() {
         return sport;
     }

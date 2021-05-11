@@ -63,7 +63,7 @@ public class Route implements Model {
 
     @Override
     public String generateJSON() {
-        return "{ \n \"id\": "+rid+",\n \"start location\": "+startLocation+",\n \"end location\":"+endLocation+
-                ",\n \"distance\":"+distance+",\n}";
+        return "{ \n \"id\": " + rid + ",\n \"start location\": " + startLocation + ",\n \"end location\":" + endLocation +
+                ",\n \"distance\":" + distance + ",\n}";
     }
 }

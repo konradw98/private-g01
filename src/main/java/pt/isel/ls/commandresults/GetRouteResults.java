@@ -1,6 +1,8 @@
 package pt.isel.ls.commandresults;
 
 import pt.isel.ls.models.Route;
+import pt.isel.ls.models.User;
+
 import java.util.ArrayList;
 
 public class GetRouteResults implements CommandResult {
@@ -15,6 +17,17 @@ public class GetRouteResults implements CommandResult {
         for (Route route : routes) {
             route.print();
         }
+    }
+
+    public String generateJSON() {
+        String json = "[";
+
+        for (Route route : routes) {
+            json = json + "\n" + route.generateJSON() + ",";
+        }
+        json = json + "\n]";
+
+        return json;
     }
 
     public ArrayList<Route> getRoutes() {
