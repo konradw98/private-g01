@@ -30,6 +30,7 @@ public class Router {
         addRoute(Method.GET, new PathTemplate("/tops/activities"), new GetTopsActivitiesHandler());
         addRoute(Method.EXIT, new PathTemplate("/"), new ExitHandler());
         addRoute(Method.OPTION, new PathTemplate("/"), new OptionHandler());
+        addRoute(Method.DELETE,new PathTemplate("/users/{uid}/activities"),new DeleteHandler());
 
     }
 

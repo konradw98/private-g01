@@ -5,5 +5,6 @@ public enum Method {
     POST,
     EXIT,
     OPTION,
+    DELETE,
     WRONG_METHOD
 }

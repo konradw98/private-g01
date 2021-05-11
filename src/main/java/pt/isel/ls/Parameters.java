@@ -12,8 +12,11 @@ public class Parameters {
 
     private void addParametersFromValidString(String sequence) {
         String[] parameters = sequence.split("&");
-        for (String parameter : parameters) {
-            String[] value = parameter.split("=");
+        for (int i=0;i<parameters.length;i++) {
+            String[] value = parameters[i].split("=");
+            if(value[0].equals("activity")){
+                value[0] += i;
+            }
             addParameter(value[0], value[1]);
         }
     }
