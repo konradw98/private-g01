@@ -85,4 +85,11 @@ public class Activity implements Model {
                 + ", rid=" + rid
                 + '}';
     }
+
+    @Override
+    public String generateJSON() {
+        return "{ \n \"id\": "+aid+",\n \"date\": "+date+",\n \"duration time\":"+durationTime+
+                ",\n \"sport id\":"+sid+",\n \"user id\":"+uid+",\n \"route id\":"+rid+",\n}";
+    }
+
 }

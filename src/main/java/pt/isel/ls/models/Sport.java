@@ -48,4 +48,9 @@ public class Sport implements Model {
                 + ", description='" + description
                 + '}';
     }
+
+    @Override
+    public String generateJSON() {
+        return "{ \n \"id\": "+sid+",\n \"name\": "+name+",\n \"description\":"+description+",\n}";
+    }
 }
