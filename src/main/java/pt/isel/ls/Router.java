@@ -2,6 +2,7 @@ package pt.isel.ls;
 
 import com.google.common.collect.ArrayListMultimap;
 import pt.isel.ls.handlers.*;
+
 import java.util.*;
 
 public class Router {
@@ -28,6 +29,7 @@ public class Router {
         addRoute(Method.POST, new PathTemplate("/sports/{sid}/activities"), new PostActivityHandler());
         addRoute(Method.GET, new PathTemplate("/tops/activities"), new GetTopsActivitiesHandler());
         addRoute(Method.EXIT, new PathTemplate("/"), new ExitHandler());
+        addRoute(Method.OPTION, new PathTemplate("/"), new OptionHandler());
 
     }
 

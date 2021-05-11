@@ -48,6 +48,9 @@ public class CommandExecutor {
             case "POST" -> {
                 return Method.POST;
             }
+            case "OPTION" -> {
+                return Method.OPTION;
+            }
             case "EXIT" -> {
                 return Method.EXIT;
             }
