@@ -1,7 +1,5 @@
 package pt.isel.ls.models;
 
-import pt.isel.ls.Element;
-
 public class User implements Model {
     private int uid;
     private String email;
@@ -53,7 +51,7 @@ public class User implements Model {
     }
 
     @Override
-    public String generateJSON() {
+    public String generateJson() {
         return "{ \n \"id\": " + uid + ",\n \"name\": " + name + ",\n \"email\":" + email + ",\n}";
     }
 }

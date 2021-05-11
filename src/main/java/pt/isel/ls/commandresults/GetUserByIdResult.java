@@ -16,7 +16,7 @@ public class GetUserByIdResult implements CommandResult {
 
 
     public String generateJSON() {
-        return user.generateJSON();
+        return user.generateJson();
     }
 
     public User getUser() {

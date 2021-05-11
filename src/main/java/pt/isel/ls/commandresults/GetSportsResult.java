@@ -23,7 +23,7 @@ public class GetSportsResult implements CommandResult {
         StringBuilder json = new StringBuilder("[");
 
         for (Sport sport : sports) {
-            json.append("\n").append(sport.generateJSON()).append(",");
+            json.append("\n").append(sport.generateJson()).append(",");
         }
         json.append("\n]");
 
@@ -34,18 +34,14 @@ public class GetSportsResult implements CommandResult {
         Element html = html();
         Element body = body();
 
-        html.with(head().with(title().with(new Text("Sports"))), head());
-        html.with(body.with(h1().with(new Text("Sport Details")),
-                h1()),
-                body());
+        html.with(head().with(title().with(new Text("Sports"))));
+        html.with(body.with(h1().with(new Text("Sport Details"))));
 
-        for(Sport sport: sports)
-        {
+        for (Sport sport : sports) {
             body.with(ul().with(
-                    li().with(new Text("Identifier : " + sport.getSid())),li(),
-                    li().with(new Text("Name : " + sport.getName())),li(),
-                    li().with(new Text("Description : " + sport.getDescription())),li()),
-                    ul());
+                    li().with(new Text("Identifier : " + sport.getSid())),
+                    li().with(new Text("Name : " + sport.getName())),
+                    li().with(new Text("Description : " + sport.getDescription()))));
         }
 
         return html;

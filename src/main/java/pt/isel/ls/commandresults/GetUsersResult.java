@@ -4,7 +4,6 @@ package pt.isel.ls.commandresults;
 import pt.isel.ls.Element;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.User;
-
 import java.util.ArrayList;
 
 public class GetUsersResult implements CommandResult {
@@ -33,7 +32,7 @@ public class GetUsersResult implements CommandResult {
         StringBuilder json = new StringBuilder("[");
 
         for (User user : users) {
-            json.append("\n").append(user.generateJSON()).append(",");
+            json.append("\n").append(user.generateJson()).append(",");
         }
         json.append("\n]");
 
@@ -44,18 +43,15 @@ public class GetUsersResult implements CommandResult {
         Element html = html();
         Element body = body();
 
-        html.with(head().with(title().with(new Text("Users"))), head());
-        html.with(body.with(h1().with(new Text("User Details")),
-                h1()),
-        body());
+        html.with(head().with(title().with(new Text("Users"))));
+        html.with(body.with(h1().with(new Text("User Details"))));
 
         for(User user: users)
         {
             body.with(ul().with(
-                    li().with(new Text("Identifier : " + user.getUid())),li(),
-                    li().with(new Text("Name : " + user.getName())),li(),
-                    li().with(new Text("Email : " + user.getEmail())),li()),
-                    ul());
+                    li().with(new Text("Identifier : " + user.getUid())),
+                    li().with(new Text("Name : " + user.getName())),
+                    li().with(new Text("Email : " + user.getEmail()))));
         }
 
         return html;
