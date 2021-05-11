@@ -199,7 +199,7 @@ public class Phase1Tests {
         ArrayList<String> parameters1 =
                 new ArrayList<>(Arrays.asList(("uid=1&duration=01:01:01&date=2001-01-01&rid=1").split("&")));
         ArrayList<String> parameters2 =
-                new ArrayList<>(Arrays.asList(("uid=2&duration=02:02:02&date=2002-02-02&rid=2").split("&")));
+                new ArrayList<>(Arrays.asList(("uid=2&duration=02:02:02&date=2002-02-02&rid=1").split("&")));
 
         Optional<RouteResult> optional = router.findRoute(method, path);
         RouteResult routeResult = optional.get();
