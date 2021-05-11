@@ -1,5 +1,7 @@
 package pt.isel.ls.models;
 
+import pt.isel.ls.Element;
+
 public class User implements Model {
     private int uid;
     private String email;

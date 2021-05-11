@@ -1,8 +1,8 @@
 package pt.isel.ls.commandresults;
 
+import pt.isel.ls.Element;
+import pt.isel.ls.Text;
 import pt.isel.ls.models.Route;
-import pt.isel.ls.models.User;
-
 import java.util.ArrayList;
 
 public class GetRouteResults implements CommandResult {
@@ -19,15 +19,38 @@ public class GetRouteResults implements CommandResult {
         }
     }
 
-    public String generateJSON() {
-        String json = "[";
+    public String generateJson() {
+        StringBuilder json = new StringBuilder("[");
 
         for (Route route : routes) {
-            json = json + "\n" + route.generateJSON() + ",";
+            json.append("\n").append(route.generateJSON()).append(",");
         }
-        json = json + "\n]";
+        json.append("\n]");
 
-        return json;
+        return json.toString();
+    }
+
+    public Element generateHtml() {
+        Element html = html();
+        Element body = body();
+
+        html.with(head().with(title().with(new Text("Users"))), head());
+        html.with(body.with(h1().with(new Text("User Details")),
+                h1()),
+                body());
+
+        for(Route route: routes)
+        {
+            body.with(ul().with(
+                    li().with(new Text("Identifier : " + route.getRid())),li(),
+                    li().with(new Text("Start Location : " + route.getStartLocation())),li(),
+                    li().with(new Text("End Location : " + route.getEndLocation())),li(),
+                    li().with(new Text("Distance : " + route.getDistance())),li()),
+                    ul());
+        }
+
+        return html;
+
     }
 
     public ArrayList<Route> getRoutes() {
