@@ -38,31 +38,31 @@ public class Router {
         mapOfHandlers.put(method, map);
     }
 
+    //TODO: refactor
     public Optional<RouteResult> findRoute(Method method, Path path) {
         if (mapOfHandlers.containsKey(method)) {
             List<String> pathSegments = path.splitSegmentsFromPath();
+            PathParameters pathParameters = new PathParameters();
+
             for (Tuple<PathTemplate, CommandHandler> tuple : mapOfHandlers.get(method)) {
                 List<String> pathTemplateSegments = tuple.getFirst().splitSegmentsFromPathTemplate();
-                HashMap<String, String> parameters = new HashMap<>();
 
                 if (pathTemplateSegments.size() == pathSegments.size()) {
-                    boolean ifSame = true;
-                    int i = 0;
-                    for (; i < pathSegments.size(); i++) {
-                        if (pathTemplateSegments.get(i).length() > 0 && pathTemplateSegments.get(i).charAt(0) != '{') {
-                            if (!pathSegments.get(i).equals(pathTemplateSegments.get(i))) {
-                                ifSame = false;
-                                break;
-                            }
-                        } else {
-                            parameters.put(pathTemplateSegments.get(i), pathSegments.get(i));
+                    boolean ifSame = false;
+                    for (int i = 0; i < pathTemplateSegments.size(); i++) {
+                        ifSame = true;
+                        if (pathTemplateSegments.get(i).startsWith("{")
+                                && pathTemplateSegments.get(i).endsWith("}")) {
+                            pathParameters.addPathParameter(pathTemplateSegments.get(i).substring(1, 4), pathSegments.get(i));
+                        }
+                        else if (!pathTemplateSegments.get(i).equals(pathSegments.get(i))) {
+                            pathParameters.clear();
+                            ifSame = false;
+                            break;
                         }
                     }
-
                     if (ifSame) {
-                        return Optional.of(new RouteResult(tuple.getSecond(), parameters));
-                    } else {
-                        parameters.clear();
+                        return Optional.of(new RouteResult(tuple.getSecond(), pathParameters));
                     }
                 }
             }

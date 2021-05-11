@@ -6,17 +6,17 @@ public class OptionResult implements CommandResult{
         System.out.println("""
                    AVAILABLE COMMANDS:
                    COMMAND STRUCTURE: {method} {path} {headers} {parameters}
-                       Where :
+                       Where:
                            METHOD defines the type of action to perform
                            PATH defines the resource on which the command is executed
                                Example: /users or /users/1500
                            ACCEPT HEADER defines the format for the outputted representation:
                                accept:text/plain- plain text, printed in teh standard output
-                               accept:text/html - Hypertext Markup Language (HTML).
+                               accept:text/html - Hypertext Markup Language (HTML)
                                accept:application/json - Javascript Object Notation (JSON)
                            FILE-NAME HEADER defines the file system location for the outputted representation.
-                               If this header is absent, the representation is written into the standard output.
-                           The headers should be separated by '|' char.
+                               If this header is absent, the representation is written into the standard output
+                           The headers should be separated by '|' char
                            Example: accept:text/plain|file-name:users.txt
                            PARAMETERS are specific values defined for every command, separated by '&' char
                                 
@@ -25,7 +25,7 @@ public class OptionResult implements CommandResult{
                            Where:
                                PAGING is defined by two parameters:
                                    top - length of the subsequence to return,
-                                   skip - start position of the subsequence to return.
+                                   skip - start position of the subsequence to return
                                Example: skip=6&top=3
                                 
                        1. GET /users - returns the list of all users    

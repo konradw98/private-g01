@@ -1,6 +1,7 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
@@ -13,11 +14,11 @@ public class GetSportActivitiesHandler implements CommandHandler {
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            ArrayList<String> parameters = commandRequest.getPathParameters();
+            PathParameters parameters = commandRequest.getPathParameters();
 
             String sql = "SELECT * FROM activities WHERE sid=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
+            pstmt.setInt(1, Integer.parseInt(parameters.get("sid")));
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
 

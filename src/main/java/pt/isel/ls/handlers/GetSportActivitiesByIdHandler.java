@@ -1,6 +1,7 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
@@ -14,9 +15,9 @@ public class GetSportActivitiesByIdHandler implements CommandHandler {
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            ArrayList<String> parameters = commandRequest.getPathParameters();
-            int sidParam = Integer.parseInt(parameters.get(0));
-            int aidParam = Integer.parseInt(parameters.get(1));
+            PathParameters parameters = commandRequest.getPathParameters();
+            int sidParam = Integer.parseInt(parameters.get("sid"));
+            int aidParam = Integer.parseInt(parameters.get("aid"));
 
             String wrongParameters = checkParameters(sidParam, aidParam, conn);
             if (!wrongParameters.equals("")) {

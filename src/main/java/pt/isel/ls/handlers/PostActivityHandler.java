@@ -30,7 +30,7 @@ public class PostActivityHandler implements CommandHandler {
                 }
             }
 
-            int paramSid = Integer.parseInt(commandRequest.getPathParameters().get(0));
+            int paramSid = Integer.parseInt(commandRequest.getPathParameters().get("sid"));
             String wrongParameters = checkParametersWithoutRid(paramSid, uid, conn);
 
             if (commandRequest.getParameters().size() == MAX_AMOUNT_OF_PARAMETERS) {

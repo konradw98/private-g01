@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class CommandExecutor {
-    private static final int GET_COMMAND_PARAMETERS = 2;
-    private static final int POST_COMMAND_PARAMETERS = 3;
+    private static final int COMMAND_WITHOUT_HEADERS = 2;
+    private static final int COMMAND_WIT_HEADERS = 3;
     private static final int METHOD_INDEX = 0;
     private static final int PATH_INDEX = 1;
     private static final int PARAMETERS_INDEX = 2;
@@ -23,7 +23,7 @@ public class CommandExecutor {
     }
 
     private static void executeCommand(String[] command, String line, Router router, PGSimpleDataSource dataSource) {
-        if (command.length >= GET_COMMAND_PARAMETERS && command.length <= POST_COMMAND_PARAMETERS) {
+        if (command.length == COMMAND_WITHOUT_HEADERS || command.length == COMMAND_WIT_HEADERS) {
             Method method = validateMethod(command[METHOD_INDEX]);
             if (!method.equals(Method.WRONG_METHOD)) {
                 Optional<RouteResult> optional = router.findRoute(method, new Path(command[PATH_INDEX]));
@@ -64,14 +64,14 @@ public class CommandExecutor {
         CommandRequest commandRequest;
 
         //TODO: refactor
-        if (command.length == GET_COMMAND_PARAMETERS) {
-            commandRequest = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()),
+        if (command.length == COMMAND_WITHOUT_HEADERS) {
+            commandRequest = new CommandRequest(routeResult.getPathParameters(),
                     dataSource);
         } else {
             // else its POST_COMMAND_PARAMETERS
             ArrayList<String> parameters = new ArrayList<>(Arrays.asList(command[PARAMETERS_INDEX]
                     .split("&")));
-            commandRequest = new CommandRequest(new ArrayList<>(routeResult.getPathParameters().values()),
+            commandRequest = new CommandRequest(routeResult.getPathParameters(),
                     parameters, dataSource);
         }
 

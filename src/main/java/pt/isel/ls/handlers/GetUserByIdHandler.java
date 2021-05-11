@@ -1,6 +1,7 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.GetUserByIdResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
@@ -17,11 +18,13 @@ public class GetUserByIdHandler implements CommandHandler {
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            ArrayList<String> parameters = commandRequest.getPathParameters();
+            PathParameters parameters = commandRequest.getPathParameters();
 
             String sql = "SELECT * FROM users WHERE uid=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
+            /*System.out.println(Integer.parseInt(parameters.get("uid")));
+            System.out.println(Integer.parseInt(parameters.get("{uid}")));*/
+            pstmt.setInt(1, Integer.parseInt(parameters.get("uid")));
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
             if (resultSet.next()) {

@@ -1,22 +1,21 @@
 package pt.isel.ls;
 
 import pt.isel.ls.handlers.CommandHandler;
-import java.util.HashMap;
 
 public class RouteResult {
     private final CommandHandler handler;
-    private final HashMap<String, String> parameters;
+    private final PathParameters pathParameters;
 
-    public RouteResult(CommandHandler handler, HashMap<String, String> parameters) {
+    public RouteResult(CommandHandler handler, PathParameters pathParameters) {
         this.handler = handler;
-        this.parameters = parameters;
+        this.pathParameters = pathParameters;
     }
 
     public CommandHandler getHandler() {
         return handler;
     }
 
-    public HashMap<String, String> getPathParameters() {
-        return parameters;
+    public PathParameters getPathParameters() {
+        return pathParameters;
     }
 }

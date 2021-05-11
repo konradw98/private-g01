@@ -4,20 +4,36 @@ import org.postgresql.ds.PGSimpleDataSource;
 import java.util.ArrayList;
 
 public class CommandRequest {
-    private ArrayList<String> pathParameters;
+    private PathParameters pathParameters;
     private ArrayList<String> parameters;
+    private Headers headers;
     private PGSimpleDataSource dataSource;
 
-    public CommandRequest(ArrayList<String> pathParameters, ArrayList<String> parameters,
+    public CommandRequest(PathParameters pathParameters, PGSimpleDataSource dataSource) {
+        this.pathParameters = pathParameters;
+        this.dataSource = dataSource;
+    }
+
+    public CommandRequest(PathParameters pathParameters, ArrayList<String> parameters, Headers headers,
                           PGSimpleDataSource dataSource) {
+        this.pathParameters = pathParameters;
+        this.parameters = parameters;
+        this.headers = headers;
+        this.dataSource = dataSource;
+    }
+
+    public CommandRequest(PathParameters pathParameters, ArrayList<String> parameters, PGSimpleDataSource dataSource) {
         this.pathParameters = pathParameters;
         this.parameters = parameters;
         this.dataSource = dataSource;
     }
 
-    public CommandRequest(ArrayList<String> pathParameters, PGSimpleDataSource dataSource) {
+    public PathParameters getPathParameters() {
+        return pathParameters;
+    }
+
+    public void setPathParameters(PathParameters pathParameters) {
         this.pathParameters = pathParameters;
-        this.dataSource = dataSource;
     }
 
     public ArrayList<String> getParameters() {
@@ -28,15 +44,19 @@ public class CommandRequest {
         this.parameters = parameters;
     }
 
-    public ArrayList<String> getPathParameters() {
-        return pathParameters;
+    public Headers getHeaders() {
+        return headers;
     }
 
-    public void setPathParameters(ArrayList<String> parameters) {
-        this.pathParameters = parameters;
+    public void setHeaders(Headers headers) {
+        this.headers = headers;
     }
 
     public PGSimpleDataSource getDataSource() {
         return dataSource;
+    }
+
+    public void setDataSource(PGSimpleDataSource dataSource) {
+        this.dataSource = dataSource;
     }
 }

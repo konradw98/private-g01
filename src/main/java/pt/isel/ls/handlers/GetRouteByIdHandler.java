@@ -1,6 +1,7 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.GetRouteResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
@@ -18,10 +19,10 @@ public class GetRouteByIdHandler implements CommandHandler {
 
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            ArrayList<String> parameters = commandRequest.getPathParameters();
+            PathParameters parameters = commandRequest.getPathParameters();
             String sql = "SELECT * FROM routes WHERE rid=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, Integer.parseInt(parameters.get(0)));
+            pstmt.setInt(1, Integer.parseInt(parameters.get("rid")));
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
             if (resultSet.next()) {
