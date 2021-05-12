@@ -49,6 +49,9 @@ public class CommandExecutor {
             case "OPTION" -> {
                 return Method.OPTION;
             }
+            case "DELETE" -> {
+                return Method.DELETE;
+            }
             case "EXIT" -> {
                 return Method.EXIT;
             }
