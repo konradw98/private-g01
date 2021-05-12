@@ -10,11 +10,12 @@ public class GetSportResult implements CommandResult {
     }
 
     @Override
-    public void print() {
+    public boolean results() {
         sport.print();
+        return true;
     }
 
-    public String generateJSON() {
+    public String generateJson() {
         return sport.generateJson();
     }
 

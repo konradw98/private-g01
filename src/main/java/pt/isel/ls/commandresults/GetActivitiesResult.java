@@ -14,10 +14,11 @@ public class GetActivitiesResult implements CommandResult {
     }
 
     @Override
-    public void print() {
+    public boolean results() {
         for (Activity activity : activities) {
             activity.print();
         }
+        return true;
     }
 
     public String generateJson() {
@@ -33,19 +34,27 @@ public class GetActivitiesResult implements CommandResult {
 
     public Element generateHtml() {
         Element html = html();
-        Element body = body();
+        Element table = table();
 
-        html.with(head().with(title().with(new Text("Users"))));
-        html.with(body.with(h1().with(new Text("User Details"))));
+        html.with(head().with(title().with(new Text("Activities"))));
+        html.with(body().with(table));
+        table.with(h1().with(new Text("Activity Details")));
+        table.with(tr().with(
+                th().with(new Text("Identifier : ")),
+                th().with(new Text("Date : ")),
+                th().with(new Text("Duration Time : ")),
+                th().with(new Text("Sport Id : ")),
+                th().with(new Text("User Id : ")),
+                th().with(new Text("Route Id : "))));
 
         for (Activity activity : activities) {
-            body.with(ul().with(
-                    li().with(new Text("Identifier : " + activity.getAid())),
-                    li().with(new Text("Date : " + activity.getDate())),
-                    li().with(new Text("Duration Time : " + activity.getDurationTime())),
-                    li().with(new Text("Sport Id : " + activity.getSid())),
-                    li().with(new Text("User Id : " + activity.getUid())),
-                    li().with(new Text("Route Id : " + activity.getRid()))));
+            table.with(tr().with(
+                    td().with(new Text(activity.getAid())),
+                    td().with(new Text(activity.getDate())),
+                    td().with(new Text(activity.getDurationTime())),
+                    td().with(new Text(activity.getSid())),
+                    td().with(new Text(activity.getUid())),
+                    td().with(new Text(activity.getRid()))));
         }
 
         return html;

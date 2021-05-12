@@ -2,9 +2,9 @@ package pt.isel.ls;
 
 public class Text {
 
-    String text;
+    Object text;
 
-    public Text(String text) {
+    public Text(Object text) {
         this.text = text;
     }
 }

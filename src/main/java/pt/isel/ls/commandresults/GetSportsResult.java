@@ -13,10 +13,11 @@ public class GetSportsResult implements CommandResult {
     }
 
     @Override
-    public void print() {
+    public boolean results() {
         for (Sport sport : sports) {
             sport.print();
         }
+        return true;
     }
 
     public String generateJson() {

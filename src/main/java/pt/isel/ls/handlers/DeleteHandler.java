@@ -3,7 +3,6 @@ package pt.isel.ls.handlers;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.DeleteResult;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

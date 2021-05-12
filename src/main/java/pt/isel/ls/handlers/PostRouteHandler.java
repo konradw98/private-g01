@@ -5,7 +5,6 @@ import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.PostResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

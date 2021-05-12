@@ -5,7 +5,6 @@ import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.PostResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
-
 import java.sql.*;
 
 public class PostActivityHandler implements CommandHandler {
@@ -75,7 +74,8 @@ public class PostActivityHandler implements CommandHandler {
         }
     }
 
-    private String checkParametersWithoutRid(String sid, String uid, String duration, String date, Connection conn) throws SQLException {
+    private String checkParametersWithoutRid(String sid, String uid, String duration, String date, Connection conn)
+            throws SQLException {
         String sql = "SELECT MAX(sid) FROM sports";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet resultSet = pstmt.executeQuery();

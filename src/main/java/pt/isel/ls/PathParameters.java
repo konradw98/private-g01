@@ -1,6 +1,5 @@
 package pt.isel.ls;
 
-import java.util.Collection;
 import java.util.HashMap;
 
 public class PathParameters {
@@ -22,7 +21,7 @@ public class PathParameters {
         return pathParameters.get(key);
     }
 
-    public void clear(){
+    public void clear() {
         pathParameters.clear();
     }
 }

@@ -14,14 +14,12 @@ public class Element {
         children = new ArrayList<>();
     }
 
-    public Element with(Element ... elements)
-    {
+    public Element with(Element... elements) {
         Collections.addAll(children, elements);
         return this;
     }
 
-    public Element with(Text text)
-    {
+    public Element with(Text text) {
         this.text = text;
         return this;
     }
@@ -29,7 +27,9 @@ public class Element {
     @Override
     public String toString() {
         StringBuilder html = new StringBuilder("<" + name + ">" + "\t");
-        for(Element element: children) html.append(element.toString());
+        for (Element element : children) {
+            html.append(element.toString());
+        }
         html.append("</").append(name).append(">");
 
         return html.toString();

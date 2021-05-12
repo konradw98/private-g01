@@ -3,7 +3,6 @@ package pt.isel.ls.commandresults;
 import pt.isel.ls.Element;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Route;
-
 import java.util.ArrayList;
 
 public class GetRouteResults implements CommandResult {
@@ -14,10 +13,11 @@ public class GetRouteResults implements CommandResult {
     }
 
     @Override
-    public void print() {
+    public boolean results() {
         for (Route route : routes) {
             route.print();
         }
+        return true;
     }
 
     public String generateJson() {
@@ -35,8 +35,8 @@ public class GetRouteResults implements CommandResult {
         Element html = html();
         Element body = body();
 
-        html.with(head().with(title().with(new Text("Users"))));
-        html.with(body.with(h1().with(new Text("User Details"))));
+        html.with(head().with(title().with(new Text("Routes"))));
+        html.with(body.with(h1().with(new Text("Route Details"))));
 
         for (Route route : routes) {
             body.with(ul().with(

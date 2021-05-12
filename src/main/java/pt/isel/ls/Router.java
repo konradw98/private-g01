@@ -2,7 +2,6 @@ package pt.isel.ls;
 
 import com.google.common.collect.ArrayListMultimap;
 import pt.isel.ls.handlers.*;
-
 import java.util.*;
 
 public class Router {
@@ -30,7 +29,7 @@ public class Router {
         addRoute(Method.GET, new PathTemplate("/tops/activities"), new GetTopsActivitiesHandler());
         addRoute(Method.EXIT, new PathTemplate("/"), new ExitHandler());
         addRoute(Method.OPTION, new PathTemplate("/"), new OptionHandler());
-        addRoute(Method.DELETE,new PathTemplate("/users/{uid}/activities"),new DeleteHandler());
+        addRoute(Method.DELETE, new PathTemplate("/users/{uid}/activities"), new DeleteHandler());
 
     }
 
@@ -54,9 +53,9 @@ public class Router {
                         ifSame = true;
                         if (pathTemplateSegments.get(i).startsWith("{")
                                 && pathTemplateSegments.get(i).endsWith("}")) {
-                            pathParameters.addPathParameter(pathTemplateSegments.get(i).substring(1, 4), pathSegments.get(i));
-                        }
-                        else if (!pathTemplateSegments.get(i).equals(pathSegments.get(i))) {
+                            pathParameters.addPathParameter(pathTemplateSegments.get(i).substring(1, 4),
+                                    pathSegments.get(i));
+                        } else if (!pathTemplateSegments.get(i).equals(pathSegments.get(i))) {
                             pathParameters.clear();
                             ifSame = false;
                             break;

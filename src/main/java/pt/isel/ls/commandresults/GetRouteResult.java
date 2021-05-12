@@ -10,11 +10,12 @@ public class GetRouteResult implements CommandResult {
     }
 
     @Override
-    public void print() {
+    public boolean results() {
         route.print();
+        return true;
     }
 
-    public String generateJSON() {
+    public String generateJson() {
         return route.generateJson();
     }
 

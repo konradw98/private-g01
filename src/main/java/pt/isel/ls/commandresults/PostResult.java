@@ -18,7 +18,8 @@ public class PostResult implements CommandResult {
     }
 
     @Override
-    public void print() {
+    public boolean results() {
         System.out.println(label + ": " + id);
+        return true;
     }
 }

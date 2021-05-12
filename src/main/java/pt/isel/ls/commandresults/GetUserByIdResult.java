@@ -10,12 +10,13 @@ public class GetUserByIdResult implements CommandResult {
     }
 
     @Override
-    public void print() {
+    public boolean results() {
         user.print();
+        return true;
     }
 
 
-    public String generateJSON() {
+    public String generateJson() {
         return user.generateJson();
     }
 

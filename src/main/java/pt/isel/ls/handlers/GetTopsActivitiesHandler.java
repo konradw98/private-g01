@@ -6,7 +6,6 @@ import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.models.Activity;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -125,7 +124,8 @@ public class GetTopsActivitiesHandler implements CommandHandler {
         }
     }
 
-    private String checkParametersWithoutRid(String sid, String orderBy, String date, Connection conn) throws SQLException {
+    private String checkParametersWithoutRid(String sid, String orderBy, String date, Connection conn)
+            throws SQLException {
         String sql1 = "SELECT MAX(sid) FROM sports";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
         ResultSet resultSet = pstmt1.executeQuery();

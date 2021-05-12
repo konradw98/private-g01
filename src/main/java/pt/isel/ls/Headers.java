@@ -14,7 +14,7 @@ public class Headers {
         headers.put(name, value);
     }
 
-    public void addHeader(String name, String value){
+    public void addHeader(String name, String value) {
         headers.put(name, value);
     }
 

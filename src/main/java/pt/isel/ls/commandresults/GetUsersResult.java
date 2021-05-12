@@ -22,10 +22,11 @@ public class GetUsersResult implements CommandResult {
     }
 
     @Override
-    public void print() {
+    public boolean results() {
         for (User user : users) {
             user.print();
         }
+        return true;
     }
 
     public String generateJson() {
@@ -46,8 +47,7 @@ public class GetUsersResult implements CommandResult {
         html.with(head().with(title().with(new Text("Users"))));
         html.with(body.with(h1().with(new Text("User Details"))));
 
-        for(User user: users)
-        {
+        for (User user : users) {
             body.with(ul().with(
                     li().with(new Text("Identifier : " + user.getUid())),
                     li().with(new Text("Name : " + user.getName())),

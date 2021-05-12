@@ -11,7 +11,8 @@ public class WrongParametersResult implements CommandResult {
     }
 
     @Override
-    public void print() {
+    public boolean results() {
         System.out.println("Wrong parameters " + wrongParameters);
+        return true;
     }
 }

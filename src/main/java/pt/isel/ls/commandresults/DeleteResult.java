@@ -2,17 +2,17 @@ package pt.isel.ls.commandresults;
 
 import java.util.List;
 
-public class DeleteResult  implements CommandResult{
+public class DeleteResult implements CommandResult {
     private int userId;
     private List<String> activitiesId;
 
     @Override
-    public void print() {
-        System.out.println("user id: "+userId+" activities id:");
-        for (String id: activitiesId) {
-            System.out.print(id+", ");
+    public boolean results() {
+        System.out.println("user id: " + userId + " activities id:");
+        for (String id : activitiesId) {
+            System.out.print(id + ", ");
         }
-
+        return true;
     }
 
     public DeleteResult(int userId, List<String> activitiesId) {

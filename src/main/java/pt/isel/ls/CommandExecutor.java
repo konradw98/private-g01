@@ -12,21 +12,22 @@ public class CommandExecutor {
     private static final int PATH_INDEX = 1;
     private static final int PARAMETERS_INDEX = 2;
 
-    public static void runCommand(String line, Router router, PGSimpleDataSource dataSource) {
-        executeCommand(line.split(" "), line, router, dataSource);
+    public static boolean runCommand(String line, Router router, PGSimpleDataSource dataSource) {
+        return executeCommand(line.split(" "), line, router, dataSource);
     }
 
-    public static void runCommand(String[] command, Router router, PGSimpleDataSource dataSource) {
-        executeCommand(command, String.join(" ", command), router, dataSource);
+    public static boolean runCommand(String[] command, Router router, PGSimpleDataSource dataSource) {
+        return executeCommand(command, String.join(" ", command), router, dataSource);
     }
 
-    private static void executeCommand(String[] command, String line, Router router, PGSimpleDataSource dataSource) {
+    private static boolean executeCommand(String[] command, String line, Router router, PGSimpleDataSource dataSource) {
+        boolean exit = false;
         if (command.length == COMMAND_WITHOUT_HEADERS || command.length == COMMAND_WIT_HEADERS) {
             Method method = validateMethod(command[METHOD_INDEX]);
             if (!method.equals(Method.WRONG_METHOD)) {
                 Optional<RouteResult> optional = router.findRoute(method, new Path(command[PATH_INDEX]));
                 if (optional.isPresent()) {
-                    executeProperCommand(optional.get(), command, dataSource);
+                    exit = executeProperCommand(optional.get(), command, dataSource);
                 } else {
                     System.out.println("Wrong command: " + line);
                 }
@@ -36,6 +37,7 @@ public class CommandExecutor {
         } else {
             System.out.println("Wrong command: " + line);
         }
+        return exit;
     }
 
     private static Method validateMethod(String command) {
@@ -61,9 +63,10 @@ public class CommandExecutor {
         }
     }
 
-    private static void executeProperCommand(RouteResult routeResult, String[] command, PGSimpleDataSource dataSource) {
+    private static boolean executeProperCommand(RouteResult routeResult, String[] command, PGSimpleDataSource dataSource) {
+        boolean exit=false;
         CommandRequest commandRequest;
-       // Parameters parameters = new Parameters(command[PARAMETERS_INDEX]);
+        // Parameters parameters = new Parameters(command[PARAMETERS_INDEX]);
 
         //TODO: refactor
         if (command.length == COMMAND_WITHOUT_HEADERS) {
@@ -78,9 +81,10 @@ public class CommandExecutor {
 
         try {
             CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
-            commandResult.print();
+            exit = commandResult.results();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return exit;
     }
 }
