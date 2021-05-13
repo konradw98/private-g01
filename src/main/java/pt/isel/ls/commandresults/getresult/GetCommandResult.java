@@ -6,7 +6,7 @@ import pt.isel.ls.commandresults.CommandResult;
 
 public abstract  class GetCommandResult implements CommandResult {
 
-    public Headers headers;
+
 
     public Element html() {
         return new Element("html");
@@ -51,9 +51,9 @@ public abstract  class GetCommandResult implements CommandResult {
         return new Element("td");
     }
 
-    public GetCommandResult(Headers headers) {
-        this.headers = headers;
+    public GetCommandResult() {
+
     }
 
-    public  GetCommandResult(){};
+
 }

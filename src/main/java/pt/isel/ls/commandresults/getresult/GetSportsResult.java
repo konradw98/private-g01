@@ -8,17 +8,52 @@ import java.util.ArrayList;
 
 public class GetSportsResult extends  GetCommandResult {
     private ArrayList<Sport> sports;
+    private Headers headers;
 
     public GetSportsResult(ArrayList<Sport> sports, Headers headers) {
-        super(headers);
+        this.headers=headers;
         this.sports = sports;
     }
+    public void generateResult(Headers headers) {
+        String accept = headers.get("accept");
+        String fileName = headers.get("file-name");
 
+        if (fileName != null) {
+            switch (accept) {
+                case "text/plain" -> {
+                    //do pliki text plain
+                }
+                case "application/json" -> {
+                    //do pliku json
+                }
+                case "text/html" -> {
+                    //do pliku json
+                }
+                default -> {
+                    // do pliku html
+                }
+            }
+        } else {
+            switch (accept) {
+                case "text/plain" -> {
+                    //do konsoli text plain
+                }
+                case "application/json" -> {
+                    //do konsoli json
+                }
+                case "text/html" -> {
+                    //do konsoli json
+                }
+                default -> {
+                    // do konsoli html
+                }
+            }
+        }
+
+    }
     @Override
     public boolean results() {
-        for (Sport sport : sports) {
-            sport.print();
-        }
+        generateResult(headers);
         return false;
     }
 
@@ -65,4 +100,11 @@ public class GetSportsResult extends  GetCommandResult {
         this.sports = sports;
     }
 
+    public Headers getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Headers headers) {
+        this.headers = headers;
+    }
 }

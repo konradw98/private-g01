@@ -9,12 +9,50 @@ import java.util.ArrayList;
 
 public class GetUsersResult extends GetCommandResult {
     private ArrayList<User> users;
+    private Headers headers;
+
 
     public GetUsersResult(ArrayList<User> users, Headers headers) {
-        super(headers);
+        this.headers=headers;
         this.users = users;
     }
+    public void generateResult(Headers headers) {
+        String accept = headers.get("accept");
+        String fileName = headers.get("file-name");
 
+        if (fileName != null) {
+            switch (accept) {
+                case "text/plain" -> {
+                    //do pliki text plain
+                }
+                case "application/json" -> {
+                    //do pliku json
+                }
+                case "text/html" -> {
+                    //do pliku json
+                }
+                default -> {
+                    // do pliku html
+                }
+            }
+        } else {
+            switch (accept) {
+                case "text/plain" -> {
+                    //do konsoli text plain
+                }
+                case "application/json" -> {
+                    //do konsoli json
+                }
+                case "text/html" -> {
+                    //do konsoli json
+                }
+                default -> {
+                    // do konsoli html
+                }
+            }
+        }
+
+    }
     public ArrayList<User> getUsers() {
         return users;
     }
@@ -23,11 +61,17 @@ public class GetUsersResult extends GetCommandResult {
         this.users = users;
     }
 
+    public Headers getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Headers headers) {
+        this.headers = headers;
+    }
+
     @Override
     public boolean results() {
-        for (User user : users) {
-            user.print();
-        }
+        generateResult(headers);
         return false;
     }
 

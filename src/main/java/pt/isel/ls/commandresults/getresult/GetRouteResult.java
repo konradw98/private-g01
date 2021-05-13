@@ -7,15 +7,53 @@ import pt.isel.ls.models.Route;
 
 public class GetRouteResult extends  GetCommandResult{
     private Route route;
+    private Headers headers;
 
     public GetRouteResult(Route route, Headers headers) {
-        super(headers);
+        this.headers=headers;
         this.route = route;
     }
 
+    public void generateResult(Headers headers) {
+        String accept = headers.get("accept");
+        String fileName = headers.get("file-name");
+
+        if (fileName != null) {
+            switch (accept) {
+                case "text/plain" -> {
+                    //do pliki text plain
+                }
+                case "application/json" -> {
+                    //do pliku json
+                }
+                case "text/html" -> {
+                    //do pliku json
+                }
+                default -> {
+                    // do pliku html
+                }
+            }
+        } else {
+            switch (accept) {
+                case "text/plain" -> {
+                    //do konsoli text plain
+                }
+                case "application/json" -> {
+                    //do konsoli json
+                }
+                case "text/html" -> {
+                    //do konsoli json
+                }
+                default -> {
+                    // do konsoli html
+                }
+            }
+        }
+
+    }
     @Override
     public boolean results() {
-        route.print();
+        generateResult(headers);
         return false;
     }
 
@@ -47,5 +85,13 @@ public class GetRouteResult extends  GetCommandResult{
 
     public void setRoute(Route route) {
         this.route = route;
+    }
+
+    public Headers getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Headers headers) {
+        this.headers = headers;
     }
 }

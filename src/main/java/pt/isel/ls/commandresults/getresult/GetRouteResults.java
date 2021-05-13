@@ -8,17 +8,53 @@ import java.util.ArrayList;
 
 public class GetRouteResults extends GetCommandResult {
     private ArrayList<Route> routes;
+    private Headers headers;
 
     public GetRouteResults(ArrayList<Route> routes, Headers headers) {
-        super(headers);
+        this.headers=headers;
         this.routes = routes;
+    }
+    public void generateResult(Headers headers) {
+        String accept = headers.get("accept");
+        String fileName = headers.get("file-name");
+
+        if (fileName != null) {
+            switch (accept) {
+                case "text/plain" -> {
+                    //do pliki text plain
+                }
+                case "application/json" -> {
+                    //do pliku json
+                }
+                case "text/html" -> {
+                    //do pliku json
+                }
+                default -> {
+                    // do pliku html
+                }
+            }
+        } else {
+            switch (accept) {
+                case "text/plain" -> {
+                    //do konsoli text plain
+                }
+                case "application/json" -> {
+                    //do konsoli json
+                }
+                case "text/html" -> {
+                    //do konsoli json
+                }
+                default -> {
+                    // do konsoli html
+                }
+            }
+        }
+
     }
 
     @Override
     public boolean results() {
-        for (Route route : routes) {
-            route.print();
-        }
+        generateResult(headers);
         return false;
     }
 
@@ -64,5 +100,13 @@ public class GetRouteResults extends GetCommandResult {
 
     public void setRoutes(ArrayList<Route> routes) {
         this.routes = routes;
+    }
+
+    public Headers getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Headers headers) {
+        this.headers = headers;
     }
 }
