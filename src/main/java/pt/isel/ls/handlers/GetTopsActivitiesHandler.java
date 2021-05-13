@@ -45,8 +45,8 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                     return new WrongParametersResult(wrongParameters);
                 }
 
-                String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid IN (SELECT rid FROM routes "
-                        + "WHERE distance>" + minDistance + ") AND  ORDER BY duration_time " + orderBy;
+                String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? AND rid IN (SELECT rid FROM routes "
+                        + "WHERE distance>" + minDistance + ") ORDER BY duration_time " + orderBy;
 
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setInt(3, Integer.parseInt(rid));
