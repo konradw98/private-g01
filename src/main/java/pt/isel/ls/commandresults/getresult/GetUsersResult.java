@@ -57,7 +57,7 @@ public class GetUsersResult extends GetCommandResult {
                 }
                 default -> {
                     try {
-                        String str = generateHtml().toString();
+                        String str = generateHtml().generateStringHtml("");
                         BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
                         writer.write(str);
                         writer.close();
@@ -74,7 +74,7 @@ public class GetUsersResult extends GetCommandResult {
                     }
                 }
                 case "application/json" -> System.out.println(generateJson());
-                default -> System.out.println(generateHtml());
+                default -> System.out.println(generateHtml().generateStringHtml(""));
             }
         }
 

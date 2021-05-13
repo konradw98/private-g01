@@ -24,18 +24,20 @@ public class Element {
         return this;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder html = new StringBuilder("<" + name + ">" + "\t");
-        if(text!= null) {
-            html.append(text.toString());
-        }
+    public String generateStringHtml(String prefix) {
+        StringBuilder html = new StringBuilder(prefix + "<" + name + ">");
+        if (text != null) {
+            html.append(text);
+        } else html.append("\n");
         for (Element element : children) {
-            html.append(element.toString());
+            html.append(element.generateStringHtml(prefix + "\t"));
         }
-        html.append("</").append(name).append(">");
-        html.append("\n");
+        if (text == null) {
+            html.append(prefix).append("</").append(name).append(">\n");
+        } else {
+            html.append("</").append(name).append(">\n");
+        }
 
-        return html.toString();
+        return String.valueOf(html);
     }
 }
