@@ -5,7 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.commandresults.*;
+<<<<<<< Updated upstream
 import pt.isel.ls.commandresults.getresult.*;
+=======
+>>>>>>> Stashed changes
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.instanceOf;
 
