@@ -122,9 +122,9 @@ public class GetUsersResult extends GetCommandResult {
         table.with(h1().with(new Text("User Details")));
 
         table.with(tr().with(
-                th().with(new Text("Identifier : ")),
-                th().with(new Text("Name : ")),
-                th().with(new Text("Email : "))));
+                th().with(new Text("Identifier")),
+                th().with(new Text("Name")),
+                th().with(new Text("Email"))));
 
         for (User user : users) {
             table.with(tr().with(

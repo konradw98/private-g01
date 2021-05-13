@@ -17,8 +17,15 @@ public class GetUserByIdResult extends GetCommandResult {
     }
 
     public void generateResult(Headers headers) {
-        String accept = headers.get("accept");
-        String fileName = headers.get("file-name");
+        String accept;
+        String fileName;
+        if (headers == null) {
+            accept = "text/html";
+            fileName = null;
+        } else {
+            accept = headers.get("accept");
+            fileName = headers.get("file-name");
+        }
 
         if (fileName != null) {
             switch (accept) {
@@ -42,11 +49,15 @@ public class GetUserByIdResult extends GetCommandResult {
                         e.printStackTrace();
                     }
                 }
-                case "text/html" -> {
-                    //do pliku json
-                }
                 default -> {
-                    // do pliku html
+                    try {
+                        String str = generateHtml().generateStringHtml("");
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                        writer.write(str);
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } else {
@@ -54,15 +65,8 @@ public class GetUserByIdResult extends GetCommandResult {
                 case "text/plain" -> {
                     System.out.println(user);
                 }
-                case "application/json" -> {
-                    System.out.println(generateJson());
-                }
-                case "text/html" -> {
-                    //do konsoli html
-                }
-                default -> {
-                    // do konsoli html
-                }
+                case "application/json" -> System.out.println(generateJson());
+                default -> System.out.println(generateHtml().generateStringHtml(""));
             }
         }
 

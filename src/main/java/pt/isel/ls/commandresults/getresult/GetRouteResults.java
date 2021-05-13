@@ -18,8 +18,15 @@ public class GetRouteResults extends GetCommandResult {
     }
 
     public void generateResult(Headers headers) {
-        String accept = headers.get("accept");
-        String fileName = headers.get("file-name");
+        String accept;
+        String fileName;
+        if (headers == null) {
+            accept = "text/html";
+            fileName = null;
+        } else {
+            accept = headers.get("accept");
+            fileName = headers.get("file-name");
+        }
 
         if (fileName != null) {
             switch (accept) {
@@ -47,11 +54,15 @@ public class GetRouteResults extends GetCommandResult {
                         e.printStackTrace();
                     }
                 }
-                case "text/html" -> {
-                    //do pliku json
-                }
                 default -> {
-                    // do pliku html
+                    try {
+                        String str = generateHtml().generateStringHtml("");
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                        writer.write(str);
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } else {
@@ -61,16 +72,8 @@ public class GetRouteResults extends GetCommandResult {
                         System.out.println(route);
                     }
                 }
-                case "application/json" -> {
-                    System.out.println(generateJson());
-
-                }
-                case "text/html" -> {
-                    //do konsoli json
-                }
-                default -> {
-                    // do konsoli html
-                }
+                case "application/json" -> System.out.println(generateJson());
+                default -> System.out.println(generateHtml().generateStringHtml(""));
             }
         }
 
@@ -101,10 +104,10 @@ public class GetRouteResults extends GetCommandResult {
         html.with(body().with(table));
         table.with(h1().with(new Text("Route Details")));
         table.with(tr().with(
-                th().with(new Text("Identifier : ")),
-                th().with(new Text("Start Location : ")),
-                th().with(new Text("End Location : ")),
-                th().with(new Text("Distance : "))));
+                th().with(new Text("Identifier")),
+                th().with(new Text("Start Location")),
+                th().with(new Text("End Location")),
+                th().with(new Text("Distance"))));
 
         for (Route route : routes) {
             table.with(tr().with(
