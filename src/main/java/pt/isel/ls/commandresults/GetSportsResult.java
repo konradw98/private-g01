@@ -33,16 +33,22 @@ public class GetSportsResult implements CommandResult {
 
     public Element generateHtml() {
         Element html = html();
-        Element body = body();
+        Element table = table();
 
         html.with(head().with(title().with(new Text("Sports"))));
-        html.with(body.with(h1().with(new Text("Sport Details"))));
+        html.with(body().with(table));
+        table.with(h1().with(new Text("Sport Details")));
+
+        table.with(tr().with(
+                th().with(new Text("Identifier : ")),
+                th().with(new Text("Name : ")),
+                th().with(new Text("Description : "))));
 
         for (Sport sport : sports) {
-            body.with(ul().with(
-                    li().with(new Text("Identifier : " + sport.getSid())),
-                    li().with(new Text("Name : " + sport.getName())),
-                    li().with(new Text("Description : " + sport.getDescription()))));
+            table.with(tr().with(
+                    td().with(new Text(sport.getSid())),
+                    td().with(new Text(sport.getName())),
+                    td().with(new Text(sport.getDescription()))));
         }
 
         return html;

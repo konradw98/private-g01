@@ -23,7 +23,9 @@ public class App {
 
             while (!exit) {
                 exit = CommandExecutor.runCommand(line, router, dataSource);
-                if(!exit) { line = scanner.nextLine(); }
+                if (!exit) {
+                    line = scanner.nextLine();
+                }
             }
         } else {
             while (!exit) {

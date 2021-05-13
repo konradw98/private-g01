@@ -33,17 +33,23 @@ public class GetRouteResults implements CommandResult {
 
     public Element generateHtml() {
         Element html = html();
-        Element body = body();
+        Element table = table();
 
         html.with(head().with(title().with(new Text("Routes"))));
-        html.with(body.with(h1().with(new Text("Route Details"))));
+        html.with(body().with(table));
+        table.with(h1().with(new Text("Route Details")));
+        table.with(tr().with(
+                th().with(new Text("Identifier : ")),
+                th().with(new Text("Start Location : ")),
+                th().with(new Text("End Location : ")),
+                th().with(new Text("Distance : "))));
 
         for (Route route : routes) {
-            body.with(ul().with(
-                    li().with(new Text("Identifier : " + route.getRid())),
-                    li().with(new Text("Start Location : " + route.getStartLocation())),
-                    li().with(new Text("End Location : " + route.getEndLocation())),
-                    li().with(new Text("Distance : " + route.getDistance()))));
+            table.with(tr().with(
+                    td().with(new Text(route.getRid())),
+                    td().with(new Text(route.getStartLocation())),
+                    td().with(new Text(route.getEndLocation())),
+                    td().with(new Text(route.getDistance()))));
         }
 
         return html;

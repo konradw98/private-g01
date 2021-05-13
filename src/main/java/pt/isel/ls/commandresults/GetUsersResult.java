@@ -42,16 +42,22 @@ public class GetUsersResult implements CommandResult {
 
     public Element generateHtml() {
         Element html = html();
-        Element body = body();
+        Element table = table();
 
         html.with(head().with(title().with(new Text("Users"))));
-        html.with(body.with(h1().with(new Text("User Details"))));
+        html.with(body().with(table));
+        table.with(h1().with(new Text("User Details")));
+
+        table.with(tr().with(
+                th().with(new Text("Identifier : ")),
+                th().with(new Text("Name : ")),
+                th().with(new Text("Email : "))));
 
         for (User user : users) {
-            body.with(ul().with(
-                    li().with(new Text("Identifier : " + user.getUid())),
-                    li().with(new Text("Name : " + user.getName())),
-                    li().with(new Text("Email : " + user.getEmail()))));
+            table.with(tr().with(
+                    td().with(new Text(user.getUid())),
+                    td().with(new Text(user.getName())),
+                    td().with(new Text(user.getEmail()))));
         }
 
         return html;
