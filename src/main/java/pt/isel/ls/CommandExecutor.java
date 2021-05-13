@@ -25,7 +25,7 @@ public class CommandExecutor {
 
     private static boolean executeCommand(String[] command, String line, Router router, PGSimpleDataSource dataSource) {
         boolean exit = false;
-        if (command.length == COMMAND_WITHOUT_HEADERS || command.length == COMMAND_WIT_HEADERS) {
+        if (command.length >= GET_COMMAND_SEGMENTS && command.length <= COMMAND_WIT_HEADERS) {
             Method method = validateMethod(command[METHOD_INDEX]);
             if (!method.equals(Method.WRONG_METHOD)) {
                 Optional<RouteResult> optional = router.findRoute(method, new Path(command[PATH_INDEX]));
