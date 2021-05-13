@@ -12,7 +12,7 @@ public class Headers {
 
     private void addHeadersFromString(String sequence) {
         //????
-        String[] parameters = sequence.split("|");
+        String[] parameters = sequence.split("\\|");
         for (String parameter : parameters) {
             String[] value = parameter.split(":");
             addHeader(value[0], value[1]);

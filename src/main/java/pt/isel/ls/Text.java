@@ -7,4 +7,9 @@ public class Text {
     public Text(Object text) {
         this.text = text;
     }
+
+    @Override
+    public String toString() {
+        return text.toString();
+    }
 }

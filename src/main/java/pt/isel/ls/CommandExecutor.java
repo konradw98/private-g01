@@ -11,7 +11,8 @@ public class CommandExecutor {
     private static final int COMMAND_WIT_HEADERS = 4;
     private static final int METHOD_INDEX = 0;
     private static final int PATH_INDEX = 1;
-    private static final int PARAMETERS_INDEX = 2;
+    private static final int PARAMETERS_INDEX_WITHOUT_HEADERS = 2;
+    private static final int PARAMETERS_INDEX_WITH_HEADERS = 3;
     private static final int HEADERS_INDEX = 2;
 
     public static boolean runCommand(String line, Router router, PGSimpleDataSource dataSource) {
@@ -74,12 +75,12 @@ public class CommandExecutor {
             commandRequest = new CommandRequest(routeResult.getPathParameters(),
                     dataSource);
         } else if (command.length == COMMAND_WITHOUT_HEADERS) {
-            Parameters parameters = new Parameters(command[PARAMETERS_INDEX]);
+            Parameters parameters = new Parameters(command[PARAMETERS_INDEX_WITHOUT_HEADERS]);
             commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters,
                     dataSource);
         } else {
             Headers headers = new Headers(command[HEADERS_INDEX]);
-            Parameters parameters = new Parameters(command[PARAMETERS_INDEX]);
+            Parameters parameters = new Parameters(command[PARAMETERS_INDEX_WITH_HEADERS]);
             commandRequest = new CommandRequest(routeResult.getPathParameters(),
                     parameters, headers, dataSource);
         }

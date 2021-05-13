@@ -27,7 +27,9 @@ public class Element {
     @Override
     public String toString() {
         StringBuilder html = new StringBuilder("<" + name + ">" + "\t");
-        html.append(text.toString());
+        if(text!= null) {
+            html.append(text.toString());
+        }
         for (Element element : children) {
             html.append(element.toString());
         }
