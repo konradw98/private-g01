@@ -2,6 +2,10 @@ package pt.isel.ls;
 
 import com.google.common.collect.ArrayListMultimap;
 import pt.isel.ls.handlers.*;
+import pt.isel.ls.handlers.GetTables.GetRoutesHandler;
+import pt.isel.ls.handlers.GetTables.GetSportsHandler;
+import pt.isel.ls.handlers.GetTables.GetUsersHandler;
+
 import java.util.*;
 
 public class Router {
@@ -16,7 +20,7 @@ public class Router {
         addRoute(Method.GET, new PathTemplate("/users/{uid}"), new GetUserByIdHandler());
         addRoute(Method.GET, new PathTemplate("/routes"), new GetRoutesHandler());
         addRoute(Method.GET, new PathTemplate("/routes/{rid}"), new GetRouteByIdHandler());
-        addRoute(Method.GET, new PathTemplate("/sports"), new GetSportHandler());
+        addRoute(Method.GET, new PathTemplate("/sports"), new GetSportsHandler());
         addRoute(Method.GET, new PathTemplate("/sports/{sid}"), new GetSportByIdHandler());
         addRoute(Method.GET, new PathTemplate("/sports/{sid}/activities"), new GetSportActivitiesHandler());
         addRoute(Method.GET, new PathTemplate("/sports/{sid}/activities/{aid}"), new GetSportActivitiesByIdHandler());

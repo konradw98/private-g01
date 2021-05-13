@@ -1,10 +1,11 @@
-package pt.isel.ls.handlers;
+package pt.isel.ls.handlers.GetTables;
 
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.GetUsersResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.User;
 
 import java.sql.Connection;
@@ -13,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class GetUsersHandler implements CommandHandler {
+public class GetUsersHandler extends GetTablesHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         if (!commandRequest.hasParameters()) {
@@ -24,7 +25,7 @@ public class GetUsersHandler implements CommandHandler {
         String skip = parameters.get("skip");
         String top = parameters.get("top");
 
-        String wrongParameters = validateHeaders(skip, top);
+        String wrongParameters = validateParameters(skip, top);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }
@@ -63,16 +64,4 @@ public class GetUsersHandler implements CommandHandler {
             conn.close();
         }
     }
-
-    private String validateHeaders(String skip, String top) {
-        String wrongParameters = "";
-        if (skip == null || Integer.parseInt(skip) < 0) {
-            wrongParameters += "skip ";
-        }
-        if (top == null || Integer.parseInt(top) < 0) {
-            wrongParameters += " top";
-        }
-        return wrongParameters;
-    }
-
 }
