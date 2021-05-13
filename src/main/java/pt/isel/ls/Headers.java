@@ -14,7 +14,7 @@ public class Headers {
         //????
         String[] parameters = sequence.split("|");
         for (String parameter : parameters) {
-            String[] value = parameter.split("=");
+            String[] value = parameter.split(":");
             addHeader(value[0], value[1]);
         }
     }
