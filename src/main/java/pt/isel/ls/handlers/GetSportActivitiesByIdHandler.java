@@ -1,7 +1,6 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
-import pt.isel.ls.Parameters;
 import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;

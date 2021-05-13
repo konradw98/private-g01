@@ -1,7 +1,6 @@
 package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Element;
-import pt.isel.ls.Headers;
 import pt.isel.ls.commandresults.CommandResult;
 
 public abstract  class GetCommandResult implements CommandResult {
@@ -15,6 +14,7 @@ public abstract  class GetCommandResult implements CommandResult {
     public Element head() {
         return new Element("head");
     }
+
     public Element body() {
         return new Element("body");
     }

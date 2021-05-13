@@ -1,15 +1,11 @@
 package pt.isel.ls.commandresults.getresult;
 
-
 import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.User;
-
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class GetUsersResult extends GetCommandResult {
@@ -22,7 +18,7 @@ public class GetUsersResult extends GetCommandResult {
         this.users = users;
     }
 
-    public void generateResult(Headers headers)  {
+    public void generateResult(Headers headers) {
         String accept = headers.get("accept");
         String fileName = headers.get("file-name");
 

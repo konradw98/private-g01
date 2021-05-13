@@ -2,10 +2,9 @@ package pt.isel.ls;
 
 import com.google.common.collect.ArrayListMultimap;
 import pt.isel.ls.handlers.*;
-import pt.isel.ls.handlers.GetTables.GetRoutesHandler;
-import pt.isel.ls.handlers.GetTables.GetSportsHandler;
-import pt.isel.ls.handlers.GetTables.GetUsersHandler;
-
+import pt.isel.ls.handlers.gettables.GetRoutesHandler;
+import pt.isel.ls.handlers.gettables.GetSportsHandler;
+import pt.isel.ls.handlers.gettables.GetUsersHandler;
 import java.util.*;
 
 public class Router {

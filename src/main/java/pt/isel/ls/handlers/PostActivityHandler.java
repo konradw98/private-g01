@@ -5,7 +5,6 @@ import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.PostResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
-
 import java.sql.*;
 
 public class PostActivityHandler implements CommandHandler {
@@ -52,7 +51,7 @@ public class PostActivityHandler implements CommandHandler {
             Time parsedTime;
 
             try {
-                 parsedDate = Date.valueOf(date);
+                parsedDate = Date.valueOf(date);
             } catch (IllegalStateException e) {
                 conn.close();
                 return new WrongParametersResult("date");

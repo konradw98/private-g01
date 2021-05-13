@@ -2,7 +2,6 @@ package pt.isel.ls;
 
 import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.commandresults.CommandResult;
-
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -66,7 +65,8 @@ public class CommandExecutor {
         }
     }
 
-    private static boolean executeProperCommand(RouteResult routeResult, String[] command, PGSimpleDataSource dataSource) {
+    private static boolean executeProperCommand(RouteResult routeResult, String[] command,
+                                                PGSimpleDataSource dataSource) {
         boolean exit = false;
         CommandRequest commandRequest;
 

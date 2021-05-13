@@ -2,7 +2,6 @@ package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
-import pt.isel.ls.Method;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.User;
 

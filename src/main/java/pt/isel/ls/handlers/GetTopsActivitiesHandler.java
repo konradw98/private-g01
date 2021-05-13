@@ -6,7 +6,6 @@ import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.models.Activity;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -45,8 +44,9 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                     return new WrongParametersResult(wrongParameters);
                 }
 
-                String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? AND rid IN (SELECT rid FROM routes "
-                        + "WHERE distance>" + minDistance + ") ORDER BY duration_time " + orderBy;
+                String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? AND rid IN"
+                        + " (SELECT rid FROM routes " + "WHERE distance>" + minDistance + ")"
+                        + " ORDER BY duration_time " + orderBy;
 
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setInt(3, Integer.parseInt(rid));
@@ -155,8 +155,8 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                         return new WrongParametersResult(wrongParameters);
                     }
 
-                    String sql = "SELECT * FROM activities WHERE sid=? AND rid IN (SELECT rid FROM routes " +
-                            "WHERE distance>" + minDistance + ") AND  ORDER BY duration_time " + orderBy;
+                    String sql = "SELECT * FROM activities WHERE sid=? AND rid IN (SELECT rid FROM routes "
+                            + "WHERE distance>" + minDistance + ") AND  ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
                     pstmt.setInt(1, Integer.parseInt(sid));
                     ResultSet resultSet = pstmt.executeQuery();
