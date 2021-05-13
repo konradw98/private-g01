@@ -14,7 +14,7 @@ public class GetRouteResult implements CommandResult {
     @Override
     public boolean results() {
         route.print();
-        return true;
+        return false;
     }
 
     public String generateJson() {

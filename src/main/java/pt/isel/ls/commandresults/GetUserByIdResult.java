@@ -14,7 +14,7 @@ public class GetUserByIdResult implements CommandResult {
     @Override
     public boolean results() {
         user.print();
-        return true;
+        return false;
     }
 
 

@@ -1,6 +1,7 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.GetUsersResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
@@ -17,9 +18,22 @@ public class GetUsersHandler implements CommandHandler {
         Connection conn = commandRequest.getDataSource().getConnection();
 
         try {
+            Parameters parameters = commandRequest.getParameters();
+            String skip = parameters.get("skip");
+            String top = parameters.get("top");
 
-            String sql = "SELECT * FROM users";
+            String wrongParameters = validateHeaders(skip, top);
+            if (!wrongParameters.equals("")) {
+                conn.close();
+                return new WrongParametersResult(wrongParameters);
+            }
+
+            int skipInt = Integer.parseInt(skip) + 1;
+
+            String sql = "SELECT * FROM users WHERE uid BETWEEN ? AND ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, skipInt);
+            pstmt.setInt(2, Integer.parseInt(top) + skipInt - 1);
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
 
@@ -45,7 +59,17 @@ public class GetUsersHandler implements CommandHandler {
         } finally {
             conn.close();
         }
-
-        //TODO: think about how to differ empty db and wrong parameters
     }
+
+    private String validateHeaders(String skip, String top) {
+        String wrongParameters = "";
+        if (skip == null || Integer.parseInt(skip) < 0) {
+            wrongParameters += "skip ";
+        }
+        if (top == null || Integer.parseInt(top) < 0) {
+            wrongParameters += " top";
+        }
+        return wrongParameters;
+    }
+
 }

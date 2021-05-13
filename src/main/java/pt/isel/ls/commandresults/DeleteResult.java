@@ -12,7 +12,7 @@ public class DeleteResult implements CommandResult {
         for (String id : activitiesId) {
             System.out.print(id + ", ");
         }
-        return true;
+        return false;
     }
 
     public DeleteResult(int userId, List<String> activitiesId) {

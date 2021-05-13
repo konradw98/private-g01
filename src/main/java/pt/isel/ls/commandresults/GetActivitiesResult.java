@@ -18,7 +18,7 @@ public class GetActivitiesResult implements CommandResult {
         for (Activity activity : activities) {
             activity.print();
         }
-        return true;
+        return false;
     }
 
     public String generateJson() {

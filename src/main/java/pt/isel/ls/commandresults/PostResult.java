@@ -20,6 +20,6 @@ public class PostResult implements CommandResult {
     @Override
     public boolean results() {
         System.out.println(label + ": " + id);
-        return true;
+        return false;
     }
 }

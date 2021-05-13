@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class App {
     //TODO: GET /users/a i w activities time i date validation
+    //TODO: think about how to differ empty db and wrong parameters
     public static void main(String[] args) {
         boolean exit = false;
 
@@ -19,13 +20,9 @@ public class App {
 
         if (args.length == 0) {
             Scanner scanner = new Scanner(System.in);
-            String line = scanner.nextLine();
-
             while (!exit) {
+                String line = scanner.nextLine();
                 exit = CommandExecutor.runCommand(line, router, dataSource);
-                if (!exit) {
-                    line = scanner.nextLine();
-                }
             }
         } else {
             while (!exit) {

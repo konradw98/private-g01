@@ -17,7 +17,7 @@ public class GetSportsResult implements CommandResult {
         for (Sport sport : sports) {
             sport.print();
         }
-        return true;
+        return false;
     }
 
     public String generateJson() {

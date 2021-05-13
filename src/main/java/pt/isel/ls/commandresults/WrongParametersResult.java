@@ -13,6 +13,6 @@ public class WrongParametersResult implements CommandResult {
     @Override
     public boolean results() {
         System.out.println("Wrong parameters " + wrongParameters);
-        return true;
+        return false;
     }
 }

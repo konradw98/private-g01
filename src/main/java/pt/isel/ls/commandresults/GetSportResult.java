@@ -14,7 +14,7 @@ public class GetSportResult implements CommandResult {
     @Override
     public boolean results() {
         sport.print();
-        return true;
+        return false;
     }
 
     public String generateJson() {

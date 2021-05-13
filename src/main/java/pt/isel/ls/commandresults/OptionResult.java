@@ -77,7 +77,7 @@ public class OptionResult implements CommandResult {
                     3. OPTION / - presents a list of available commands\s"""
         );
 
-        return true;
+        return false;
 
     }
 }

@@ -17,7 +17,7 @@ public class GetRouteResults implements CommandResult {
         for (Route route : routes) {
             route.print();
         }
-        return true;
+        return false;
     }
 
     public String generateJson() {

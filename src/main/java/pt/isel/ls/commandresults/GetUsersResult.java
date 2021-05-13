@@ -26,7 +26,7 @@ public class GetUsersResult implements CommandResult {
         for (User user : users) {
             user.print();
         }
-        return true;
+        return false;
     }
 
     public String generateJson() {
