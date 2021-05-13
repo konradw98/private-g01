@@ -4,7 +4,10 @@ import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Route;
+import pt.isel.ls.models.User;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 public class GetRouteResults extends GetCommandResult {
@@ -23,10 +26,28 @@ public class GetRouteResults extends GetCommandResult {
         if (fileName != null) {
             switch (accept) {
                 case "text/plain" -> {
-                    //do pliki text plain
+                    try {
+                        StringBuilder stringBuilder = new StringBuilder("");
+                        for (Route route : routes) {
+                            stringBuilder.append(route.toString());
+                        }
+                        String str = stringBuilder.toString();
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                        writer.write(str);
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 case "application/json" -> {
-                    //do pliku json
+                    try {
+                        String str = generateJson();
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                        writer.write(str);
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 case "text/html" -> {
                     //do pliku json

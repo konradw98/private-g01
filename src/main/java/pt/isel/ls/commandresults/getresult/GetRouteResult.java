@@ -5,6 +5,9 @@ import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Route;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
 public class GetRouteResult extends GetCommandResult {
     private Route route;
     private Headers headers;
@@ -21,10 +24,24 @@ public class GetRouteResult extends GetCommandResult {
         if (fileName != null) {
             switch (accept) {
                 case "text/plain" -> {
-                    //do pliki text plain
+                    try {
+                        String str = route.toString();
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                        writer.write(str);
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 case "application/json" -> {
-                    //do pliku json
+                    try {
+                        String str = generateJson();
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                        writer.write(str);
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 case "text/html" -> {
                     //do pliku json

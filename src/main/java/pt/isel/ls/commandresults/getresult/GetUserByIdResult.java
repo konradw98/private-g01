@@ -6,6 +6,11 @@ import pt.isel.ls.Method;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.User;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class GetUserByIdResult extends GetCommandResult {
     private User user;
     private Headers headers;
@@ -22,10 +27,24 @@ public class GetUserByIdResult extends GetCommandResult {
         if (fileName != null) {
             switch (accept) {
                 case "text/plain" -> {
-                    //do pliki text plain
+                    try {
+                        String str = user.toString();
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                        writer.write(str);
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 case "application/json" -> {
-                    //do pliku json
+                    try {
+                        String str = generateJson();
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                        writer.write(str);
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 case "text/html" -> {
                     //do pliku json

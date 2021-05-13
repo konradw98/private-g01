@@ -5,6 +5,9 @@ import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Sport;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
 public class GetSportResult extends GetCommandResult {
     private Sport sport;
     private Headers headers;
@@ -24,7 +27,14 @@ public class GetSportResult extends GetCommandResult {
                     //do pliki text plain
                 }
                 case "application/json" -> {
-                    //do pliku json
+                    try {
+                        String str = sport.toString(); // TUTU
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                        writer.write(str);
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 case "text/html" -> {
                     //do pliku json
