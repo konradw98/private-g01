@@ -13,23 +13,20 @@ public class GetUserActivitiesByIdHandler implements CommandHandler {
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+        Parameters pathParameters = commandRequest.getParameters();
+        String stringUid = pathParameters.get("uid");
+        String stringAid = pathParameters.get("aid");
+        String wrongParameters = validatePathParameters(stringUid, stringAid);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            Parameters parameters = commandRequest.getParameters();
-
-            int uidParam = Integer.parseInt(parameters.get("uid"));
-            int aidParam = Integer.parseInt(parameters.get("aid"));
-            String wrongParameters = checkParameters(uidParam, aidParam, conn);
-
-            if (!wrongParameters.equals("")) {
-                conn.close();
-                return new WrongParametersResult(wrongParameters);
-            }
-
             String sql = "SELECT * FROM activities WHERE uid=? AND aid=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, uidParam);
-            pstmt.setInt(2, aidParam);
+            pstmt.setInt(1, Integer.parseInt(stringUid));
+            pstmt.setInt(2, Integer.parseInt(stringAid));
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
 
@@ -62,28 +59,15 @@ public class GetUserActivitiesByIdHandler implements CommandHandler {
         }
     }
 
-    private String checkParameters(int uid, int aid, Connection conn) throws SQLException {
-        String sql1 = "SELECT MAX(uid) FROM users";
-        PreparedStatement pstmt1 = conn.prepareStatement(sql1);
-        ResultSet resultSet = pstmt1.executeQuery();
-        resultSet.next();
-        int maxUid = resultSet.getInt(1);
-
+    private String validatePathParameters(String uid, String aid) {
         String wrongParameters = "";
-        if (maxUid < uid || uid < 1) {
-            wrongParameters += " uid = " + uid;
+        if (uid == null || Integer.parseInt(uid) < 1) {
+            wrongParameters += "sid ";
         }
 
-        sql1 = "SELECT MAX(aid) FROM activities";
-        pstmt1 = conn.prepareStatement(sql1);
-        resultSet = pstmt1.executeQuery();
-        resultSet.next();
-
-        if (resultSet.getInt(1) < aid || aid < 1) {
-            wrongParameters += " aid = " + aid;
+        if (aid == null || Integer.parseInt(aid) < 1) {
+            wrongParameters += "aid ";
         }
-
-
         return wrongParameters;
     }
 

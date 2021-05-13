@@ -14,20 +14,18 @@ public class PostSportHandler implements CommandHandler {
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+        Parameters parameters = commandRequest.getParameters();
+        String name = parameters.get("name");
+        String description = parameters.get("description");
+
+        String wrongParameters = checkParameters(name, description);
+
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
         Connection conn = commandRequest.getDataSource().getConnection();
-
         try {
-            Parameters parameters = commandRequest.getParameters();
-            String name = parameters.get("name");
-            String description = parameters.get("description");
-
-            String wrongParameters = checkParameters(name, description);
-
-            if (!wrongParameters.equals("")) {
-                conn.close();
-                return new WrongParametersResult(wrongParameters);
-            }
-
             String sql = "INSERT INTO sports(name,description) values(?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
@@ -54,11 +52,11 @@ public class PostSportHandler implements CommandHandler {
     private String checkParameters(String name, String description) {
         String wrongParameters = "";
         if (name == null) {
-            wrongParameters += " name";
+            wrongParameters += "name ";
         }
 
         if (description == null) {
-            wrongParameters += " description";
+            wrongParameters += "description ";
         }
 
         return wrongParameters;

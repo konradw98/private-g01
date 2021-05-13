@@ -13,20 +13,18 @@ import java.sql.SQLException;
 public class PostRouteHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+        Parameters parameters = commandRequest.getParameters();
+        String startLocation = parameters.get("startLocation");
+        String endLocation = parameters.get("endLocation");
+        String distance = parameters.get("distance");
+
+        String wrongParameters = checkParameters(startLocation, endLocation, distance);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
         Connection conn = commandRequest.getDataSource().getConnection();
-
         try {
-            Parameters parameters = commandRequest.getParameters();
-            String startLocation = parameters.get("startLocation");
-            String endLocation = parameters.get("endLocation");
-            String distance = parameters.get("distance");
-
-            String wrongParameters = checkParameters(startLocation, endLocation, distance);
-            if (!wrongParameters.equals("")) {
-                conn.close();
-                return new WrongParametersResult(wrongParameters);
-            }
-
             String sql = "INSERT INTO routes(start_location, end_location, distance) values(?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
@@ -55,15 +53,15 @@ public class PostRouteHandler implements CommandHandler {
     private String checkParameters(String startLocation, String endLocation, String distance) {
         String wrongParameters = "";
         if (startLocation == null) {
-            wrongParameters += " start location";
+            wrongParameters += "start location ";
         }
 
         if (endLocation == null) {
-            wrongParameters += " end location";
+            wrongParameters += "end location ";
         }
 
         if (distance == null || Float.parseFloat(distance) <= 0) {
-            wrongParameters += " distance";
+            wrongParameters += "distance ";
         }
         return wrongParameters;
     }

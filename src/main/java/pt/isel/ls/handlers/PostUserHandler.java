@@ -14,21 +14,18 @@ public class PostUserHandler implements CommandHandler {
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+        Parameters parameters = commandRequest.getParameters();
+        String name = parameters.get("name");
+        String email = parameters.get("email");
+
+        String wrongParameters = checkParameters(name, email);
+
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
         Connection conn = commandRequest.getDataSource().getConnection();
-
         try {
-
-            Parameters parameters = commandRequest.getParameters();
-            String name = parameters.get("name");
-            String email = parameters.get("email");
-
-            String wrongParameters = checkParameters(name, email);
-
-            if (!wrongParameters.equals("")) {
-                conn.close();
-                return new WrongParametersResult(wrongParameters);
-            }
-
             String sql = "INSERT INTO users(name, email) values(?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, name);
@@ -55,11 +52,11 @@ public class PostUserHandler implements CommandHandler {
     private String checkParameters(String name, String email) {
         String wrongParameters = "";
         if (name == null) {
-            wrongParameters += " name";
+            wrongParameters += "name ";
         }
 
         if (email == null) {
-            wrongParameters += " email";
+            wrongParameters += "email ";
         }
 
         return wrongParameters;

@@ -5,6 +5,7 @@ import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.PostResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+
 import java.sql.*;
 
 public class PostActivityHandler implements CommandHandler {
@@ -12,47 +13,59 @@ public class PostActivityHandler implements CommandHandler {
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+        Parameters parameters = commandRequest.getParameters();
+        String uid = parameters.get("uid");
+        String duration = parameters.get("duration");
+        String date = parameters.get("date");
+        String paramSid = commandRequest.getPathParameters().get("sid");
+
+        String wrongParameters = checkParametersWithoutRid(paramSid, uid, duration, date);
+
+        String sql;
+        PreparedStatement pstmt;
         Connection conn = commandRequest.getDataSource().getConnection();
-
         try {
-            String sql;
-            PreparedStatement pstmt;
-            Parameters parameters = commandRequest.getParameters();
-            String uid = parameters.get("uid");
-            String duration = parameters.get("duration");
-            String date = parameters.get("date");
-            String paramSid = commandRequest.getPathParameters().get("sid");
-
-            String wrongParameters = checkParametersWithoutRid(paramSid, uid, duration, date, conn);
-
             if (commandRequest.getParameters().size() == MAX_AMOUNT_OF_PARAMETERS) {
-                sql = "INSERT INTO activities(date,duration_time,sid,uid,rid) values(?,?,?,?,?)";
                 String rid = parameters.get("rid");
-                wrongParameters += checkRid(rid, conn);
+                wrongParameters += checkRid(rid);
 
+                sql = "INSERT INTO activities(date,duration_time,sid,uid,rid) values(?,?,?,?,?)";
                 if (!wrongParameters.equals("")) {
                     conn.close();
-                    return new WrongParametersResult();
+                    return new WrongParametersResult(wrongParameters);
                 }
 
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setInt(5, Integer.parseInt(rid));
-
             } else if (!wrongParameters.equals("")) {
                 conn.close();
-                return new WrongParametersResult();
-
+                return new WrongParametersResult(wrongParameters);
             } else if (commandRequest.getParameters().size() < MAX_AMOUNT_OF_PARAMETERS) {
-
                 sql = "INSERT INTO activities(date,duration_time,sid,uid) values(?,?,?,?)";
                 pstmt = conn.prepareStatement(sql);
-
             } else {
-                return new WrongParametersResult();
+                conn.close();
+                return new WrongParametersResult(wrongParameters);
             }
 
-            pstmt.setDate(1, Date.valueOf(date));
-            pstmt.setTime(2, Time.valueOf(duration));
+            Date parsedDate;
+            Time parsedTime;
+
+            try {
+                 parsedDate = Date.valueOf(date);
+            } catch (IllegalStateException e) {
+                conn.close();
+                return new WrongParametersResult("date");
+            }
+            try {
+                parsedTime = Time.valueOf(duration);
+            } catch (IllegalStateException e) {
+                conn.close();
+                return new WrongParametersResult("duration");
+            }
+
+            pstmt.setDate(1, parsedDate);
+            pstmt.setTime(2, parsedTime);
             pstmt.setInt(3, Integer.parseInt(paramSid));
             pstmt.setInt(4, Integer.parseInt(uid));
             pstmt.executeUpdate();
@@ -74,49 +87,30 @@ public class PostActivityHandler implements CommandHandler {
         }
     }
 
-    private String checkParametersWithoutRid(String sid, String uid, String duration, String date, Connection conn)
-            throws SQLException {
-        String sql = "SELECT MAX(sid) FROM sports";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        ResultSet resultSet = pstmt.executeQuery();
-        resultSet.next();
-        int maxSid = resultSet.getInt(1);
-
+    private String checkParametersWithoutRid(String sid, String uid, String duration, String date) {
         String wrongParameters = "";
-        if (sid == null || Integer.parseInt(sid) < 1 || Integer.parseInt(sid) > maxSid) {
-            wrongParameters += " sid";
+        if (sid == null || Integer.parseInt(sid) < 1) {
+            wrongParameters += "sid ";
         }
 
-        sql = "SELECT MAX(uid) FROM users";
-        pstmt = conn.prepareStatement(sql);
-        resultSet = pstmt.executeQuery();
-        resultSet.next();
-        int maxUid = resultSet.getInt(1);
-
-        if (uid == null || Integer.parseInt(uid) < 1 || Integer.parseInt(uid) > maxUid) {
-            wrongParameters += " uid";
+        if (uid == null || Integer.parseInt(uid) < 1) {
+            wrongParameters += "uid ";
         }
 
         if (duration == null) {
-            wrongParameters += " duration";
+            wrongParameters += "duration ";
         }
 
         if (date == null) {
-            wrongParameters += " date";
+            wrongParameters += "date ";
         }
         return wrongParameters;
     }
 
-    private String checkRid(String rid, Connection conn) throws SQLException {
-        String sqlCheck = "SELECT MAX(rid) FROM routes";
-        PreparedStatement pstmtCheck = conn.prepareStatement(sqlCheck);
-        ResultSet resultSet = pstmtCheck.executeQuery();
-        resultSet.next();
-        int maxRid = resultSet.getInt(1);
-
+    private String checkRid(String rid) {
         String wrongParameters = "";
-        if (rid == null || Integer.parseInt(rid) < 1 || Integer.parseInt(rid) > maxRid) {
-            wrongParameters += " rid";
+        if (rid == null || Integer.parseInt(rid) < 1) {
+            wrongParameters += "rid ";
         }
 
         return wrongParameters;

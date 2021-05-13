@@ -1,7 +1,6 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
-import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
@@ -12,13 +11,17 @@ import java.util.ArrayList;
 public class GetUserActivitiesHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+        String stringUid = commandRequest.getPathParameters().get("uid");
+        String wrongParameters = validatePathParameters(stringUid);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            PathParameters parameters = commandRequest.getPathParameters();
-
             String sql = "SELECT * FROM activities WHERE uid=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, Integer.parseInt(parameters.get("uid")));
+            pstmt.setInt(1, Integer.parseInt(stringUid));
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
 
@@ -49,5 +52,13 @@ public class GetUserActivitiesHandler implements CommandHandler {
         } finally {
             conn.close();
         }
+    }
+
+    private String validatePathParameters(String uid) {
+        String wrongParameters = "";
+        if (uid == null || Integer.parseInt(uid) < 1) {
+            wrongParameters += "uid ";
+        }
+        return wrongParameters;
     }
 }

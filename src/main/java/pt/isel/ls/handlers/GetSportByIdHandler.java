@@ -15,13 +15,17 @@ public class GetSportByIdHandler implements CommandHandler {
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+        String stringSid = commandRequest.getPathParameters().get("sid");
+        String wrongParameters = validatePathParameters(stringSid);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            PathParameters parameters = commandRequest.getPathParameters();
-
             String sql = "SELECT * FROM sports WHERE sid=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, Integer.parseInt(parameters.get("sid")));
+            pstmt.setInt(1, Integer.parseInt(stringSid));
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
 
@@ -37,5 +41,13 @@ public class GetSportByIdHandler implements CommandHandler {
         } finally {
             conn.close();
         }
+    }
+
+    private String validatePathParameters(String sid) {
+        String wrongParameters = "";
+        if (sid == null || Integer.parseInt(sid) < 1) {
+            wrongParameters += "sid ";
+        }
+        return wrongParameters;
     }
 }

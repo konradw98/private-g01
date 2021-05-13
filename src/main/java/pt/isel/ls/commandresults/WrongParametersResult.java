@@ -12,7 +12,7 @@ public class WrongParametersResult implements CommandResult {
 
     @Override
     public boolean results() {
-        System.out.println("Wrong parameters: " + wrongParameters);
+        System.out.println("Wrong parameters " + wrongParameters);
         return false;
     }
 }

@@ -1,6 +1,7 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
@@ -13,22 +14,20 @@ public class GetSportActivitiesByIdHandler implements CommandHandler {
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+        PathParameters pathParameters = commandRequest.getPathParameters();
+        String stringSid = pathParameters.get("sid");
+        String stringAid = pathParameters.get("aid");
+        String wrongParameters = validatePathParameters(stringSid, stringAid);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            PathParameters parameters = commandRequest.getPathParameters();
-            int sidParam = Integer.parseInt(parameters.get("sid"));
-            int aidParam = Integer.parseInt(parameters.get("aid"));
-
-            String wrongParameters = checkParameters(sidParam, aidParam, conn);
-            if (!wrongParameters.equals("")) {
-                conn.close();
-                return new WrongParametersResult(wrongParameters);
-            }
-
             String sql = "SELECT * FROM activities WHERE sid=? AND aid=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, sidParam);
-            pstmt.setInt(2, aidParam);
+            pstmt.setInt(1, Integer.parseInt(stringSid));
+            pstmt.setInt(2, Integer.parseInt(stringAid));
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
 
@@ -61,27 +60,15 @@ public class GetSportActivitiesByIdHandler implements CommandHandler {
         }
     }
 
-    private String checkParameters(int sid, int aid, Connection conn) throws SQLException {
-        String sql1 = "SELECT MAX(sid) FROM sports";
-        PreparedStatement pstmt1 = conn.prepareStatement(sql1);
-        ResultSet resultSet = pstmt1.executeQuery();
-        resultSet.next();
-        int maxSid = resultSet.getInt(1);
-
+    private String validatePathParameters(String sid, String aid) {
         String wrongParameters = "";
-        if (maxSid < sid || sid < 1) {
-            wrongParameters += " sid = " + sid;
+        if (sid == null || Integer.parseInt(sid) < 1) {
+            wrongParameters += "sid ";
         }
 
-        sql1 = "SELECT MAX(aid) FROM activities";
-        pstmt1 = conn.prepareStatement(sql1);
-        resultSet = pstmt1.executeQuery();
-        resultSet.next();
-
-        if (resultSet.getInt(1) < aid) {
-            wrongParameters += " aid = " + aid;
+        if (aid == null || Integer.parseInt(aid) < 1) {
+            wrongParameters += "aid ";
         }
-
         return wrongParameters;
     }
 }
