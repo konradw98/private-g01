@@ -3,7 +3,7 @@ package pt.isel.ls.handlers;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
-import pt.isel.ls.commandresults.GetRouteResult;
+import pt.isel.ls.commandresults.getresult.GetRouteResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.models.Route;
 import java.sql.Connection;
@@ -30,7 +30,7 @@ public class GetRouteByIdHandler implements CommandHandler {
                 String endLocation = resultSet.getString("end_location");
                 double distance = resultSet.getDouble("distance");
                 Route route = new Route(rid, startLocation, endLocation, distance);
-                return new GetRouteResult(route);
+                return new GetRouteResult(route, commandRequest.getHeaders());
             } else {
                 return new WrongParametersResult();
             }

@@ -3,6 +3,7 @@ package pt.isel.ls.handlers.GetTables;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.*;
+import pt.isel.ls.commandresults.getresult.GetSportsResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Sport;
 import java.sql.Connection;
@@ -57,7 +58,7 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
             if (sports.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetSportsResult(sports);
+                return new GetSportsResult(sports,commandRequest.getHeaders());
             }
 
         } finally {

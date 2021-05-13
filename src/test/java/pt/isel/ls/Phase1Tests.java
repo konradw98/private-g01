@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.commandresults.*;
+import pt.isel.ls.commandresults.getresult.*;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

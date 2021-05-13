@@ -1,14 +1,16 @@
-package pt.isel.ls.commandresults;
+package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Element;
+import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Sport;
 import java.util.ArrayList;
 
-public class GetSportsResult implements CommandResult {
+public class GetSportsResult extends  GetCommandResult {
     private ArrayList<Sport> sports;
 
-    public GetSportsResult(ArrayList<Sport> sports) {
+    public GetSportsResult(ArrayList<Sport> sports, Headers headers) {
+        super(headers);
         this.sports = sports;
     }
 

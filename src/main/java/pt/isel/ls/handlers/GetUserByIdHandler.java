@@ -3,7 +3,7 @@ package pt.isel.ls.handlers;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
-import pt.isel.ls.commandresults.GetUserByIdResult;
+import pt.isel.ls.commandresults.getresult.GetUserByIdResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.models.User;
 import java.sql.Connection;
@@ -29,7 +29,7 @@ public class GetUserByIdHandler implements CommandHandler {
                 String name = resultSet.getString("name");
                 String email = resultSet.getString("email");
                 User user = new User(uid, email, name);
-                return new GetUserByIdResult(user);
+                return new GetUserByIdResult(user, commandRequest.getHeaders());
             } else {
                 return new WrongParametersResult();
             }

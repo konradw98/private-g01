@@ -1,15 +1,17 @@
-package pt.isel.ls.commandresults;
+package pt.isel.ls.commandresults.getresult;
 
 
 import pt.isel.ls.Element;
+import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.User;
 import java.util.ArrayList;
 
-public class GetUsersResult implements CommandResult {
+public class GetUsersResult extends GetCommandResult {
     private ArrayList<User> users;
 
-    public GetUsersResult(ArrayList<User> users) {
+    public GetUsersResult(ArrayList<User> users, Headers headers) {
+        super(headers);
         this.users = users;
     }
 

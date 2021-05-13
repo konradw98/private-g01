@@ -3,7 +3,7 @@ package pt.isel.ls.handlers.GetTables;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
-import pt.isel.ls.commandresults.GetUsersResult;
+import pt.isel.ls.commandresults.getresult.GetUsersResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.User;
@@ -57,7 +57,7 @@ public class GetUsersHandler extends GetTablesHandler implements CommandHandler 
             if (users.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetUsersResult(users);
+                return new GetUsersResult(users, commandRequest.getHeaders());
             }
 
         } finally {

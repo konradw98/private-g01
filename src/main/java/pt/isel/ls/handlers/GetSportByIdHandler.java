@@ -3,7 +3,7 @@ package pt.isel.ls.handlers;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
-import pt.isel.ls.commandresults.GetSportResult;
+import pt.isel.ls.commandresults.getresult.GetSportResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.models.Sport;
 import java.sql.Connection;
@@ -30,7 +30,7 @@ public class GetSportByIdHandler implements CommandHandler {
                 String name = resultSet.getString("name");
                 String description = resultSet.getString("description");
                 Sport sport = new Sport(sid, name, description);
-                return new GetSportResult(sport);
+                return new GetSportResult(sport, commandRequest.getHeaders());
             } else {
                 return new WrongParametersResult();
             }

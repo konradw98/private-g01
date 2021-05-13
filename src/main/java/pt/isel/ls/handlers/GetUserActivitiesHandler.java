@@ -3,7 +3,7 @@ package pt.isel.ls.handlers;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
-import pt.isel.ls.commandresults.GetActivitiesResult;
+import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.models.Activity;
 import java.sql.*;

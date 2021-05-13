@@ -1,13 +1,15 @@
-package pt.isel.ls.commandresults;
+package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Element;
+import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Sport;
 
-public class GetSportResult implements CommandResult {
+public class GetSportResult extends GetCommandResult {
     private Sport sport;
 
-    public GetSportResult(Sport sport) {
+    public GetSportResult(Sport sport, Headers headers) {
+        super(headers);
         this.sport = sport;
     }
 

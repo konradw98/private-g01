@@ -1,13 +1,15 @@
-package pt.isel.ls.commandresults;
+package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Element;
+import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Route;
 
-public class GetRouteResult implements CommandResult {
+public class GetRouteResult extends  GetCommandResult{
     private Route route;
 
-    public GetRouteResult(Route route) {
+    public GetRouteResult(Route route, Headers headers) {
+        super(headers);
         this.route = route;
     }
 

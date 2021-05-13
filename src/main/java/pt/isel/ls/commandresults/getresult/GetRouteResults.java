@@ -1,14 +1,16 @@
-package pt.isel.ls.commandresults;
+package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Element;
+import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Route;
 import java.util.ArrayList;
 
-public class GetRouteResults implements CommandResult {
+public class GetRouteResults extends GetCommandResult {
     private ArrayList<Route> routes;
 
-    public GetRouteResults(ArrayList<Route> routes) {
+    public GetRouteResults(ArrayList<Route> routes, Headers headers) {
+        super(headers);
         this.routes = routes;
     }
 

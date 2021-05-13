@@ -3,7 +3,7 @@ package pt.isel.ls.handlers.GetTables;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
-import pt.isel.ls.commandresults.GetRouteResults;
+import pt.isel.ls.commandresults.getresult.GetRouteResults;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Route;
@@ -58,7 +58,7 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
             if (routes.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetRouteResults(routes);
+                return new GetRouteResults(routes, commandRequest.getHeaders());
             }
 
         } finally {

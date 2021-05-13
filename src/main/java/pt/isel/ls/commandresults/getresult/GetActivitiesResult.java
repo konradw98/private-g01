@@ -1,4 +1,4 @@
-package pt.isel.ls.commandresults;
+package pt.isel.ls.commandresults.getresult;
 
 
 import pt.isel.ls.Element;
@@ -6,10 +6,11 @@ import pt.isel.ls.Text;
 import pt.isel.ls.models.Activity;
 import java.util.ArrayList;
 
-public class GetActivitiesResult implements CommandResult {
+public class GetActivitiesResult extends GetCommandResult {
     private ArrayList<Activity> activities;
 
     public GetActivitiesResult(ArrayList<Activity> activities) {
+        ///TODO ADD HEADERS
         this.activities = activities;
     }
 

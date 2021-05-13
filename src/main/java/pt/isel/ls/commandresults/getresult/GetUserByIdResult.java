@@ -1,13 +1,15 @@
-package pt.isel.ls.commandresults;
+package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Element;
+import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.User;
 
-public class GetUserByIdResult implements CommandResult {
+public class GetUserByIdResult extends  GetCommandResult{
     private User user;
 
-    public GetUserByIdResult(User user) {
+    public GetUserByIdResult(User user, Headers headers) {
+        super(headers);
         this.user = user;
     }
 
