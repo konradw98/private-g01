@@ -6,6 +6,7 @@ import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.models.Activity;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -13,129 +14,154 @@ import java.util.Locale;
 public class GetTopsActivitiesHandler implements CommandHandler {
     private static final int PARAMETERS_WITH_3_OPTIONALS = 5;
     private static final int PARAMETERS_WITH_2_OPTIONALS = 4;
-    private static final int PARAMETERS_WITH_1_OPTIONALS = 3;
+    private static final int PARAMETERS_WITH_1_OPTIONAL = 3;
     private static final int MIN_AMOUNT_OF_PARAMETERS = 2;
 
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+        Parameters parameters = commandRequest.getParameters();
+        String sid = parameters.get("sid");
+        String orderBy = parameters.get("orderBy");
+        String date = parameters.get("date");
+        String rid = parameters.get("rid");
+        String minDistance = parameters.get("distance");
+
+        String wrongParameters = checkParametersWithoutRidAndDate(sid, orderBy);
+
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
             PreparedStatement pstmt;
-            Parameters parameters = commandRequest.getParameters();
-            String sid = parameters.get("sid");
-            String orderBy = parameters.get("orderBy");
-            String date = parameters.get("date");
-            String rid = parameters.get("rid");
-            String minDistance = parameters.get("distance");
-
-            String wrongParameters = checkParametersWithoutRid(sid, orderBy, date, conn);
 
             if (parameters.size() == PARAMETERS_WITH_3_OPTIONALS) {
-                wrongParameters += checkRid(rid, conn);
+                wrongParameters += checkRid(rid);
+                wrongParameters += checkDate(date);
+                wrongParameters += checkDistance(minDistance);
+
                 if (!wrongParameters.equals("")) {
                     conn.close();
                     return new WrongParametersResult(wrongParameters);
                 }
 
-                wrongParameters += checkDistance(minDistance, conn);
-                if (!wrongParameters.equals("")) {
-                    conn.close();
-                    return new WrongParametersResult(wrongParameters);
-                }
-
-                String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? AND rid IN"
-                        + " (SELECT rid FROM routes " + "WHERE distance>" + minDistance + ")"
-                        + " ORDER BY duration_time " + orderBy;
-
-                pstmt = conn.prepareStatement(sql);
-                pstmt.setInt(3, Integer.parseInt(rid));
                 Date parseDate;
                 try {
                     parseDate = Date.valueOf(date);
                 } catch (IllegalArgumentException e) {
                     conn.close();
-                    return new WrongParametersResult(wrongParameters + " date");
+                    return new WrongParametersResult(" date");
                 }
-                pstmt.setDate(2, parseDate);
+
+                String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? AND rid IN"
+                        + " (SELECT rid FROM routes WHERE distance > ?) ORDER BY duration_time " + orderBy;
+                pstmt = conn.prepareStatement(sql);
+
                 pstmt.setInt(1, Integer.parseInt(sid));
+                pstmt.setDate(2, parseDate);
+                pstmt.setInt(3, Integer.parseInt(rid));
+                pstmt.setDouble(4, Double.parseDouble(minDistance));
+
                 ResultSet resultSet = pstmt.executeQuery();
                 conn.close();
                 return executeActivitiesResult(resultSet);
-
             } else if (parameters.size() == PARAMETERS_WITH_2_OPTIONALS) {
                 if (date == null) {
-                    wrongParameters += checkRid(rid, conn);
-                    if (!wrongParameters.equals("")) {
-                        conn.close();
-                        return new WrongParametersResult(wrongParameters);
-                    }
-
-                    wrongParameters += checkDistance(minDistance, conn);
+                    wrongParameters += checkRid(rid);
+                    wrongParameters += checkDistance(minDistance);
                     if (!wrongParameters.equals("")) {
                         conn.close();
                         return new WrongParametersResult(wrongParameters);
                     }
 
                     String sql = "SELECT * FROM activities WHERE sid=? AND rid=? AND rid IN (SELECT rid FROM routes "
-                            + "WHERE distance>" + minDistance + ") ORDER BY duration_time " + orderBy;
+                            + "WHERE distance > ?) ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
-                    pstmt.setInt(2, Integer.parseInt(rid));
+
                     pstmt.setInt(1, Integer.parseInt(sid));
+                    pstmt.setInt(2, Integer.parseInt(rid));
+                    pstmt.setDouble(3, Double.parseDouble(minDistance));
+
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
                     return executeActivitiesResult(resultSet);
-
                 } else if (rid == null) {
+                    wrongParameters += checkDistance(minDistance);
+                    wrongParameters += checkDate(date);
                     if (!wrongParameters.equals("")) {
                         conn.close();
                         return new WrongParametersResult(wrongParameters);
                     }
 
-                    wrongParameters += checkDistance(minDistance, conn);
-                    if (!wrongParameters.equals("")) {
+                    Date parseDate;
+                    try {
+                        parseDate = Date.valueOf(date);
+                    } catch (IllegalArgumentException e) {
                         conn.close();
-                        return new WrongParametersResult(wrongParameters);
+                        return new WrongParametersResult(" date");
                     }
 
                     String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid IN (SELECT rid FROM routes "
-                            + "WHERE distance>" + minDistance + ") ORDER BY duration_time " + orderBy;
+                            + "WHERE distance > ?) ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
-                    pstmt.setDate(2, Date.valueOf(date));
+
                     pstmt.setInt(1, Integer.parseInt(sid));
+                    pstmt.setDate(2, parseDate);
+                    pstmt.setDouble(3, Double.parseDouble(minDistance));
+
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
                     return executeActivitiesResult(resultSet);
                 } else if (minDistance == null) {
+                    wrongParameters += checkRid(rid);
+                    wrongParameters += checkDate(date);
+                    if (!wrongParameters.equals("")) {
+                        conn.close();
+                        return new WrongParametersResult(wrongParameters);
+                    }
 
+                    Date parseDate;
+                    try {
+                        parseDate = Date.valueOf(date);
+                    } catch (IllegalArgumentException e) {
+                        conn.close();
+                        return new WrongParametersResult(" date");
+                    }
 
                     String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? "
                             + "ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
-                    pstmt.setInt(3, Integer.parseInt(rid));
-                    pstmt.setDate(2, Date.valueOf(date));
                     pstmt.setInt(1, Integer.parseInt(sid));
+                    pstmt.setDate(2, parseDate);
+                    pstmt.setInt(3, Integer.parseInt(rid));
+
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
-
+                    return executeActivitiesResult(resultSet);
                 }
-            } else if (parameters.size() == PARAMETERS_WITH_1_OPTIONALS) {
+            } else if (parameters.size() == PARAMETERS_WITH_1_OPTIONAL) {
                 if (date != null) {
                     if (!wrongParameters.equals("")) {
                         conn.close();
                         return new WrongParametersResult(wrongParameters);
                     }
 
+                    Date parseDate;
+                    try {
+                        parseDate = Date.valueOf(date);
+                    } catch (IllegalArgumentException e) {
+                        conn.close();
+                        return new WrongParametersResult(" date");
+                    }
+
                     String sql = "SELECT * FROM activities WHERE sid=? AND date=? ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
-                    pstmt.setDate(2, Date.valueOf(date));
                     pstmt.setInt(1, Integer.parseInt(sid));
+                    pstmt.setDate(2, parseDate);
+
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
                     return executeActivitiesResult(resultSet);
-
                 } else if (rid != null) {
-                    wrongParameters += checkRid(rid, conn);
+                    wrongParameters += checkRid(rid);
                     if (!wrongParameters.equals("")) {
                         conn.close();
                         return new WrongParametersResult(wrongParameters);
@@ -143,25 +169,29 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
                     String sql = "SELECT * FROM activities WHERE sid=? AND rid=? ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
-                    pstmt.setInt(2, Integer.parseInt(rid));
                     pstmt.setInt(1, Integer.parseInt(sid));
+                    pstmt.setInt(2, Integer.parseInt(rid));
+
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
                     return executeActivitiesResult(resultSet);
                 } else if (minDistance != null) {
-                    wrongParameters += checkDistance(minDistance, conn);
+                    wrongParameters += checkDistance(minDistance);
                     if (!wrongParameters.equals("")) {
                         conn.close();
                         return new WrongParametersResult(wrongParameters);
                     }
 
                     String sql = "SELECT * FROM activities WHERE sid=? AND rid IN (SELECT rid FROM routes "
-                            + "WHERE distance>" + minDistance + ") AND  ORDER BY duration_time " + orderBy;
+                            + "WHERE distance>?) AND  ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
-                    pstmt.setInt(1, Integer.parseInt(sid));
-                    ResultSet resultSet = pstmt.executeQuery();
-                    conn.close();
 
+                    pstmt.setInt(1, Integer.parseInt(sid));
+                    pstmt.setInt(2, Integer.parseInt(minDistance));
+                    ResultSet resultSet = pstmt.executeQuery();
+
+                    conn.close();
+                    return executeActivitiesResult(resultSet);
                 }
             } else if (parameters.size() == MIN_AMOUNT_OF_PARAMETERS) {
                 if (!wrongParameters.equals("")) {
@@ -171,14 +201,15 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
                 String sql = "SELECT * FROM activities WHERE sid=? ORDER BY duration_time " + orderBy;
                 pstmt = conn.prepareStatement(sql);
+
                 pstmt.setInt(1, Integer.parseInt(sid));
                 ResultSet resultSet = pstmt.executeQuery();
+
                 conn.close();
                 return executeActivitiesResult(resultSet);
             }
             conn.close();
             return new WrongParametersResult(wrongParameters);
-
         } finally {
             conn.close();
         }
@@ -211,8 +242,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
         }
     }
 
-    private String checkParametersWithoutRid(String sid, String orderBy, String date, Connection conn)
-            throws SQLException {
+    private String checkParametersWithoutRidAndDate(String sid, String orderBy) {
 
         String wrongParameters = "";
         if (sid == null || Integer.parseInt(sid) < 1) {
@@ -222,14 +252,18 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                 && !orderBy.toLowerCase(Locale.ENGLISH).equals("desc")) {
             wrongParameters += " order by";
         }
+        return wrongParameters;
+    }
+
+    private String checkDate(String date) {
+        String wrongParameters = "";
         if (date == null) {
             wrongParameters += " date";
         }
         return wrongParameters;
     }
 
-    private String checkRid(String rid, Connection conn) throws SQLException {
-
+    private String checkRid(String rid) {
         String wrongParameters = "";
         if (rid == null || Integer.parseInt(rid) < 1) {
             wrongParameters += " rid";
@@ -238,8 +272,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
         return wrongParameters;
     }
 
-    private String checkDistance(String distance, Connection conn) throws SQLException {
-
+    private String checkDistance(String distance) {
         String wrongParameters = "";
         if (distance == null || Double.parseDouble(distance) < 0) {
             wrongParameters += " distance";

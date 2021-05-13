@@ -1,4 +1,4 @@
-package pt.isel.ls.handlers.gettables;
+package pt.isel.ls.handlers.getTables;
 
 import pt.isel.ls.handlers.CommandHandler;
 
