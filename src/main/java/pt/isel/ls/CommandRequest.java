@@ -11,6 +11,8 @@ public class CommandRequest {
     public CommandRequest(PathParameters pathParameters, PGSimpleDataSource dataSource) {
         this.pathParameters = pathParameters;
         this.dataSource = dataSource;
+        this.headers = null;
+        this.parameters = null;
     }
 
     public CommandRequest(PathParameters pathParameters, Parameters parameters, Headers headers,
@@ -19,12 +21,14 @@ public class CommandRequest {
         this.parameters = parameters;
         this.headers = headers;
         this.dataSource = dataSource;
+
     }
 
     public CommandRequest(PathParameters pathParameters, Parameters parameters, PGSimpleDataSource dataSource) {
         this.pathParameters = pathParameters;
         this.parameters = parameters;
         this.dataSource = dataSource;
+        this.headers = null;
     }
 
     public PathParameters getPathParameters() {
@@ -39,8 +43,8 @@ public class CommandRequest {
         return parameters;
     }
 
-    public void setParameters(Parameters parameters) {
-        this.parameters = parameters;
+    public boolean hasParameters() {
+        return parameters != null;
     }
 
     public Headers getHeaders() {

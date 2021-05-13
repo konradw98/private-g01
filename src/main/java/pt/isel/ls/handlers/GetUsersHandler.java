@@ -6,6 +6,7 @@ import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.GetUsersResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.models.User;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,21 +16,23 @@ import java.util.ArrayList;
 public class GetUsersHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+        if (!commandRequest.hasParameters()) {
+            return new WrongParametersResult("skip and top missing");
+        }
+
+        Parameters parameters = commandRequest.getParameters();
+        String skip = parameters.get("skip");
+        String top = parameters.get("top");
+
+        String wrongParameters = validateHeaders(skip, top);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+        int skipInt = Integer.parseInt(skip) + 1;
+
         Connection conn = commandRequest.getDataSource().getConnection();
 
         try {
-            Parameters parameters = commandRequest.getParameters();
-            String skip = parameters.get("skip");
-            String top = parameters.get("top");
-
-            String wrongParameters = validateHeaders(skip, top);
-            if (!wrongParameters.equals("")) {
-                conn.close();
-                return new WrongParametersResult(wrongParameters);
-            }
-
-            int skipInt = Integer.parseInt(skip) + 1;
-
             String sql = "SELECT * FROM users WHERE uid BETWEEN ? AND ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, skipInt);
