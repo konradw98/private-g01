@@ -10,9 +10,10 @@ public class GetSportResult extends GetCommandResult {
     private Headers headers;
 
     public GetSportResult(Sport sport, Headers headers) {
-        this.headers=headers;
+        this.headers = headers;
         this.sport = sport;
     }
+
     public void generateResult(Headers headers) {
         String accept = headers.get("accept");
         String fileName = headers.get("file-name");
@@ -35,13 +36,13 @@ public class GetSportResult extends GetCommandResult {
         } else {
             switch (accept) {
                 case "text/plain" -> {
-                    //do konsoli text plain
+                    System.out.println(sport);
                 }
                 case "application/json" -> {
-                    //do konsoli json
+                    System.out.println(generateJson());
                 }
                 case "text/html" -> {
-                    //do konsoli json
+                    //do konsoli html
                 }
                 default -> {
                     // do konsoli html

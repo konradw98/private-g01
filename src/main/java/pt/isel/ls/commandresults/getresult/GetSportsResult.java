@@ -4,16 +4,18 @@ import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Sport;
+
 import java.util.ArrayList;
 
-public class GetSportsResult extends  GetCommandResult {
+public class GetSportsResult extends GetCommandResult {
     private ArrayList<Sport> sports;
     private Headers headers;
 
     public GetSportsResult(ArrayList<Sport> sports, Headers headers) {
-        this.headers=headers;
+        this.headers = headers;
         this.sports = sports;
     }
+
     public void generateResult(Headers headers) {
         String accept = headers.get("accept");
         String fileName = headers.get("file-name");
@@ -36,13 +38,15 @@ public class GetSportsResult extends  GetCommandResult {
         } else {
             switch (accept) {
                 case "text/plain" -> {
-                    //do konsoli text plain
+                    for (Sport sport : sports) {
+                        System.out.println(sport);
+                    }
                 }
                 case "application/json" -> {
-                    //do konsoli json
+                    System.out.println(generateJson());
                 }
                 case "text/html" -> {
-                    //do konsoli json
+                    //do konsoli html
                 }
                 default -> {
                     // do konsoli html
@@ -51,6 +55,7 @@ public class GetSportsResult extends  GetCommandResult {
         }
 
     }
+
     @Override
     public boolean results() {
         generateResult(headers);

@@ -5,12 +5,12 @@ import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Route;
 
-public class GetRouteResult extends  GetCommandResult{
+public class GetRouteResult extends GetCommandResult {
     private Route route;
     private Headers headers;
 
     public GetRouteResult(Route route, Headers headers) {
-        this.headers=headers;
+        this.headers = headers;
         this.route = route;
     }
 
@@ -36,10 +36,10 @@ public class GetRouteResult extends  GetCommandResult{
         } else {
             switch (accept) {
                 case "text/plain" -> {
-                    //do konsoli text plain
+                    System.out.println(route);
                 }
                 case "application/json" -> {
-                    //do konsoli json
+                    System.out.println(generateJson());
                 }
                 case "text/html" -> {
                     //do konsoli json
@@ -51,6 +51,7 @@ public class GetRouteResult extends  GetCommandResult{
         }
 
     }
+
     @Override
     public boolean results() {
         generateResult(headers);
@@ -66,14 +67,14 @@ public class GetRouteResult extends  GetCommandResult{
 
         html.with(head().with(title().with(new Text("Routes"))));
         html.with(body().with(h1().with(new Text("Route Details")),
-                            ul().with(
-                                        li().with(new Text("Identifier : " + route.getRid())),
-                                        li().with(new Text("Start Location : " + route.getStartLocation())),
-                                        li().with(new Text("End Location : " + route.getEndLocation())),
-                                        li().with(new Text("Distance : " + route.getDistance()))
-                                    )
-                            )
-                );
+                ul().with(
+                        li().with(new Text("Identifier : " + route.getRid())),
+                        li().with(new Text("Start Location : " + route.getStartLocation())),
+                        li().with(new Text("End Location : " + route.getEndLocation())),
+                        li().with(new Text("Distance : " + route.getDistance()))
+                )
+                )
+        );
 
 
         return html;

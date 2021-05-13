@@ -37,13 +37,13 @@ public class GetUserByIdResult extends GetCommandResult {
         } else {
             switch (accept) {
                 case "text/plain" -> {
-                    //do konsoli text plain
+                    System.out.println(user);
                 }
                 case "application/json" -> {
-                    //do konsoli json
+                    System.out.println(generateJson());
                 }
                 case "text/html" -> {
-                    //do konsoli json
+                    //do konsoli html
                 }
                 default -> {
                     // do konsoli html

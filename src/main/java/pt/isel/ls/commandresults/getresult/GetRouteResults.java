@@ -4,6 +4,7 @@ import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Route;
+
 import java.util.ArrayList;
 
 public class GetRouteResults extends GetCommandResult {
@@ -11,9 +12,10 @@ public class GetRouteResults extends GetCommandResult {
     private Headers headers;
 
     public GetRouteResults(ArrayList<Route> routes, Headers headers) {
-        this.headers=headers;
+        this.headers = headers;
         this.routes = routes;
     }
+
     public void generateResult(Headers headers) {
         String accept = headers.get("accept");
         String fileName = headers.get("file-name");
@@ -36,10 +38,13 @@ public class GetRouteResults extends GetCommandResult {
         } else {
             switch (accept) {
                 case "text/plain" -> {
-                    //do konsoli text plain
+                    for (Route route : routes) {
+                        System.out.println(route);
+                    }
                 }
                 case "application/json" -> {
-                    //do konsoli json
+                    System.out.println(generateJson());
+
                 }
                 case "text/html" -> {
                     //do konsoli json

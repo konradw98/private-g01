@@ -5,6 +5,7 @@ import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.User;
+
 import java.util.ArrayList;
 
 public class GetUsersResult extends GetCommandResult {
@@ -13,9 +14,10 @@ public class GetUsersResult extends GetCommandResult {
 
 
     public GetUsersResult(ArrayList<User> users, Headers headers) {
-        this.headers=headers;
+        this.headers = headers;
         this.users = users;
     }
+
     public void generateResult(Headers headers) {
         String accept = headers.get("accept");
         String fileName = headers.get("file-name");
@@ -38,13 +40,15 @@ public class GetUsersResult extends GetCommandResult {
         } else {
             switch (accept) {
                 case "text/plain" -> {
-                    //do konsoli text plain
+                    for (User user : users) {
+                        System.out.println(user);
+                    }
                 }
                 case "application/json" -> {
-                    //do konsoli json
+                    System.out.println(generateJson());
                 }
                 case "text/html" -> {
-                    //do konsoli json
+                    //do konsoli html
                 }
                 default -> {
                     // do konsoli html
@@ -53,6 +57,7 @@ public class GetUsersResult extends GetCommandResult {
         }
 
     }
+
     public ArrayList<User> getUsers() {
         return users;
     }
