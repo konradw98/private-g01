@@ -5,9 +5,9 @@ import java.util.Collections;
 
 public class Element {
 
-    ArrayList<Element> children;
-    Text text;
-    String name;
+    private final ArrayList<Element> children;
+    private Text text;
+    private final String name;
 
     public Element(String name) {
         this.name = name;
@@ -28,14 +28,16 @@ public class Element {
         StringBuilder html = new StringBuilder(prefix + "<" + name + ">");
         if (text != null) {
             html.append(text);
-        } else html.append("\n");
+        } else {
+            html.append("\n");
+        }
         for (Element element : children) {
             html.append(element.generateStringHtml(prefix + "\t"));
         }
-        if (text == null) {
-            html.append(prefix).append("</").append(name).append(">\n");
-        } else {
+        if (text != null) {
             html.append("</").append(name).append(">\n");
+        } else {
+            html.append(prefix).append("</").append(name).append(">\n");
         }
 
         return String.valueOf(html);

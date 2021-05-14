@@ -23,48 +23,27 @@ public class GetUserByIdResult extends GetCommandResult {
             accept = "text/html";
             fileName = null;
         } else {
-            accept = headers.get("accept");
+            accept = headers.get("accept") == null ? "text/html" : headers.get("accept");
             fileName = headers.get("file-name");
         }
 
         if (fileName != null) {
+            String str;
             switch (accept) {
-                case "text/plain" -> {
-                    try {
-                        String str = user.toString();
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                case "application/json" -> {
-                    try {
-                        String str = generateJson();
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                default -> {
-                    try {
-                        String str = generateHtml().generateStringHtml("");
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                case "text/plain" -> str = user.toString();
+                case "application/json" -> str = generateJson();
+                default -> str = generateHtml().generateStringHtml("");
+            }
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                writer.write(str);
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } else {
             switch (accept) {
-                case "text/plain" -> {
-                    System.out.println(user);
-                }
+                case "text/plain" -> System.out.println(user);
                 case "application/json" -> System.out.println(generateJson());
                 default -> System.out.println(generateHtml().generateStringHtml(""));
             }
@@ -94,14 +73,6 @@ public class GetUserByIdResult extends GetCommandResult {
                         li().with(new Text("Email : " + user.getEmail())))));
 
         return html;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Headers getHeaders() {

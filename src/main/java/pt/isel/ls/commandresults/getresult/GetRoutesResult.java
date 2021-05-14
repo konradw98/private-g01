@@ -4,15 +4,16 @@ import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Route;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
-public class GetRouteResults extends GetCommandResult {
-    private ArrayList<Route> routes;
+public class GetRoutesResult extends GetCommandResult {
+    private final ArrayList<Route> routes;
     private Headers headers;
 
-    public GetRouteResults(ArrayList<Route> routes, Headers headers) {
+    public GetRoutesResult(ArrayList<Route> routes, Headers headers) {
         this.headers = headers;
         this.routes = routes;
     }
@@ -24,46 +25,29 @@ public class GetRouteResults extends GetCommandResult {
             accept = "text/html";
             fileName = null;
         } else {
-            accept = headers.get("accept");
+            accept = headers.get("accept") == null ? "text/html" : headers.get("accept");
             fileName = headers.get("file-name");
         }
 
         if (fileName != null) {
+            String str;
             switch (accept) {
                 case "text/plain" -> {
-                    try {
-                        StringBuilder stringBuilder = new StringBuilder("");
-                        for (Route route : routes) {
-                            stringBuilder.append(route.toString());
-                        }
-                        String str = stringBuilder.toString();
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (Route route : routes) {
+                        stringBuilder.append(route.toString());
                     }
+                    str = stringBuilder.toString();
                 }
-                case "application/json" -> {
-                    try {
-                        String str = generateJson();
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                default -> {
-                    try {
-                        String str = generateHtml().generateStringHtml("");
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                case "application/json" -> str = generateJson();
+                default -> str = generateHtml().generateStringHtml("");
+            }
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                writer.write(str);
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } else {
             switch (accept) {
@@ -119,14 +103,6 @@ public class GetRouteResults extends GetCommandResult {
 
         return html;
 
-    }
-
-    public ArrayList<Route> getRoutes() {
-        return routes;
-    }
-
-    public void setRoutes(ArrayList<Route> routes) {
-        this.routes = routes;
     }
 
     public Headers getHeaders() {

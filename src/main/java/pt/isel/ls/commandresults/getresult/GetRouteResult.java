@@ -4,11 +4,12 @@ import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Route;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
 public class GetRouteResult extends GetCommandResult {
-    private Route route;
+    private final Route route;
     private Headers headers;
 
     public GetRouteResult(Route route, Headers headers) {
@@ -23,51 +24,28 @@ public class GetRouteResult extends GetCommandResult {
             accept = "text/html";
             fileName = null;
         } else {
-            accept = headers.get("accept");
+            accept = headers.get("accept") == null ? "text/html" : headers.get("accept");
             fileName = headers.get("file-name");
         }
 
         if (fileName != null) {
+            String str;
             switch (accept) {
-                case "text/plain" -> {
-                    try {
-                        String str = route.toString();
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                case "application/json" -> {
-                    try {
-                        String str = generateJson();
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                default -> {
-                    try {
-                        String str = generateHtml().generateStringHtml("");
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                case "text/plain" -> str = route.toString();
+                case "application/json" -> str = generateJson();
+                default -> str = generateHtml().generateStringHtml("");
+            }
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                writer.write(str);
+                writer.close();
+            } catch (Exception e) {
+                System.out.println("Couldn't write to given file");
             }
         } else {
             switch (accept) {
-                case "text/plain" -> {
-                    System.out.println(route);
-                }
-                case "application/json" -> {
-                    System.out.println(generateJson());
-                }
+                case "text/plain" -> System.out.println(route);
+                case "application/json" -> System.out.println(generateJson());
                 default -> System.out.println(generateHtml().generateStringHtml(""));
             }
         }
@@ -100,14 +78,6 @@ public class GetRouteResult extends GetCommandResult {
 
 
         return html;
-    }
-
-    public Route getRoute() {
-        return route;
-    }
-
-    public void setRoute(Route route) {
-        this.route = route;
     }
 
     public Headers getHeaders() {

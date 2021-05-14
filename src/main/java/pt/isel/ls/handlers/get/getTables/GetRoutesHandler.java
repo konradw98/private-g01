@@ -5,8 +5,8 @@ import pt.isel.ls.Headers;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.EmptyTableResult;
-import pt.isel.ls.commandresults.getresult.GetRouteResults;
 import pt.isel.ls.commandresults.WrongParametersResult;
+import pt.isel.ls.commandresults.getresult.GetRoutesResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Route;
 import java.sql.Connection;
@@ -79,7 +79,7 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
             if (routes.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetRouteResults(routes, commandRequest.getHeaders());
+                return new GetRoutesResult(routes, commandRequest.getHeaders());
             }
 
         } finally {

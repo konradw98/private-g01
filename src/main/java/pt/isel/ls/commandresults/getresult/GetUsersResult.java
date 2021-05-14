@@ -4,12 +4,13 @@ import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.User;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
 public class GetUsersResult extends GetCommandResult {
-    private ArrayList<User> users;
+    private final ArrayList<User> users;
     private Headers headers;
 
 
@@ -25,46 +26,29 @@ public class GetUsersResult extends GetCommandResult {
             accept = "text/html";
             fileName = null;
         } else {
-            accept = headers.get("accept");
+            accept = headers.get("accept") == null ? "text/html" : headers.get("accept");
             fileName = headers.get("file-name");
         }
 
         if (fileName != null) {
+            String str;
             switch (accept) {
                 case "text/plain" -> {
-                    try {
-                        StringBuilder stringBuilder = new StringBuilder();
-                        for (User user : users) {
-                            stringBuilder.append(user.toString());
-                        }
-                        String str = stringBuilder.toString();
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (User user : users) {
+                        stringBuilder.append(user.toString());
                     }
+                    str = stringBuilder.toString();
                 }
-                case "application/json" -> {
-                    try {
-                        String str = generateJson();
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                default -> {
-                    try {
-                        String str = generateHtml().generateStringHtml("");
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                case "application/json" -> str = generateJson();
+                default -> str = generateHtml().generateStringHtml("");
+            }
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                writer.write(str);
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } else {
             switch (accept) {
@@ -78,14 +62,6 @@ public class GetUsersResult extends GetCommandResult {
             }
         }
 
-    }
-
-    public ArrayList<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(ArrayList<User> users) {
-        this.users = users;
     }
 
     public Headers getHeaders() {

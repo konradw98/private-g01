@@ -4,6 +4,7 @@ import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Sport;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -24,46 +25,29 @@ public class GetSportsResult extends GetCommandResult {
             accept = "text/html";
             fileName = null;
         } else {
-            accept = headers.get("accept");
+            accept = headers.get("accept") == null ? "text/html" : headers.get("accept");
             fileName = headers.get("file-name");
         }
 
         if (fileName != null) {
+            String str;
             switch (accept) {
                 case "text/plain" -> {
-                    try {
-                        StringBuilder stringBuilder = new StringBuilder("");
-                        for (Sport sport : sports) {
-                            stringBuilder.append(sport.toString());
-                        }
-                        String str = stringBuilder.toString();
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (Sport sport : sports) {
+                        stringBuilder.append(sport.toString());
                     }
+                    str = stringBuilder.toString();
                 }
-                case "application/json" -> {
-                    try {
-                        String str = generateJson();
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                default -> {
-                    try {
-                        String str = generateHtml().generateStringHtml("");
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                case "application/json" -> str = generateJson();
+                default -> str = generateHtml().generateStringHtml("");
+            }
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                writer.write(str);
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } else {
             switch (accept) {
@@ -118,14 +102,6 @@ public class GetSportsResult extends GetCommandResult {
 
         return html;
 
-    }
-
-    public ArrayList<Sport> getSports() {
-        return sports;
-    }
-
-    public void setSports(ArrayList<Sport> sports) {
-        this.sports = sports;
     }
 
     public Headers getHeaders() {

@@ -4,11 +4,12 @@ import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Sport;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
 public class GetSportResult extends GetCommandResult {
-    private Sport sport;
+    private final Sport sport;
     private Headers headers;
 
     public GetSportResult(Sport sport, Headers headers) {
@@ -23,46 +24,31 @@ public class GetSportResult extends GetCommandResult {
             accept = "text/html";
             fileName = null;
         } else {
-            accept = headers.get("accept");
+            accept = headers.get("accept") == null ? "text/html" : headers.get("accept");
             fileName = headers.get("file-name");
         }
 
         if (fileName != null) {
+            String str;
             switch (accept) {
-                case "text/plain" -> {
-                    //do pliki text plain
-                }
-                case "application/json" -> {
-                    try {
-                        String str = sport.toString(); // TUTU
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                default -> {
-                    try {
-                        String str = generateHtml().generateStringHtml("");
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                        writer.write(str);
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                case "text/plain" -> str = sport.toString();
+                case "application/json" -> str = sport.generateJson();
+                default -> str = generateHtml().generateStringHtml("");
+            }
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                writer.write(str);
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } else {
             switch (accept) {
-                case "text/plain" -> {
-                    System.out.println(sport);
-                }
+                case "text/plain" -> System.out.println(sport);
                 case "application/json" -> System.out.println(generateJson());
                 default -> System.out.println(generateHtml().generateStringHtml(""));
             }
         }
-
     }
 
     @Override
@@ -87,14 +73,6 @@ public class GetSportResult extends GetCommandResult {
 
 
         return html;
-    }
-
-    public Sport getSport() {
-        return sport;
-    }
-
-    public void setSport(Sport sport) {
-        this.sport = sport;
     }
 
     public Headers getHeaders() {

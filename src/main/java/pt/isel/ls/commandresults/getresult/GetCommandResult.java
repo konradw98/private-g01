@@ -1,11 +1,10 @@
 package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Element;
+import pt.isel.ls.Headers;
 import pt.isel.ls.commandresults.CommandResult;
 
-public abstract  class GetCommandResult implements CommandResult {
-
-
+public abstract class GetCommandResult implements CommandResult {
 
     public Element html() {
         return new Element("html");
@@ -50,10 +49,4 @@ public abstract  class GetCommandResult implements CommandResult {
     public Element td() {
         return new Element("td");
     }
-
-    public GetCommandResult() {
-
-    }
-
-
 }
