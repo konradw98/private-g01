@@ -20,6 +20,7 @@ public class DeleteHandler implements CommandHandler {
         }
 
         Connection conn = commandRequest.getDataSource().getConnection();
+
         String stringUid = commandRequest.getPathParameters().get("uid");
         String wrongParameters = validatePathParameters(stringUid);
         wrongParameters += validateParameters(activities, conn);
@@ -44,11 +45,13 @@ public class DeleteHandler implements CommandHandler {
                 pstmt.setInt(3, Integer.parseInt(id));
                 result=pstmt.executeUpdate();
                 if(result<1) bug=true;
-                conn.commit();
+
             }
 
-            if(bug) conn.rollback(savepoint1);
-
+            if(bug) {conn.rollback(savepoint1);
+                System.out.println("ROLLBACK W BUG");
+                return new WrongParametersResult();}
+            conn.commit();
         } catch (SQLException sql) {
             conn.rollback(savepoint1);
             return new WrongParametersResult();
@@ -71,7 +74,7 @@ public class DeleteHandler implements CommandHandler {
         String sql1 = "SELECT MAX(aid) FROM activities";
         PreparedStatement pstmt1 = conn.prepareStatement(sql1);
         ResultSet resultSet = pstmt1.executeQuery();
-        conn.close();
+        //conn.close();
 
         int maxAid = Integer.MAX_VALUE;
         if (resultSet.next()) {
