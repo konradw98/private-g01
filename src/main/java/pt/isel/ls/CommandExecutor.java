@@ -2,16 +2,18 @@ package pt.isel.ls;
 
 import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.commandresults.CommandResult;
+
 import java.sql.SQLException;
 import java.util.Optional;
 
 public class CommandExecutor {
-    private static final int GET_COMMAND_SEGMENTS = 2;
-    private static final int COMMAND_WITHOUT_HEADERS = 3;
-    private static final int COMMAND_WIT_HEADERS = 4;
+    private static final int SIMPLEST_COMMAND_SEGMENTS = 2;
+    private static final int COMMAND_WITHOUT_HEADERS_OR_WITH_PARAMETERS_ONLY = 3;
+    private static final int COMMAND_WITH_HEADERS = 4;
+
     private static final int METHOD_INDEX = 0;
     private static final int PATH_INDEX = 1;
-    private static final int PARAMETERS_INDEX_WITHOUT_HEADERS = 2;
+    private static final int PARAMETERS_INDEX_WITHOUT_HEADERS_OR_HEADERS_INDEX = 2;
     private static final int PARAMETERS_INDEX_WITH_HEADERS = 3;
     private static final int HEADERS_INDEX = 2;
 
@@ -25,7 +27,7 @@ public class CommandExecutor {
 
     private static boolean executeCommand(String[] command, String line, Router router, PGSimpleDataSource dataSource) {
         boolean exit = false;
-        if (command.length >= GET_COMMAND_SEGMENTS && command.length <= COMMAND_WIT_HEADERS) {
+        if (command.length >= SIMPLEST_COMMAND_SEGMENTS && command.length <= COMMAND_WITH_HEADERS) {
             Method method = validateMethod(command[METHOD_INDEX]);
             if (!method.equals(Method.WRONG_METHOD)) {
                 Optional<RouteResult> optional = router.findRoute(method, new Path(command[PATH_INDEX]));
@@ -71,13 +73,19 @@ public class CommandExecutor {
         boolean exit = false;
         CommandRequest commandRequest;
 
-        if (command.length == GET_COMMAND_SEGMENTS) {
+        if (command.length == SIMPLEST_COMMAND_SEGMENTS) {
             commandRequest = new CommandRequest(routeResult.getPathParameters(),
                     dataSource);
-        } else if (command.length == COMMAND_WITHOUT_HEADERS) {
-            Parameters parameters = new Parameters(command[PARAMETERS_INDEX_WITHOUT_HEADERS]);
-            commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters,
-                    dataSource);
+        } else if (command.length == COMMAND_WITHOUT_HEADERS_OR_WITH_PARAMETERS_ONLY) {
+            if (Headers.ifIsHeader(command[PARAMETERS_INDEX_WITHOUT_HEADERS_OR_HEADERS_INDEX])) {
+                Headers headers = new Headers(command[PARAMETERS_INDEX_WITHOUT_HEADERS_OR_HEADERS_INDEX]);
+                commandRequest = new CommandRequest(routeResult.getPathParameters(), headers,
+                        dataSource);
+            } else {
+                Parameters parameters = new Parameters(command[PARAMETERS_INDEX_WITHOUT_HEADERS_OR_HEADERS_INDEX]);
+                commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters,
+                        dataSource);
+            }
         } else {
             Headers headers = new Headers(command[HEADERS_INDEX]);
             Parameters parameters = new Parameters(command[PARAMETERS_INDEX_WITH_HEADERS]);

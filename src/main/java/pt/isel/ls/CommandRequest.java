@@ -31,6 +31,13 @@ public class CommandRequest {
         this.headers = null;
     }
 
+    public CommandRequest(PathParameters pathParameters, Headers headers, PGSimpleDataSource dataSource) {
+        this.pathParameters = pathParameters;
+        this.headers = headers;
+        this.dataSource = dataSource;
+        this.parameters = null;
+    }
+
     public PathParameters getPathParameters() {
         return pathParameters;
     }

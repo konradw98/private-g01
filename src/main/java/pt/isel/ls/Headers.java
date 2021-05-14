@@ -11,16 +11,21 @@ public class Headers {
     }
 
     private void addHeadersFromString(String sequence) {
-        //????
         String[] parameters = sequence.split("\\|");
-        for (String parameter : parameters) {
-            String[] value = parameter.split(":");
-            addHeader(value[0], value[1]);
+        if (parameters.length > 0) {
+            for (String parameter : parameters) {
+                String[] value = parameter.split(":");
+                addHeader(value[0], value[1]);
+            }
         }
     }
 
     public void addHeader(String name, String value) {
         headers.put(name, value);
+    }
+
+    public static boolean ifIsHeader(String line) {
+        return line.contains("accept:") || line.contains("file-name:");
     }
 
     public String get(String key) {
