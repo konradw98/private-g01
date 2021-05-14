@@ -52,7 +52,7 @@ public class GetUserActivitiesByIdHandler implements CommandHandler {
             if (activities.size() == 0) {
                 return new WrongParametersResult(wrongParameters);
             } else {
-                return new GetActivitiesResult(activities);
+                return new GetActivitiesResult(activities, commandRequest.getHeaders());
             }
         } finally {
             conn.close();

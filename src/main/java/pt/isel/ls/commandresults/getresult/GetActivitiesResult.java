@@ -2,23 +2,90 @@ package pt.isel.ls.commandresults.getresult;
 
 
 import pt.isel.ls.Element;
+import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Activity;
+import pt.isel.ls.models.Route;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 public class GetActivitiesResult extends GetCommandResult {
     private ArrayList<Activity> activities;
+    private Headers headers;
 
-    public GetActivitiesResult(ArrayList<Activity> activities) {
-        ///TODO ADD HEADERS
+
+    public GetActivitiesResult(ArrayList<Activity> activities, Headers headers) {
+        this.headers=headers;
         this.activities = activities;
+    }
+
+    public void generateResult(Headers headers) {
+        String accept;
+        String fileName;
+        if (headers == null) {
+            accept = "text/html";
+            fileName = null;
+        } else {
+            accept = headers.get("accept");
+            fileName = headers.get("file-name");
+        }
+        if (accept == null) accept = "text/html";
+        if (fileName != null) {
+            switch (accept) {
+                case "text/plain" -> {
+                    try {
+                        StringBuilder stringBuilder = new StringBuilder("");
+                        for (Activity activity : activities) {
+                            stringBuilder.append(activity.toString());
+                        }
+                        String str = stringBuilder.toString();
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                        writer.write(str);
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                case "application/json" -> {
+                    try {
+                        String str = generateJson();
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                        writer.write(str);
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                default -> {
+                    try {
+                        String str = generateHtml().generateStringHtml("");
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                        writer.write(str);
+                        writer.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else {
+            switch (accept) {
+                case "text/plain" -> {
+                    for (Activity activity : activities) {
+                        System.out.println(activity);
+                    }
+                }
+                case "application/json" -> System.out.println(generateJson());
+                default -> System.out.println(generateHtml().generateStringHtml(""));
+            }
+        }
+
     }
 
     @Override
     public boolean results() {
-        for (Activity activity : activities) {
-            activity.print();
-        }
+        generateResult(headers);
         return false;
     }
 

@@ -47,7 +47,7 @@ public class GetSportActivitiesHandler implements CommandHandler {
             if (activities.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetActivitiesResult(activities);
+                return new GetActivitiesResult(activities, commandRequest.getHeaders());
             }
         } finally {
             conn.close();

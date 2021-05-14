@@ -1,6 +1,7 @@
 package pt.isel.ls.handlers;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Headers;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
@@ -62,7 +63,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
                 ResultSet resultSet = pstmt.executeQuery();
                 conn.close();
-                return executeActivitiesResult(resultSet);
+                return executeActivitiesResult(resultSet, commandRequest.getHeaders());
             } else if (parameters.size() == PARAMETERS_WITH_2_OPTIONALS) {
                 if (date == null) {
                     wrongParameters += checkRid(rid);
@@ -82,7 +83,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
-                    return executeActivitiesResult(resultSet);
+                    return executeActivitiesResult(resultSet, commandRequest.getHeaders());
                 } else if (rid == null) {
                     wrongParameters += checkDistance(minDistance);
                     wrongParameters += checkDate(date);
@@ -109,7 +110,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
-                    return executeActivitiesResult(resultSet);
+                    return executeActivitiesResult(resultSet, commandRequest.getHeaders());
                 } else if (minDistance == null) {
                     wrongParameters += checkRid(rid);
                     wrongParameters += checkDate(date);
@@ -135,7 +136,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
-                    return executeActivitiesResult(resultSet);
+                    return executeActivitiesResult(resultSet, commandRequest.getHeaders());
                 }
             } else if (parameters.size() == PARAMETERS_WITH_1_OPTIONAL) {
                 if (date != null) {
@@ -159,7 +160,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
-                    return executeActivitiesResult(resultSet);
+                    return executeActivitiesResult(resultSet, commandRequest.getHeaders());
                 } else if (rid != null) {
                     wrongParameters += checkRid(rid);
                     if (!wrongParameters.equals("")) {
@@ -174,7 +175,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
-                    return executeActivitiesResult(resultSet);
+                    return executeActivitiesResult(resultSet, commandRequest.getHeaders());
                 } else if (minDistance != null) {
                     wrongParameters += checkDistance(minDistance);
                     if (!wrongParameters.equals("")) {
@@ -191,7 +192,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                     ResultSet resultSet = pstmt.executeQuery();
 
                     conn.close();
-                    return executeActivitiesResult(resultSet);
+                    return executeActivitiesResult(resultSet, commandRequest.getHeaders());
                 }
             } else if (parameters.size() == MIN_AMOUNT_OF_PARAMETERS) {
                 if (!wrongParameters.equals("")) {
@@ -206,7 +207,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                 ResultSet resultSet = pstmt.executeQuery();
 
                 conn.close();
-                return executeActivitiesResult(resultSet);
+                return executeActivitiesResult(resultSet,commandRequest.getHeaders());
             }
             conn.close();
             return new WrongParametersResult(wrongParameters);
@@ -215,7 +216,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
         }
     }
 
-    private CommandResult executeActivitiesResult(ResultSet resultSet) throws SQLException {
+    private CommandResult executeActivitiesResult(ResultSet resultSet, Headers headers) throws SQLException {
         int aid;
         int sid;
         int rid;
@@ -238,7 +239,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
         if (activities.size() == 0) {
             return new WrongParametersResult();
         } else {
-            return new GetActivitiesResult(activities);
+            return new GetActivitiesResult(activities,headers);
         }
     }
 
