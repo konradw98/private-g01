@@ -1,12 +1,14 @@
-package pt.isel.ls.handlers.getTables;
+package pt.isel.ls.handlers.get.getTables;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Headers;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetUsersResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.User;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,6 +31,15 @@ public class GetUsersHandler extends GetTablesHandler implements CommandHandler 
             return new WrongParametersResult(wrongParameters);
         }
         int skipInt = Integer.parseInt(skip) + 1;
+
+        Headers headers = commandRequest.getHeaders();
+        String acceptArgument = headers.get("accept");
+        String fileNameArgument = headers.get("file-name");
+
+        wrongParameters = validateHeaders(acceptArgument, fileNameArgument);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
 
         Connection conn = commandRequest.getDataSource().getConnection();
 

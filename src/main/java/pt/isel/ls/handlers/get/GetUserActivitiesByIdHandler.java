@@ -1,31 +1,32 @@
-package pt.isel.ls.handlers;
+package pt.isel.ls.handlers.get;
 
 import pt.isel.ls.CommandRequest;
-import pt.isel.ls.PathParameters;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Activity;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class GetSportActivitiesByIdHandler implements CommandHandler {
+public class GetUserActivitiesByIdHandler extends GetHandler implements CommandHandler {
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
-        PathParameters pathParameters = commandRequest.getPathParameters();
-        String stringSid = pathParameters.get("sid");
+        Parameters pathParameters = commandRequest.getParameters();
+        String stringUid = pathParameters.get("uid");
         String stringAid = pathParameters.get("aid");
-        String wrongParameters = validatePathParameters(stringSid, stringAid);
+        String wrongParameters = validatePathParameters(stringUid, stringAid);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }
 
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            String sql = "SELECT * FROM activities WHERE sid=? AND aid=?";
+            String sql = "SELECT * FROM activities WHERE uid=? AND aid=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, Integer.parseInt(stringSid));
+            pstmt.setInt(1, Integer.parseInt(stringUid));
             pstmt.setInt(2, Integer.parseInt(stringAid));
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
@@ -59,9 +60,9 @@ public class GetSportActivitiesByIdHandler implements CommandHandler {
         }
     }
 
-    private String validatePathParameters(String sid, String aid) {
+    private String validatePathParameters(String uid, String aid) {
         String wrongParameters = "";
-        if (sid == null || Integer.parseInt(sid) < 1) {
+        if (uid == null || Integer.parseInt(uid) < 1) {
             wrongParameters += "sid ";
         }
 
@@ -70,4 +71,5 @@ public class GetSportActivitiesByIdHandler implements CommandHandler {
         }
         return wrongParameters;
     }
+
 }

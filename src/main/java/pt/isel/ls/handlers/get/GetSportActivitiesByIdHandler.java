@@ -1,27 +1,43 @@
-package pt.isel.ls.handlers;
+package pt.isel.ls.handlers.get;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Headers;
+import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Activity;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class GetUserActivitiesHandler implements CommandHandler {
+public class GetSportActivitiesByIdHandler extends GetHandler implements CommandHandler {
+
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
-        String stringUid = commandRequest.getPathParameters().get("uid");
-        String wrongParameters = validatePathParameters(stringUid);
+        PathParameters pathParameters = commandRequest.getPathParameters();
+        String stringSid = pathParameters.get("sid");
+        String stringAid = pathParameters.get("aid");
+        String wrongParameters = validatePathParameters(stringSid, stringAid);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
+        Headers headers = commandRequest.getHeaders();
+        String acceptArgument = headers.get("accept");
+        String fileNameArgument = headers.get("file-name");
+
+        wrongParameters = validateHeaders(acceptArgument, fileNameArgument);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }
 
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            String sql = "SELECT * FROM activities WHERE uid=?";
+            String sql = "SELECT * FROM activities WHERE sid=? AND aid=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, Integer.parseInt(stringUid));
+            pstmt.setInt(1, Integer.parseInt(stringSid));
+            pstmt.setInt(2, Integer.parseInt(stringAid));
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
 
@@ -45,7 +61,7 @@ public class GetUserActivitiesHandler implements CommandHandler {
                 activities.add(activity);
             }
             if (activities.size() == 0) {
-                return new WrongParametersResult();
+                return new WrongParametersResult(wrongParameters);
             } else {
                 return new GetActivitiesResult(activities, commandRequest.getHeaders());
             }
@@ -54,10 +70,26 @@ public class GetUserActivitiesHandler implements CommandHandler {
         }
     }
 
-    private String validatePathParameters(String uid) {
+    private String validatePathParameters(String sid, String aid) {
         String wrongParameters = "";
-        if (uid == null || Integer.parseInt(uid) < 1) {
-            wrongParameters += "uid ";
+        int sidInt;
+        try {
+            sidInt = Integer.parseInt(sid);
+        } catch (NumberFormatException e) {
+            return wrongParameters + "sid ";
+        }
+        if (sid == null || sidInt < 1) {
+            wrongParameters += "sid ";
+        }
+
+        int aidInt;
+        try {
+            aidInt = Integer.parseInt(aid);
+        } catch (NumberFormatException e) {
+            return wrongParameters + "aid ";
+        }
+        if (aid == null || aidInt < 1) {
+            wrongParameters += "aid ";
         }
         return wrongParameters;
     }

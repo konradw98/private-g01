@@ -1,21 +1,32 @@
-package pt.isel.ls.handlers;
+package pt.isel.ls.handlers.get;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Headers;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetSportResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Sport;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class GetSportByIdHandler implements CommandHandler {
+public class GetSportByIdHandler extends GetHandler implements CommandHandler {
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         String stringSid = commandRequest.getPathParameters().get("sid");
         String wrongParameters = validatePathParameters(stringSid);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
+        Headers headers = commandRequest.getHeaders();
+        String acceptArgument = headers.get("accept");
+        String fileNameArgument = headers.get("file-name");
+
+        wrongParameters = validateHeaders(acceptArgument, fileNameArgument);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }
@@ -44,7 +55,13 @@ public class GetSportByIdHandler implements CommandHandler {
 
     private String validatePathParameters(String sid) {
         String wrongParameters = "";
-        if (sid == null || Integer.parseInt(sid) < 1) {
+        int sidInt;
+        try {
+            sidInt = Integer.parseInt(sid);
+        } catch (NumberFormatException e) {
+            return wrongParameters + "sid ";
+        }
+        if (sid == null || sidInt < 1) {
             wrongParameters += "sid ";
         }
         return wrongParameters;

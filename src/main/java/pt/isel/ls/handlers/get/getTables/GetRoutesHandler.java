@@ -1,19 +1,20 @@
-package pt.isel.ls.handlers.gettables;
+package pt.isel.ls.handlers.get.getTables;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Headers;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
-import pt.isel.ls.commandresults.getresult.GetUsersResult;
+import pt.isel.ls.commandresults.getresult.GetRouteResults;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
-import pt.isel.ls.models.User;
+import pt.isel.ls.models.Route;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class GetUsersHandler extends GetTablesHandler implements CommandHandler {
+public class GetRoutesHandler extends GetTablesHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         if (!commandRequest.hasParameters()) {
@@ -30,33 +31,44 @@ public class GetUsersHandler extends GetTablesHandler implements CommandHandler 
         }
         int skipInt = Integer.parseInt(skip) + 1;
 
-        Connection conn = commandRequest.getDataSource().getConnection();
+        Headers headers = commandRequest.getHeaders();
+        String acceptArgument = headers.get("accept");
+        String fileNameArgument = headers.get("file-name");
 
+        wrongParameters = validateHeaders(acceptArgument, fileNameArgument);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
+        Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            String sql = "SELECT * FROM users WHERE uid BETWEEN ? AND ?";
+
+            String sql = "SELECT * FROM routes WHERE rid BETWEEN ? AND ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, skipInt);
             pstmt.setInt(2, Integer.parseInt(top) + skipInt - 1);
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
 
-            int uid;
-            String name;
-            String email;
-            User user;
-            ArrayList<User> users = new ArrayList<>();
+            int rid;
+            String startLocation;
+            String endLocation;
+            Route route;
+            double distance;
+            ArrayList<Route> routes = new ArrayList<>();
 
             while (resultSet.next()) {
-                uid = resultSet.getInt("uid");
-                name = resultSet.getString("name");
-                email = resultSet.getString("email");
-                user = new User(uid, email, name);
-                users.add(user);
+                rid = resultSet.getInt("rid");
+                startLocation = resultSet.getString("start_location");
+                endLocation = resultSet.getString("end_location");
+                distance = resultSet.getDouble("distance");
+                route = new Route(rid, startLocation, endLocation, distance);
+                routes.add(route);
             }
-            if (users.size() == 0) {
+            if (routes.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetUsersResult(users, commandRequest.getHeaders());
+                return new GetRouteResults(routes, commandRequest.getHeaders());
             }
 
         } finally {

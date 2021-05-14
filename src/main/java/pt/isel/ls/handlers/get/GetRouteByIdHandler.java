@@ -1,20 +1,31 @@
-package pt.isel.ls.handlers;
+package pt.isel.ls.handlers.get;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Headers;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetRouteResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Route;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class GetRouteByIdHandler implements CommandHandler {
+public class GetRouteByIdHandler extends GetHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         String stringRid = commandRequest.getPathParameters().get("rid");
         String wrongParameters = validatePathParameters(stringRid);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
+        Headers headers = commandRequest.getHeaders();
+        String acceptArgument = headers.get("accept");
+        String fileNameArgument = headers.get("file-name");
+
+        wrongParameters = validateHeaders(acceptArgument, fileNameArgument);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }
@@ -41,10 +52,16 @@ public class GetRouteByIdHandler implements CommandHandler {
         }
     }
 
-    private String validatePathParameters(String uid) {
+    private String validatePathParameters(String rid) {
         String wrongParameters = "";
-        if (uid == null || Integer.parseInt(uid) < 1) {
-            wrongParameters += "sid ";
+        int ridInt;
+        try {
+            ridInt = Integer.parseInt(rid);
+        } catch (NumberFormatException e) {
+            return wrongParameters + "rid ";
+        }
+        if (rid == null || ridInt < 1) {
+            wrongParameters += "rid ";
         }
         return wrongParameters;
     }

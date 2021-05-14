@@ -1,4 +1,4 @@
-package pt.isel.ls.handlers;
+package pt.isel.ls.handlers.get;
 
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Headers;
@@ -6,13 +6,13 @@ import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Activity;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class GetTopsActivitiesHandler implements CommandHandler {
+public class GetTopsActivitiesHandler extends GetHandler implements CommandHandler {
     private static final int PARAMETERS_WITH_3_OPTIONALS = 5;
     private static final int PARAMETERS_WITH_2_OPTIONALS = 4;
     private static final int PARAMETERS_WITH_1_OPTIONAL = 3;
@@ -30,6 +30,15 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
         String wrongParameters = checkParametersWithoutRidAndDate(sid, orderBy);
 
+        Headers headers = commandRequest.getHeaders();
+        String acceptArgument = headers.get("accept");
+        String fileNameArgument = headers.get("file-name");
+
+        wrongParameters += validateHeaders(acceptArgument, fileNameArgument);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
             PreparedStatement pstmt;
@@ -44,20 +53,13 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                     return new WrongParametersResult(wrongParameters);
                 }
 
-                Date parseDate;
-                try {
-                    parseDate = Date.valueOf(date);
-                } catch (IllegalArgumentException e) {
-                    conn.close();
-                    return new WrongParametersResult(" date");
-                }
 
                 String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? AND rid IN"
                         + " (SELECT rid FROM routes WHERE distance > ?) ORDER BY duration_time " + orderBy;
                 pstmt = conn.prepareStatement(sql);
 
                 pstmt.setInt(1, Integer.parseInt(sid));
-                pstmt.setDate(2, parseDate);
+                pstmt.setDate(2, Date.valueOf(date));
                 pstmt.setInt(3, Integer.parseInt(rid));
                 pstmt.setDouble(4, Double.parseDouble(minDistance));
 
@@ -207,7 +209,7 @@ public class GetTopsActivitiesHandler implements CommandHandler {
                 ResultSet resultSet = pstmt.executeQuery();
 
                 conn.close();
-                return executeActivitiesResult(resultSet,commandRequest.getHeaders());
+                return executeActivitiesResult(resultSet, commandRequest.getHeaders());
             }
             conn.close();
             return new WrongParametersResult(wrongParameters);
@@ -239,16 +241,23 @@ public class GetTopsActivitiesHandler implements CommandHandler {
         if (activities.size() == 0) {
             return new WrongParametersResult();
         } else {
-            return new GetActivitiesResult(activities,headers);
+            return new GetActivitiesResult(activities, headers);
         }
     }
 
     private String checkParametersWithoutRidAndDate(String sid, String orderBy) {
 
         String wrongParameters = "";
-        if (sid == null || Integer.parseInt(sid) < 1) {
-            wrongParameters += " sid";
+        int sidInt;
+        try {
+            sidInt = Integer.parseInt(sid);
+        } catch (NumberFormatException e) {
+            return wrongParameters + "sid ";
         }
+        if (sid == null || sidInt < 1) {
+            wrongParameters += "sid ";
+        }
+
         if (!orderBy.toLowerCase(Locale.ENGLISH).equals("asc")
                 && !orderBy.toLowerCase(Locale.ENGLISH).equals("desc")) {
             wrongParameters += " order by";
@@ -257,7 +266,13 @@ public class GetTopsActivitiesHandler implements CommandHandler {
     }
 
     private String checkDate(String date) {
+
         String wrongParameters = "";
+        try {
+            Date.valueOf(date);
+        } catch (IllegalArgumentException e) {
+            return wrongParameters + " date";
+        }
         if (date == null) {
             wrongParameters += " date";
         }
@@ -266,16 +281,27 @@ public class GetTopsActivitiesHandler implements CommandHandler {
 
     private String checkRid(String rid) {
         String wrongParameters = "";
-        if (rid == null || Integer.parseInt(rid) < 1) {
-            wrongParameters += " rid";
+        int ridInt;
+        try {
+            ridInt = Integer.parseInt(rid);
+        } catch (NumberFormatException e) {
+            return wrongParameters + "rid ";
         }
-
+        if (rid == null || ridInt < 1) {
+            wrongParameters += "rid ";
+        }
         return wrongParameters;
     }
 
     private String checkDistance(String distance) {
         String wrongParameters = "";
-        if (distance == null || Double.parseDouble(distance) < 0) {
+        double distanceDouble;
+        try {
+            distanceDouble = Double.parseDouble(distance);
+        } catch (NumberFormatException e) {
+            return wrongParameters + "distance ";
+        }
+        if (distance == null || distanceDouble < 0) {
             wrongParameters += " distance";
         }
 

@@ -1,32 +1,38 @@
-package pt.isel.ls.handlers;
+package pt.isel.ls.handlers.get;
 
 import pt.isel.ls.CommandRequest;
-import pt.isel.ls.Parameters;
+import pt.isel.ls.Headers;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Activity;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class GetUserActivitiesByIdHandler implements CommandHandler {
-
+public class GetSportActivitiesHandler extends GetHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
-        Parameters pathParameters = commandRequest.getParameters();
-        String stringUid = pathParameters.get("uid");
-        String stringAid = pathParameters.get("aid");
-        String wrongParameters = validatePathParameters(stringUid, stringAid);
+        String stringSid = commandRequest.getPathParameters().get("sid");
+        String wrongParameters = validatePathParameters(stringSid);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
+        Headers headers = commandRequest.getHeaders();
+        String acceptArgument = headers.get("accept");
+        String fileNameArgument = headers.get("file-name");
+
+        wrongParameters = validateHeaders(acceptArgument, fileNameArgument);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }
 
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            String sql = "SELECT * FROM activities WHERE uid=? AND aid=?";
+            String sql = "SELECT * FROM activities WHERE sid=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, Integer.parseInt(stringUid));
-            pstmt.setInt(2, Integer.parseInt(stringAid));
+            pstmt.setInt(1, Integer.parseInt(stringSid));
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
 
@@ -50,7 +56,7 @@ public class GetUserActivitiesByIdHandler implements CommandHandler {
                 activities.add(activity);
             }
             if (activities.size() == 0) {
-                return new WrongParametersResult(wrongParameters);
+                return new WrongParametersResult();
             } else {
                 return new GetActivitiesResult(activities, commandRequest.getHeaders());
             }
@@ -59,16 +65,17 @@ public class GetUserActivitiesByIdHandler implements CommandHandler {
         }
     }
 
-    private String validatePathParameters(String uid, String aid) {
+    private String validatePathParameters(String sid) {
         String wrongParameters = "";
-        if (uid == null || Integer.parseInt(uid) < 1) {
-            wrongParameters += "sid ";
+        int sidInt;
+        try {
+            sidInt = Integer.parseInt(sid);
+        } catch (NumberFormatException e) {
+            return wrongParameters + "sid ";
         }
-
-        if (aid == null || Integer.parseInt(aid) < 1) {
-            wrongParameters += "aid ";
+        if (sid == null || sidInt < 1) {
+            wrongParameters += "sid ";
         }
         return wrongParameters;
     }
-
 }

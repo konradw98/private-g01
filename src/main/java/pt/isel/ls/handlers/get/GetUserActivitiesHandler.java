@@ -1,27 +1,28 @@
-package pt.isel.ls.handlers;
+package pt.isel.ls.handlers.get;
 
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Activity;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class GetSportActivitiesHandler implements CommandHandler {
+public class GetUserActivitiesHandler extends GetHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
-        String stringSid = commandRequest.getPathParameters().get("sid");
-        String wrongParameters = validatePathParameters(stringSid);
+        String stringUid = commandRequest.getPathParameters().get("uid");
+        String wrongParameters = validatePathParameters(stringUid);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }
 
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            String sql = "SELECT * FROM activities WHERE sid=?";
+            String sql = "SELECT * FROM activities WHERE uid=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, Integer.parseInt(stringSid));
+            pstmt.setInt(1, Integer.parseInt(stringUid));
             ResultSet resultSet = pstmt.executeQuery();
             conn.close();
 
@@ -54,10 +55,10 @@ public class GetSportActivitiesHandler implements CommandHandler {
         }
     }
 
-    private String validatePathParameters(String sid) {
+    private String validatePathParameters(String uid) {
         String wrongParameters = "";
-        if (sid == null || Integer.parseInt(sid) < 1) {
-            wrongParameters += "sid ";
+        if (uid == null || Integer.parseInt(uid) < 1) {
+            wrongParameters += "uid ";
         }
         return wrongParameters;
     }
