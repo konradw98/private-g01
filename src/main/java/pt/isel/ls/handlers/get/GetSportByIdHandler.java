@@ -3,6 +3,7 @@ package pt.isel.ls.handlers.get;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Headers;
 import pt.isel.ls.commandresults.CommandResult;
+import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.getresult.GetSportResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
@@ -33,10 +34,21 @@ public class GetSportByIdHandler extends GetHandler implements CommandHandler {
 
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            String sql = "SELECT * FROM sports WHERE sid=?";
+            String sql = "SELECT COUNT(*) FROM sports";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, Integer.parseInt(stringSid));
             ResultSet resultSet = pstmt.executeQuery();
+            int count = 1;
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+            if (count == 0) {
+                return new EmptyTableResult("sports");
+            }
+
+            String sql1 = "SELECT * FROM sports WHERE sid=?";
+            pstmt = conn.prepareStatement(sql1);
+            pstmt.setInt(1, Integer.parseInt(stringSid));
+            resultSet = pstmt.executeQuery();
             conn.close();
 
             if (resultSet.next()) {

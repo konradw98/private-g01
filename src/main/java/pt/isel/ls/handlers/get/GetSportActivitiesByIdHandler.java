@@ -4,6 +4,7 @@ import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Headers;
 import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
+import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
@@ -34,11 +35,22 @@ public class GetSportActivitiesByIdHandler extends GetHandler implements Command
 
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            String sql = "SELECT * FROM activities WHERE sid=? AND aid=?";
+            String sql = "SELECT COUNT(*) FROM activities";
             PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet resultSet = pstmt.executeQuery();
+            int count = 1;
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+            if (count == 0) {
+                return new EmptyTableResult("activities");
+            }
+
+            String sql1 = "SELECT * FROM activities WHERE sid=? AND aid=?";
+            pstmt = conn.prepareStatement(sql1);
             pstmt.setInt(1, Integer.parseInt(stringSid));
             pstmt.setInt(2, Integer.parseInt(stringAid));
-            ResultSet resultSet = pstmt.executeQuery();
+            resultSet = pstmt.executeQuery();
             conn.close();
 
             int aid;

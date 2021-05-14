@@ -45,11 +45,22 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
         Connection conn = commandRequest.getDataSource().getConnection();
 
         try {
-            String sql = "SELECT * FROM sports WHERE sid BETWEEN ? AND ?";
+            String sql = "SELECT COUNT(*) FROM sports";
             PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet resultSet = pstmt.executeQuery();
+            int count = 1;
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+            if (count == 0) {
+                return new EmptyTableResult("sports");
+            }
+
+            String sql1 = "SELECT * FROM sports WHERE sid BETWEEN ? AND ?";
+            pstmt = conn.prepareStatement(sql1);
             pstmt.setInt(1, skipInt);
             pstmt.setInt(2, Integer.parseInt(top) + skipInt - 1);
-            ResultSet resultSet = pstmt.executeQuery();
+            resultSet = pstmt.executeQuery();
             conn.close();
 
 

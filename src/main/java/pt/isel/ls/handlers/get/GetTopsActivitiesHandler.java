@@ -4,6 +4,7 @@ import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
+import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
@@ -52,7 +53,16 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                     conn.close();
                     return new WrongParametersResult(wrongParameters);
                 }
-
+                String sql0 = "SELECT COUNT(*) FROM activities";
+                pstmt = conn.prepareStatement(sql0);
+                ResultSet resultSet = pstmt.executeQuery();
+                int count = 1;
+                if (resultSet.next()) {
+                    count = resultSet.getInt(1);
+                }
+                if (count == 0) {
+                    return new EmptyTableResult("routes");
+                }
 
                 String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? AND rid IN"
                         + " (SELECT rid FROM routes WHERE distance > ?) ORDER BY duration_time " + orderBy;
@@ -63,7 +73,7 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                 pstmt.setInt(3, Integer.parseInt(rid));
                 pstmt.setDouble(4, Double.parseDouble(minDistance));
 
-                ResultSet resultSet = pstmt.executeQuery();
+                resultSet = pstmt.executeQuery();
                 conn.close();
                 return executeActivitiesResult(resultSet, commandRequest.getHeaders());
             } else if (parameters.size() == PARAMETERS_WITH_2_OPTIONALS) {
