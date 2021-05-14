@@ -43,11 +43,7 @@ public class User implements Model {
 
     @Override
     public String toString() {
-        return "User{"
-                + "uid=" + uid
-                + ", email=" + email
-                + ", name=" + name
-                + '}';
+        return "id: " + uid + " email: " + email + " name: " + name;
     }
 
     @Override

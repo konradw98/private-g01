@@ -42,11 +42,7 @@ public class Sport implements Model {
 
     @Override
     public String toString() {
-        return "Sport{"
-                + "sid=" + sid
-                + ", name='" + name
-                + ", description='" + description
-                + '}';
+        return "id: " + sid + " name: " + name + " description: " + description;
     }
 
     @Override

@@ -77,13 +77,9 @@ public class Activity implements Model {
 
     @Override
     public String toString() {
-        return "Activity{"
-                + "date=" + date
-                + ", durationTime=" + durationTime
-                + ", sid=" + sid
-                + ", uid=" + uid
-                + ", rid=" + rid
-                + '}';
+        return "id: " + aid + " date: " + date + " duration time: " + durationTime + " sport id: "
+                + sid + " user id: " + uid + " route id: " + rid;
+
     }
 
     @Override
