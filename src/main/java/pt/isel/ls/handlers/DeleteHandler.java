@@ -34,16 +34,20 @@ public class DeleteHandler implements CommandHandler {
             Date date = new Date();
             Timestamp ts = new Timestamp(date.getTime());
 
+            boolean bug=false;
+            int result=1;
             for (String id : activities) {
                 String sql = "UPDATE activities SET timestamp=? WHERE uid=? AND aid=?";
                 PreparedStatement pstmt = conn.prepareStatement(sql);
                 pstmt.setTimestamp(1, ts);
                 pstmt.setInt(2, uid);
                 pstmt.setInt(3, Integer.parseInt(id));
-                pstmt.executeUpdate();
+                result=pstmt.executeUpdate();
+                if(result<1) bug=true;
                 conn.commit();
             }
 
+            if(bug) conn.rollback(savepoint1);
 
         } catch (SQLException sql) {
             conn.rollback(savepoint1);
