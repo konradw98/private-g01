@@ -71,8 +71,20 @@ public class CommandExecutor {
     private static boolean executeProperCommand(RouteResult routeResult, String[] command,
                                                 PGSimpleDataSource dataSource) {
         boolean exit = false;
-        CommandRequest commandRequest;
+        CommandRequest commandRequest = chooseRequest(command, routeResult, dataSource);
 
+        try {
+            CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
+            exit = commandResult.results();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return exit;
+    }
+
+    private static CommandRequest chooseRequest(String[] command, RouteResult routeResult,
+                                                PGSimpleDataSource dataSource) {
+        CommandRequest commandRequest;
         if (command.length == SIMPLEST_COMMAND_SEGMENTS) {
             commandRequest = new CommandRequest(routeResult.getPathParameters(),
                     dataSource);
@@ -92,13 +104,6 @@ public class CommandExecutor {
             commandRequest = new CommandRequest(routeResult.getPathParameters(),
                     parameters, headers, dataSource);
         }
-
-        try {
-            CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
-            exit = commandResult.results();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return exit;
+        return commandRequest;
     }
 }
