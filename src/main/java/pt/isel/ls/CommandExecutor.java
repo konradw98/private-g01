@@ -18,7 +18,7 @@ public class CommandExecutor {
     private static final int HEADERS_INDEX = 2;
 
     public static boolean runCommand(String line, Router router, PGSimpleDataSource dataSource) {
-        return executeCommand(line.split(" "), line, router, dataSource);
+        return executeCommand(line.split("\\s+"), line, router, dataSource);
     }
 
     public static boolean runCommand(String[] command, Router router, PGSimpleDataSource dataSource) {
