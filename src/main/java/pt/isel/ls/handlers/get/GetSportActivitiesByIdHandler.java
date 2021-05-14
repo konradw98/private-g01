@@ -20,15 +20,10 @@ public class GetSportActivitiesByIdHandler extends GetHandler implements Command
         String stringSid = pathParameters.get("sid");
         String stringAid = pathParameters.get("aid");
         String wrongParameters = validatePathParameters(stringSid, stringAid);
-        if (!wrongParameters.equals("")) {
-            return new WrongParametersResult(wrongParameters);
-        }
 
         Headers headers = commandRequest.getHeaders();
-        String acceptArgument = headers.get("accept");
-        String fileNameArgument = headers.get("file-name");
+        wrongParameters += validateHeaders(headers);
 
-        wrongParameters = validateHeaders(acceptArgument, fileNameArgument);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }

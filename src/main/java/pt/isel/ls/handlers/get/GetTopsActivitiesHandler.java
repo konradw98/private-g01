@@ -32,10 +32,8 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
         String wrongParameters = checkParametersWithoutRidAndDate(sid, orderBy);
 
         Headers headers = commandRequest.getHeaders();
-        String acceptArgument = headers.get("accept");
-        String fileNameArgument = headers.get("file-name");
+        wrongParameters += validateHeaders(headers);
 
-        wrongParameters += validateHeaders(acceptArgument, fileNameArgument);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }

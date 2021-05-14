@@ -28,16 +28,12 @@ public class GetUsersHandler extends GetTablesHandler implements CommandHandler 
         String top = parameters.get("top");
 
         String wrongParameters = validateParameters(skip, top);
-        if (!wrongParameters.equals("")) {
-            return new WrongParametersResult(wrongParameters);
-        }
+
         int skipInt = Integer.parseInt(skip) + 1;
 
         Headers headers = commandRequest.getHeaders();
-        String acceptArgument = headers.get("accept");
-        String fileNameArgument = headers.get("file-name");
+        wrongParameters += validateHeaders(headers);
 
-        wrongParameters = validateHeaders(acceptArgument, fileNameArgument);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }

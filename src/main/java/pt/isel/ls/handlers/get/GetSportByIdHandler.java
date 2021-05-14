@@ -19,15 +19,10 @@ public class GetSportByIdHandler extends GetHandler implements CommandHandler {
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         String stringSid = commandRequest.getPathParameters().get("sid");
         String wrongParameters = validatePathParameters(stringSid);
-        if (!wrongParameters.equals("")) {
-            return new WrongParametersResult(wrongParameters);
-        }
 
         Headers headers = commandRequest.getHeaders();
-        String acceptArgument = headers.get("accept");
-        String fileNameArgument = headers.get("file-name");
+        wrongParameters += validateHeaders(headers);
 
-        wrongParameters = validateHeaders(acceptArgument, fileNameArgument);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }

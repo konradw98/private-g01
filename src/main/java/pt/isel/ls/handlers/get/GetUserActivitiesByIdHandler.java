@@ -20,15 +20,10 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
         String stringUid = pathParameters.get("uid");
         String stringAid = pathParameters.get("aid");
         String wrongParameters = validatePathParameters(stringUid, stringAid);
-        if (!wrongParameters.equals("")) {
-            return new WrongParametersResult(wrongParameters);
-        }
 
         Headers headers = commandRequest.getHeaders();
-        String acceptArgument = headers.get("accept");
-        String fileNameArgument = headers.get("file-name");
+        wrongParameters += validateHeaders(headers);
 
-        wrongParameters = validateHeaders(acceptArgument, fileNameArgument);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }

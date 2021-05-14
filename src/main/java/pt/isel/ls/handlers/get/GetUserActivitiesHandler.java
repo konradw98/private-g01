@@ -16,15 +16,10 @@ public class GetUserActivitiesHandler extends GetHandler implements CommandHandl
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         String stringUid = commandRequest.getPathParameters().get("uid");
         String wrongParameters = validatePathParameters(stringUid);
-        if (!wrongParameters.equals("")) {
-            return new WrongParametersResult(wrongParameters);
-        }
 
         Headers headers = commandRequest.getHeaders();
-        String acceptArgument = headers.get("accept");
-        String fileNameArgument = headers.get("file-name");
+        wrongParameters += validateHeaders(headers);
 
-        wrongParameters = validateHeaders(acceptArgument, fileNameArgument);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }

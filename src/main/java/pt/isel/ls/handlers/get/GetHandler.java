@@ -1,9 +1,19 @@
 package pt.isel.ls.handlers.get;
 
+import pt.isel.ls.Headers;
+
 public abstract class GetHandler {
 
-    protected String validateHeaders(String acceptArgument, String fileNameArgument) {
+    protected String validateHeaders(Headers headers) {
         String wrongParameters = "";
+
+        if (headers == null) {
+            return wrongParameters;
+        }
+
+        String acceptArgument = headers.get("accept");
+        String fileNameArgument = headers.get("file-name");
+
         if (acceptArgument != null && !acceptArgument.equals("text/html") && !acceptArgument.equals("text/plain")
                 && !acceptArgument.equals("application/json")) {
             wrongParameters += acceptArgument;
