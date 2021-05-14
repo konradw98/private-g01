@@ -1,6 +1,7 @@
 package pt.isel.ls.handlers.get;
 
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Headers;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
@@ -18,6 +19,15 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
         String stringUid = pathParameters.get("uid");
         String stringAid = pathParameters.get("aid");
         String wrongParameters = validatePathParameters(stringUid, stringAid);
+        if (!wrongParameters.equals("")) {
+            return new WrongParametersResult(wrongParameters);
+        }
+
+        Headers headers = commandRequest.getHeaders();
+        String acceptArgument = headers.get("accept");
+        String fileNameArgument = headers.get("file-name");
+
+        wrongParameters = validateHeaders(acceptArgument, fileNameArgument);
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }
@@ -62,11 +72,23 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
 
     private String validatePathParameters(String uid, String aid) {
         String wrongParameters = "";
-        if (uid == null || Integer.parseInt(uid) < 1) {
-            wrongParameters += "sid ";
+        int uidInt;
+        try {
+            uidInt = Integer.parseInt(uid);
+        } catch (NumberFormatException e) {
+            return wrongParameters + "uid ";
+        }
+        if (uid == null || uidInt < 1) {
+            wrongParameters += "uid ";
         }
 
-        if (aid == null || Integer.parseInt(aid) < 1) {
+        int aidInt;
+        try {
+            aidInt = Integer.parseInt(aid);
+        } catch (NumberFormatException e) {
+            return wrongParameters + "aid ";
+        }
+        if (aid == null || aidInt < 1) {
             wrongParameters += "aid ";
         }
         return wrongParameters;

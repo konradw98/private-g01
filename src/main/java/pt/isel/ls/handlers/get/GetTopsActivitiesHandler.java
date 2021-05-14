@@ -94,20 +94,12 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                         return new WrongParametersResult(wrongParameters);
                     }
 
-                    Date parseDate;
-                    try {
-                        parseDate = Date.valueOf(date);
-                    } catch (IllegalArgumentException e) {
-                        conn.close();
-                        return new WrongParametersResult(" date");
-                    }
-
                     String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid IN (SELECT rid FROM routes "
                             + "WHERE distance > ?) ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
 
                     pstmt.setInt(1, Integer.parseInt(sid));
-                    pstmt.setDate(2, parseDate);
+                    pstmt.setDate(2, Date.valueOf(date));
                     pstmt.setDouble(3, Double.parseDouble(minDistance));
 
                     ResultSet resultSet = pstmt.executeQuery();
@@ -121,19 +113,11 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                         return new WrongParametersResult(wrongParameters);
                     }
 
-                    Date parseDate;
-                    try {
-                        parseDate = Date.valueOf(date);
-                    } catch (IllegalArgumentException e) {
-                        conn.close();
-                        return new WrongParametersResult(" date");
-                    }
-
                     String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? "
                             + "ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
                     pstmt.setInt(1, Integer.parseInt(sid));
-                    pstmt.setDate(2, parseDate);
+                    pstmt.setDate(2, Date.valueOf(date));
                     pstmt.setInt(3, Integer.parseInt(rid));
 
                     ResultSet resultSet = pstmt.executeQuery();
@@ -147,18 +131,10 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                         return new WrongParametersResult(wrongParameters);
                     }
 
-                    Date parseDate;
-                    try {
-                        parseDate = Date.valueOf(date);
-                    } catch (IllegalArgumentException e) {
-                        conn.close();
-                        return new WrongParametersResult(" date");
-                    }
-
                     String sql = "SELECT * FROM activities WHERE sid=? AND date=? ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
                     pstmt.setInt(1, Integer.parseInt(sid));
-                    pstmt.setDate(2, parseDate);
+                    pstmt.setDate(2, Date.valueOf(date));
 
                     ResultSet resultSet = pstmt.executeQuery();
                     conn.close();
