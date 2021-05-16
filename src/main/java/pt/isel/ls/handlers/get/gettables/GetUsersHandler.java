@@ -9,7 +9,6 @@ import pt.isel.ls.commandresults.getresult.GetUsersResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.User;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

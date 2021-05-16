@@ -1,0 +1,1 @@
+id: 11 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: 2 route id: 2id: 15 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: 2 route id: 2id: 17 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: 2 route id: 2

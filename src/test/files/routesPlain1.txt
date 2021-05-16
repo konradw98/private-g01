@@ -1,0 +1,1 @@
+ rid: 1 start location: Bairro Alto end location: Alameda rid: 2 start location: Poland end location: Portugal rid: 3 start location: Wroclaw end location: Lisbon

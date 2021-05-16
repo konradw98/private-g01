@@ -11,7 +11,6 @@ import pt.isel.ls.handlers.PostRouteHandler;
 import pt.isel.ls.handlers.PostUserHandler;
 import pt.isel.ls.handlers.get.gettables.GetTopsActivitiesHandler;
 import pt.isel.ls.handlers.get.gettables.GetUsersHandler;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
@@ -20,10 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.Scanner;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 
 public class Phase2Tests {
@@ -92,18 +89,19 @@ public class Phase2Tests {
         PathParameters pathParameters = new PathParameters();
         RouteResult routeResult = new RouteResult(new GetTopsActivitiesHandler(), pathParameters);
         Parameters parametersWithWrongDate = new Parameters("uid=1&duration=00:10:30&date=2021:04:21&rid=1");
-        Parameters parametersWithWrongRidFormat = new Parameters("uid=1000&duration=00:10:30&rid=a");
-        Parameters parametersWithWrongDurationFormat = new Parameters("uid=1&duration=00-10-30");
+
         CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), parametersWithWrongDate,
                 dataSource);
         CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
         assertThat(commandResult, instanceOf(WrongParametersResult.class));
 
+        Parameters parametersWithWrongRidFormat = new Parameters("uid=1000&duration=00:10:30&rid=a");
         commandRequest = new CommandRequest(routeResult.getPathParameters(), parametersWithWrongRidFormat,
                 dataSource);
         commandResult = routeResult.getHandler().execute(commandRequest);
         assertThat(commandResult, instanceOf(WrongParametersResult.class));
 
+        Parameters parametersWithWrongDurationFormat = new Parameters("uid=1&duration=00-10-30");
         commandRequest = new CommandRequest(routeResult.getPathParameters(), parametersWithWrongDurationFormat,
                 dataSource);
         commandResult = routeResult.getHandler().execute(commandRequest);
@@ -162,7 +160,8 @@ public class Phase2Tests {
     @Test
     public void getUsersPlainTest() {
 
-        CommandExecutor.runCommand("GET /users/ accept:text/plain|file-name:src/test/files/usersPlain.txt skip=0&top=1", router, dataSource);
+        CommandExecutor.runCommand("GET /users/ accept:text/plain|file-name:src/test/files/usersPlain.txt "
+                + "skip=0&top=1", router, dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/usersPlain.txt");
@@ -185,7 +184,8 @@ public class Phase2Tests {
     @Test
     public void getSportsPlainTest() {
 
-        CommandExecutor.runCommand("GET /sports/ accept:text/plain|file-name:src/test/files/sportsPlain.txt skip=0&top=3", router, dataSource);
+        CommandExecutor.runCommand("GET /sports/ accept:text/plain|file-name:src/test/files/sportsPlain.txt "
+               + "skip=0&top=3", router, dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/sportsPlain.txt");
@@ -200,9 +200,9 @@ public class Phase2Tests {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String excepted = "id: 1 name: football description: kicking a ball to score a goalid: 2" +
-                " name: volleyball description: score points by grounding a ball on the other teams courtid:" +
-                " 3 name: basketball description: shooting a basketball through the defenders hoop";
+        String excepted = "id: 1 name: football description: kicking a ball to score a goalid: 2"
+                + " name: volleyball description: score points by grounding a ball on the other teams courtid:"
+                + " 3 name: basketball description: shooting a basketball through the defenders hoop";
         assertEquals(excepted, data);
 
     }
@@ -210,8 +210,8 @@ public class Phase2Tests {
     @Test
     public void getRoutesPlainTest() {
 
-        CommandExecutor.runCommand("GET /routes/ accept:text/plain|file-name:src/test/files/routesPlain1.txt skip=0&top=3",
-                router, dataSource);
+        CommandExecutor.runCommand("GET /routes/ accept:text/plain|file-name:src/test/files/routesPlain1.txt "
+                + "skip=0&top=3", router, dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/routesPlain1.txt");
@@ -225,8 +225,8 @@ public class Phase2Tests {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String excepted = " rid: 1 start location: Bairro Alto end location: Alameda rid: 2 start location: Poland" +
-                " end location: Portugal rid: 3 start location: Wroclaw end location: Lisbon";
+        String excepted = " rid: 1 start location: Bairro Alto end location: Alameda rid: 2 start location: Poland"
+                + " end location: Portugal rid: 3 start location: Wroclaw end location: Lisbon";
         assertEquals(excepted, data);
 
     }
@@ -234,7 +234,8 @@ public class Phase2Tests {
     @Test
     public void getSportsByIdJsonTest() {
 
-        CommandExecutor.runCommand("GET /sports/1 accept:application/json|file-name:src/test/files/sportsJson.json", router, dataSource);
+        CommandExecutor.runCommand("GET /sports/1 accept:application/json|file-name:src/test/files/sportsJson.json",
+                router, dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/sportsJson.json");
@@ -257,7 +258,8 @@ public class Phase2Tests {
     @Test
     public void getRoutesByIdPlainTest() {
 
-        CommandExecutor.runCommand("GET /routes/2 accept:text/plain|file-name:src/test/files/routesPlain2.txt", router, dataSource);
+        CommandExecutor.runCommand("GET /routes/2 accept:text/plain|file-name:src/test/files/routesPlain2.txt",
+                router, dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/routesPlain2.txt");
@@ -281,7 +283,8 @@ public class Phase2Tests {
     @Test
     public void getUsersByIdJsonTest() {
 
-        CommandExecutor.runCommand("GET /users/3 accept:application/json|file-name:src/test/files/usersJson.json", router, dataSource);
+        CommandExecutor.runCommand("GET /users/3 accept:application/json|file-name:src/test/files/usersJson.json",
+                router, dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/usersJson.json");
@@ -305,9 +308,9 @@ public class Phase2Tests {
     @Test
     public void getActivitiesPlainTest() {
 
-        CommandExecutor.runCommand("GET /tops/activities  " +
-                "accept:text/plain|file-name:src/test/files/activitiesPlain1.txt" +
-                " sid=3&orderBy=desc&rid=2&distance=1&skip=0&top=3", router, dataSource);
+        CommandExecutor.runCommand("GET /tops/activities  "
+                + "accept:text/plain|file-name:src/test/files/activitiesPlain1.txt"
+                + " sid=3&orderBy=desc&rid=2&distance=1&skip=0&top=3", router, dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/activitiesPlain1.txt");
@@ -322,10 +325,10 @@ public class Phase2Tests {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String excepted = "id: 11 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id:" +
-                " 2 route id: 2id: 15 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: " +
-                "2 route id: 2id: 17 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: " +
-                "2 route id: 2";
+        String excepted = "id: 11 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id:"
+                + " 2 route id: 2id: 15 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: "
+                + "2 route id: 2id: 17 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: "
+                + "2 route id: 2";
 
         assertEquals(excepted, data);
 

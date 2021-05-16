@@ -7,7 +7,6 @@ import pt.isel.ls.commandresults.*;
 import pt.isel.ls.commandresults.getresult.GetSportsResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Sport;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
