@@ -1,4 +1,4 @@
-package pt.isel.ls.handlers.get.getTables;
+package pt.isel.ls.handlers.get.gettables;
 
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Headers;

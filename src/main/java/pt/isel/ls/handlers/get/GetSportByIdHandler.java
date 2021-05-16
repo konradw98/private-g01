@@ -77,6 +77,8 @@ public class GetSportByIdHandler extends GetHandler implements CommandHandler {
     private String validateParameters(Parameters parameters) {
         if (parameters != null) {
             return "no parameters are needed ";
-        } else return "";
+        } else {
+            return "";
+        }
     }
 }

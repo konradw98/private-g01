@@ -9,7 +9,6 @@ import pt.isel.ls.commandresults.getresult.GetRouteResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Route;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -77,6 +76,8 @@ public class GetRouteByIdHandler extends GetHandler implements CommandHandler {
     private String validateParameters(Parameters parameters) {
         if (parameters != null) {
             return "no parameters are needed ";
-        } else return "";
+        } else {
+            return "";
+        }
     }
 }

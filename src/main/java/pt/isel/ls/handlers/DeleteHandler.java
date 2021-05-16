@@ -4,7 +4,6 @@ import pt.isel.ls.CommandRequest;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.DeleteResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,9 @@ public class DeleteHandler implements CommandHandler {
                 pstmt.setInt(2, uid);
                 pstmt.setInt(3, Integer.parseInt(id));
                 result = pstmt.executeUpdate();
-                if (result < 1) bug = true;
+                if (result < 1) {
+                    bug = true;
+                }
             }
 
             if (bug) {

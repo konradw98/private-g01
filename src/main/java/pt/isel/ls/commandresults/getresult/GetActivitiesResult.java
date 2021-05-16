@@ -1,11 +1,9 @@
 package pt.isel.ls.commandresults.getresult;
 
-
 import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Activity;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;

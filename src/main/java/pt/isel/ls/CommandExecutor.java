@@ -2,7 +2,6 @@ package pt.isel.ls;
 
 import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.commandresults.CommandResult;
-
 import java.sql.SQLException;
 import java.util.Optional;
 

@@ -1,10 +1,8 @@
 package pt.isel.ls.commandresults;
 
-public class EmptyTableResult implements  CommandResult{
+public class EmptyTableResult implements CommandResult {
 
-    String emptyTable=" ";
-
-   // public EmptyTableResult() { }
+    String emptyTable;
 
     public EmptyTableResult(String emptyTable) {
         this.emptyTable = emptyTable;
@@ -12,7 +10,7 @@ public class EmptyTableResult implements  CommandResult{
 
     @Override
     public boolean results() {
-        System.out.println("Empty "+emptyTable+" table!");
+        System.out.println("Empty " + emptyTable + " table!");
         return false;
     }
 }
