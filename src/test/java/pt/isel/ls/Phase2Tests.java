@@ -11,6 +11,9 @@ import pt.isel.ls.handlers.get.gettables.GetTopsActivitiesHandler;
 import pt.isel.ls.handlers.get.gettables.GetUsersHandler;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.Scanner;
@@ -319,6 +322,32 @@ public class Phase2Tests {
                 "date: 2020-05-02 duration time: 00:00:30 sport id: 3 user id: 4 route id: 2";
 
         assertEquals(excepted, data);
+
+    }
+
+    @Test
+    public void deleteHandlerTest() throws SQLException {
+        int uid = 4;
+        int activity1 = 5;
+        int activity2 = 6;
+
+        CommandExecutor.runCommand("DELETE /users/"+uid+"/activities activity="+activity1
+                    +"&activity="+activity2+"\"", router, dataSource);
+       // CommandExecutor.runCommand("DELETE /users/4/activities activity=5&activity=6", router, dataSource);
+
+        Connection conn = dataSource.getConnection();
+
+        String sql = "SELECT COUNT(timestamp) FROM activities WHERE uid=? and aid=? or aid=?;";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1,uid);
+        pstmt.setInt(2,activity1);
+        pstmt.setInt(3,activity2);
+        ResultSet resultSet=pstmt.executeQuery();
+        int result=0;
+        if(resultSet.next()){
+            result=resultSet.getInt("count");}
+
+        assertEquals(2, result);
 
     }
 
