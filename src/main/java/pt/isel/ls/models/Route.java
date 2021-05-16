@@ -53,7 +53,7 @@ public class Route implements Model {
 
     @Override
     public String toString() {
-        return "rid: " + rid + " start location: " + startLocation + " end location: " + endLocation;
+        return " rid: " + rid + " start location: " + startLocation + " end location: " + endLocation;
     }
 
     @Override

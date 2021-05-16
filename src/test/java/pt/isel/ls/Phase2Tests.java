@@ -10,9 +10,12 @@ import pt.isel.ls.handlers.PostRouteHandler;
 import pt.isel.ls.handlers.PostUserHandler;
 import pt.isel.ls.handlers.get.gettables.GetUsersHandler;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -77,5 +80,76 @@ public class Phase2Tests {
         assertThat(commandResult, instanceOf(WrongParametersResult.class));
     }
 
+    @Test
+    public void getUsersPlainTest() {
+
+        CommandExecutor.runCommand("GET /users/ accept:text/plain|file-name:src/test/files/usersPlain.txt skip=0&top=1", router, dataSource);
+        String data = "";
+        try {
+            File myObj = new File("src/test/files/usersPlain.txt");
+            Scanner myReader = new Scanner(myObj);
+
+            while (myReader.hasNextLine()) {
+                data = myReader.nextLine();
+                System.out.println(data);
+
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String excepted = "id: 3 email: email1 name: imie";
+        assertEquals(excepted, data);
+
+    }
+
+    @Test
+    public void getSportsPlainTest() {
+
+        CommandExecutor.runCommand("GET /sports/ accept:text/plain|file-name:src/test/files/sportsPlain.txt skip=0&top=3", router, dataSource);
+        String data = "";
+        try {
+            File myObj = new File("src/test/files/sportsPlain.txt");
+            Scanner myReader = new Scanner(myObj);
+
+            while (myReader.hasNextLine()) {
+                data = myReader.nextLine();
+                System.out.println(data);
+
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String excepted = "id: 1 name: sport1 description: opisportu1id: 2 name: " +
+                "sport2 description: opisportu2id: 3 name: sport3 description: opisportu3";
+        assertEquals(excepted, data);
+
+    }
+
+    @Test
+    public void getRoutesPlainTest() {
+
+        CommandExecutor.runCommand("GET /routes/ accept:text/plain|file-name:src/test/files/routesPlain.txt skip=0&top=3",
+                router, dataSource);
+        String data = "";
+        try {
+            File myObj = new File("src/test/files/routesPlain.txt");
+            Scanner myReader = new Scanner(myObj);
+
+            while (myReader.hasNextLine()) {
+                data = myReader.nextLine();
+
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String excepted = " rid: 1 start location: starlocaetiont1 end location: endlocation1 rid: 2 " +
+                "start location: starlocaetiont2 end location: endlocation2 rid: 3" +
+                " start location: starlocaetiont3 end location: endlocation3";
+        assertEquals(excepted, data);
+
+    }
 
 }
