@@ -1,19 +1,23 @@
 package pt.isel.ls;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.*;
 import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.commandresults.CommandResult;
+import pt.isel.ls.commandresults.PostResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.DeleteHandler;
 import pt.isel.ls.handlers.PostRouteHandler;
 import pt.isel.ls.handlers.PostUserHandler;
 import pt.isel.ls.handlers.get.gettables.GetTopsActivitiesHandler;
 import pt.isel.ls.handlers.get.gettables.GetUsersHandler;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.Scanner;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -170,7 +174,7 @@ public class Phase2Tests {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String excepted = "id: 3 email: email1 name: imie";
+        String excepted = "id: 1 email: user@gmail.com name: First User";
         assertEquals(excepted, data);
 
     }
@@ -193,8 +197,9 @@ public class Phase2Tests {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String excepted = "id: 1 name: sport1 description: opisportu1id: 2 name: " +
-                "sport2 description: opisportu2id: 3 name: sport3 description: opisportu3";
+        String excepted = "id: 1 name: football description: kicking a ball to score a goalid: 2" +
+                " name: volleyball description: score points by grounding a ball on the other teams courtid:" +
+                " 3 name: basketball description: shooting a basketball through the defenders hoop";
         assertEquals(excepted, data);
 
     }
@@ -202,11 +207,11 @@ public class Phase2Tests {
     @Test
     public void getRoutesPlainTest() {
 
-        CommandExecutor.runCommand("GET /routes/ accept:text/plain|file-name:src/test/files/routesPlain.txt skip=0&top=3",
+        CommandExecutor.runCommand("GET /routes/ accept:text/plain|file-name:src/test/files/routesPlain1.txt skip=0&top=3",
                 router, dataSource);
         String data = "";
         try {
-            File myObj = new File("src/test/files/routesPlain.txt");
+            File myObj = new File("src/test/files/routesPlain1.txt");
             Scanner myReader = new Scanner(myObj);
 
             while (myReader.hasNextLine()) {
@@ -217,9 +222,8 @@ public class Phase2Tests {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String excepted = " rid: 1 start location: starlocaetiont1 end location: endlocation1 rid: 2 " +
-                "start location: starlocaetiont2 end location: endlocation2 rid: 3" +
-                " start location: starlocaetiont3 end location: endlocation3";
+        String excepted = " rid: 1 start location: Bairro Alto end location: Alameda rid: 2 start location: Poland" +
+                " end location: Portugal rid: 3 start location: Wroclaw end location: Lisbon";
         assertEquals(excepted, data);
 
     }
@@ -241,7 +245,7 @@ public class Phase2Tests {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String excepted = "{  \"id\": 1, \"name\": sport1, \"description\":opisportu1,}";
+        String excepted = "{  \"id\": 1, \"name\": football, \"description\":kicking a ball to score a goal,}";
 
         assertEquals(excepted, data);
 
@@ -250,10 +254,10 @@ public class Phase2Tests {
     @Test
     public void getRoutesByIdPlainTest() {
 
-        CommandExecutor.runCommand("GET /routes/2 accept:text/plain|file-name:src/test/files/routesPlain.txt", router, dataSource);
+        CommandExecutor.runCommand("GET /routes/2 accept:text/plain|file-name:src/test/files/routesPlain2.txt", router, dataSource);
         String data = "";
         try {
-            File myObj = new File("src/test/files/routesPlain.txt");
+            File myObj = new File("src/test/files/routesPlain2.txt");
             Scanner myReader = new Scanner(myObj);
 
             while (myReader.hasNextLine()) {
@@ -265,7 +269,7 @@ public class Phase2Tests {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String excepted = " rid: 2 start location: starlocaetiont2 end location: endlocation2";
+        String excepted = " rid: 2 start location: Poland end location: Portugal";
 
         assertEquals(excepted, data);
 
@@ -289,7 +293,7 @@ public class Phase2Tests {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String excepted = "{  \"id\": 3, \"name\": imie, \"email\":email1,}";
+        String excepted = "{  \"id\": 3, \"name\": ZnKal, \"email\":ZnKal@gmail.com,}";
 
         assertEquals(excepted, data);
 
@@ -315,11 +319,100 @@ public class Phase2Tests {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String excepted = "id: 11 date: 2020-05-02 duration time: 00:00:30 sport id: 3 user id: 6 route id: 2id: 12 " +
-                "date: 2020-05-02 duration time: 00:00:30 sport id: 3 user id: 4 route id: 2";
+        String excepted = "id: 5 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: 2 route id: 2id:" +
+                " 8 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: 2 route id: 2id: 11 date: 2002-02-02" +
+                " duration time: 02:02:02 sport id: 3 user id: 2 route id: 2";
 
         assertEquals(excepted, data);
 
     }
+
+    @Test()
+    public void postUserTest() throws SQLException {
+        String name1 = RandomStringUtils.random(5, true, false);
+        String email1 = name1 + "@gmail.com";
+        Path path = new Path("/users");
+        Method method = Method.POST;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        Parameters parameters1 = new Parameters("name=" + name1 + "&email=" + email1);
+        CommandRequest commandRequest1 = new CommandRequest(routeResult.getPathParameters(),
+                parameters1, dataSource);
+        PostResult commandResult1 = (PostResult) routeResult.getHandler().execute(commandRequest1);
+        int numberOfUsersAfterFirstPost = commandResult1.getId();
+
+        String name2 = RandomStringUtils.random(5, true, false);
+        String email2 = name2 + "@gmail.com";
+        Parameters parameters2 = new Parameters("name=" + name2 + "&email=" + email2);
+        CommandRequest commandRequest2 = new CommandRequest(routeResult.getPathParameters(),
+                parameters2, dataSource);
+        PostResult commandResult2 = (PostResult) routeResult.getHandler().execute(commandRequest2);
+        int numberOfUsersAfterSecondPost = commandResult2.getId();
+
+        assertEquals(numberOfUsersAfterFirstPost + 1, numberOfUsersAfterSecondPost);
+    }
+
+    @Test
+    public void postRouteTest() throws SQLException {
+        Path path = new Path("/routes");
+        Method method = Method.POST;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        Parameters parameters1 = new Parameters("distance=3051.0&startLocation=Poland&endLocation=Portugal");
+        CommandRequest commandRequest1 = new CommandRequest(routeResult.getPathParameters(), parameters1, dataSource);
+        PostResult commandResult1 = (PostResult) routeResult.getHandler().execute(commandRequest1);
+        int numberOfRoutesAfterFirstPost = commandResult1.getId();
+
+        Parameters parameters2 = new Parameters("distance=3014.3&startLocation=Wroclaw&endLocation=Lisbon");
+        CommandRequest commandRequest2 = new CommandRequest(routeResult.getPathParameters(), parameters2, dataSource);
+        PostResult commandResult2 = (PostResult) routeResult.getHandler().execute(commandRequest2);
+        int numberOfRoutesAfterSecondPost = commandResult2.getId();
+
+        assertEquals(numberOfRoutesAfterFirstPost + 1, numberOfRoutesAfterSecondPost);
+    }
+
+
+    @Test
+    public void postSportWithRandomOrderedParamsTest() throws SQLException {
+        Path path = new Path("/sports");
+        Method method = Method.POST;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        Parameters parameters1 = new Parameters("description=travelling+over+snow+on+ski&name=skiing");
+        CommandRequest commandRequest1 = new CommandRequest(routeResult.getPathParameters(), parameters1, dataSource);
+        PostResult commandResult1 = (PostResult) routeResult.getHandler().execute(commandRequest1);
+        int numberOfSportsAfterFirstPost = commandResult1.getId();
+
+        Parameters parameters2 = new Parameters("description=sliding+downhill+on+a+snowboard&name=snowboarding");
+        CommandRequest commandRequest2 = new CommandRequest(routeResult.getPathParameters(), parameters2, dataSource);
+        PostResult commandResult2 = (PostResult) routeResult.getHandler().execute(commandRequest2);
+        int numberOfSportsAfterSecondPost = commandResult2.getId();
+
+        assertEquals(numberOfSportsAfterFirstPost + 1, numberOfSportsAfterSecondPost);
+    }
+
+    @Test
+    public void postActivityTest() throws SQLException {
+
+        Path path = new Path("/sports/3/activities");
+        Method method = Method.POST;
+        Parameters parameters1 = new Parameters("uid=1&duration=01:01:01&date=2001-01-01&rid=1");
+        Parameters parameters2 = new Parameters("uid=2&duration=02:02:02&date=2002-02-02&rid=1");
+
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+
+        CommandRequest commandRequest1 = new CommandRequest(routeResult.getPathParameters(), parameters1, dataSource);
+        PostResult commandResult1 = (PostResult) routeResult.getHandler().execute(commandRequest1);
+        int numberOfActivitiesAfterFirstPost = commandResult1.getId();
+
+
+        CommandRequest commandRequest2 = new CommandRequest(routeResult.getPathParameters(), parameters2, dataSource);
+        PostResult commandResult2 = (PostResult) routeResult.getHandler().execute(commandRequest2);
+        int numberOfActivitiesSecondFirstPost = commandResult2.getId();
+
+        assertEquals(numberOfActivitiesAfterFirstPost + 1, numberOfActivitiesSecondFirstPost);
+    }
+
 
 }
