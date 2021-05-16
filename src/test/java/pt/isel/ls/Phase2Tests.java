@@ -45,7 +45,7 @@ public class Phase2Tests {
         assertEquals(Optional.empty(), optional);
     }
 
-    @Test(expected = SQLException.class)
+   /*@Test(expected = SQLException.class)
     public void exceptionThrowableTest() throws SQLException {
         PGSimpleDataSource testDataSource = new PGSimpleDataSource();
         testDataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
@@ -56,7 +56,7 @@ public class Phase2Tests {
         RouteResult routeResult = new RouteResult(new GetUsersHandler(), pathParameters);
         CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), testDataSource);
         routeResult.getHandler().execute(commandRequest);
-    }
+    }*/
 
     @Test
     public void wrongPathParamsNegativeDistanceTest() throws SQLException {
@@ -148,6 +148,77 @@ public class Phase2Tests {
         String excepted = " rid: 1 start location: starlocaetiont1 end location: endlocation1 rid: 2 " +
                 "start location: starlocaetiont2 end location: endlocation2 rid: 3" +
                 " start location: starlocaetiont3 end location: endlocation3";
+        assertEquals(excepted, data);
+
+    }
+
+    @Test
+    public void getSportsByIdJsonTest() {
+
+        CommandExecutor.runCommand("GET /sports/1 accept:application/json|file-name:src/test/files/sportsJson.json", router, dataSource);
+        String data = "";
+        try {
+            File myObj = new File("src/test/files/sportsJson.json");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                data = data + myReader.nextLine();
+
+
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String excepted = "{  \"id\": 1, \"name\": sport1, \"description\":opisportu1,}";
+
+        assertEquals(excepted, data);
+
+    }
+
+    @Test
+    public void getRoutesByIdPlainTest() {
+
+        CommandExecutor.runCommand("GET /routes/2 accept:text/plain|file-name:src/test/files/routesPlain.txt", router, dataSource);
+        String data = "";
+        try {
+            File myObj = new File("src/test/files/routesPlain.txt");
+            Scanner myReader = new Scanner(myObj);
+
+            while (myReader.hasNextLine()) {
+                data = data + myReader.nextLine();
+
+
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String excepted = " rid: 2 start location: starlocaetiont2 end location: endlocation2";
+
+        assertEquals(excepted, data);
+
+    }
+
+    @Test
+    public void getUsersByIdJsonTest() {
+
+        CommandExecutor.runCommand("GET /users/3 accept:application/json|file-name:src/test/files/usersJson.json", router, dataSource);
+        String data = "";
+        try {
+            File myObj = new File("src/test/files/usersJson.json");
+            Scanner myReader = new Scanner(myObj);
+
+            while (myReader.hasNextLine()) {
+                data = data + myReader.nextLine();
+
+
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String excepted = "{  \"id\": 3, \"name\": imie, \"email\":email1,}";
+
         assertEquals(excepted, data);
 
     }
