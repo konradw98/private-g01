@@ -30,8 +30,6 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
 
         String wrongParameters = validateParameters(skip, top);
 
-        int skipInt = Integer.parseInt(skip) + 1;
-
         Headers headers = commandRequest.getHeaders();
         wrongParameters += validateHeaders(headers);
 
@@ -39,6 +37,7 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
             return new WrongParametersResult(wrongParameters);
         }
 
+        int skipInt = Integer.parseInt(skip) + 1;
         try (Connection conn = commandRequest.getDataSource().getConnection()) {
             Optional<EmptyTableResult> emptyTableResult = checkIfTableIsEmpty(conn, "routes");
             if (emptyTableResult.isPresent()) {
@@ -66,6 +65,7 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
                     route = new Route(rid, startLocation, endLocation, distance);
                     routes.add(route);
                 }
+                i++;
             }
             if (routes.size() == 0) {
                 return new WrongParametersResult();

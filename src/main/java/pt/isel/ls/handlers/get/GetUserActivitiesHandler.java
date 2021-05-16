@@ -73,7 +73,7 @@ public class GetUserActivitiesHandler extends GetHandler implements CommandHandl
         int uidInt;
         try {
             uidInt = Integer.parseInt(uid);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return wrongParameters + "uid ";
         }
         if (uidInt < 1) {

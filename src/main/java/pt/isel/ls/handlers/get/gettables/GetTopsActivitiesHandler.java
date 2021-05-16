@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class GetTopsActivitiesHandler extends GetTablesHandler implements CommandHandler {
-    private static final int PARAMETERS_WITH_3_OPTIONALS = 5;
-    private static final int PARAMETERS_WITH_2_OPTIONALS = 4;
-    private static final int PARAMETERS_WITH_1_OPTIONAL = 3;
-    private static final int MIN_AMOUNT_OF_PARAMETERS = 2;
+    private static final int PARAMETERS_WITH_3_OPTIONALS = 7;
+    private static final int PARAMETERS_WITH_2_OPTIONALS = 6;
+    private static final int PARAMETERS_WITH_1_OPTIONAL = 5;
+    private static final int MIN_AMOUNT_OF_PARAMETERS = 4;
 
 
     @Override
@@ -42,15 +42,15 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
 
         wrongParameters += validateParameters(skip, top);
 
-        int skipInt = Integer.parseInt(skip) + 1;
-        int topInt = Integer.parseInt(top);
-
         Headers headers = commandRequest.getHeaders();
         wrongParameters += validateHeaders(headers);
 
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }
+
+        int skipInt = Integer.parseInt(skip) + 1;
+        int topInt = Integer.parseInt(top);
 
         try (Connection conn = commandRequest.getDataSource().getConnection()) {
             PreparedStatement pstmt;
@@ -200,6 +200,7 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
                 activity = new Activity(aid, date, durationTime, sid, uid, rid);
                 activities.add(activity);
             }
+            i++;
         }
         if (activities.size() == 0) {
             return new WrongParametersResult();
@@ -214,7 +215,7 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
         int sidInt;
         try {
             sidInt = Integer.parseInt(sid);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return wrongParameters + "sid ";
         }
         if (sidInt < 1) {
@@ -233,7 +234,7 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
         String wrongParameters = "";
         try {
             Date.valueOf(date);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | NullPointerException e) {
             return wrongParameters + " date";
         }
         return wrongParameters;
@@ -244,7 +245,7 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
         int ridInt;
         try {
             ridInt = Integer.parseInt(rid);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return wrongParameters + "rid ";
         }
         if (ridInt < 1) {
@@ -258,7 +259,7 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
         double distanceDouble;
         try {
             distanceDouble = Double.parseDouble(distance);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return wrongParameters + "distance ";
         }
         if (distanceDouble < 0) {

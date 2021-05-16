@@ -14,11 +14,13 @@ public class Parameters {
         String[] parameters = sequence.split("&");
         if (parameters.length > 0) {
             for (int i = 0; i < parameters.length; i++) {
-                String[] value = parameters[i].split("=");
-                if (value[0].equals("activity")) {
-                    value[0] += i;
+                if (parameters[i].contains("=")) {
+                    String[] value = parameters[i].split("=");
+                    if (value[0].equals("activity")) {
+                        value[0] += i;
+                    }
+                    addParameter(value[0], value[1]);
                 }
-                addParameter(value[0], value[1]);
             }
         }
     }

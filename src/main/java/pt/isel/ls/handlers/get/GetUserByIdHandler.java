@@ -77,7 +77,7 @@ public class GetUserByIdHandler extends GetHandler implements CommandHandler {
         int uidInt;
         try {
             uidInt = Integer.parseInt(uid);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return wrongParameters + "uid ";
         }
         if (uidInt < 1) {

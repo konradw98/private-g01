@@ -65,7 +65,7 @@ public class GetSportByIdHandler extends GetHandler implements CommandHandler {
         int sidInt;
         try {
             sidInt = Integer.parseInt(sid);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return wrongParameters + "sid ";
         }
         if (sidInt < 1) {

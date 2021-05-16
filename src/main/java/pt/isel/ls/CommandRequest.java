@@ -47,7 +47,7 @@ public class CommandRequest {
     }
 
     public boolean hasPagingParameters() {
-        return parameters.get("skip") != null && parameters.get("top") != null;
+        return this.parameters != null && parameters.get("skip") != null && parameters.get("top") != null;
     }
 
     public Headers getHeaders() {

@@ -88,7 +88,7 @@ public class GetSportActivitiesByIdHandler extends GetHandler implements Command
         int aidInt;
         try {
             aidInt = Integer.parseInt(aid);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return wrongParameters + "aid ";
         }
         if (aidInt < 1) {

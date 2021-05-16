@@ -64,7 +64,7 @@ public class GetRouteByIdHandler extends GetHandler implements CommandHandler {
         int ridInt;
         try {
             ridInt = Integer.parseInt(rid);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return wrongParameters + "rid ";
         }
         if (ridInt < 1) {

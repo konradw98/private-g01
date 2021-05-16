@@ -78,7 +78,7 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
         int uidInt;
         try {
             uidInt = Integer.parseInt(uid);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return wrongParameters + "uid ";
         }
         if (uidInt < 1) {
@@ -88,7 +88,7 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
         int aidInt;
         try {
             aidInt = Integer.parseInt(aid);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return wrongParameters + "aid ";
         }
         if (aidInt < 1) {

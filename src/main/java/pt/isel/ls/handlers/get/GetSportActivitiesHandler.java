@@ -73,7 +73,7 @@ public class GetSportActivitiesHandler extends GetHandler implements CommandHand
         int sidInt;
         try {
             sidInt = Integer.parseInt(sid);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return wrongParameters + "sid ";
         }
         if (sidInt < 1) {

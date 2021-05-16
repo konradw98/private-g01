@@ -30,8 +30,6 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
 
         String wrongParameters = validateParameters(skip, top);
 
-        int skipInt = Integer.parseInt(skip) + 1;
-
         Headers headers = commandRequest.getHeaders();
         wrongParameters += validateHeaders(headers);
 
@@ -39,9 +37,9 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
             return new WrongParametersResult(wrongParameters);
         }
 
-        Connection conn = commandRequest.getDataSource().getConnection();
+        int skipInt = Integer.parseInt(skip) + 1;
 
-        try {
+        try (Connection conn = commandRequest.getDataSource().getConnection()) {
             Optional<EmptyTableResult> emptyTableResult = checkIfTableIsEmpty(conn, "sports");
             if (emptyTableResult.isPresent()) {
                 return emptyTableResult.get();
@@ -66,14 +64,13 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
                     sport = new Sport(sid, name, description);
                     sports.add(sport);
                 }
+                i++;
             }
             if (sports.size() == 0) {
                 return new WrongParametersResult();
             } else {
                 return new GetSportsResult(sports, commandRequest.getHeaders());
             }
-        } finally {
-            conn.close();
         }
     }
 }
