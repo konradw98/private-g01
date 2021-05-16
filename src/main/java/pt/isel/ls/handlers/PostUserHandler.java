@@ -24,8 +24,7 @@ public class PostUserHandler implements CommandHandler {
             return new WrongParametersResult(wrongParameters);
         }
 
-        Connection conn = commandRequest.getDataSource().getConnection();
-        try {
+        try (Connection conn = commandRequest.getDataSource().getConnection()) {
             String sql = "INSERT INTO users(name, email) values(?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, name);
@@ -35,7 +34,6 @@ public class PostUserHandler implements CommandHandler {
             String sql1 = "SELECT MAX(uid) FROM users";
             PreparedStatement pstmt1 = conn.prepareStatement(sql1);
             ResultSet resultSet = pstmt1.executeQuery();
-            conn.close();
 
             if (resultSet.next()) {
                 int uid = resultSet.getInt("max");
@@ -44,8 +42,6 @@ public class PostUserHandler implements CommandHandler {
                 return new WrongParametersResult(wrongParameters);
             }
 
-        } finally {
-            conn.close();
         }
     }
 

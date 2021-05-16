@@ -19,15 +19,15 @@ public class DeleteHandler implements CommandHandler {
             activities.add(commandRequest.getParameters().get("activity" + i));
         }
 
-        Connection conn = commandRequest.getDataSource().getConnection();
-
         String stringUid = commandRequest.getPathParameters().get("uid");
         String wrongParameters = validatePathParameters(stringUid);
         wrongParameters += validateParameters(activities);
+
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }
 
+        Connection conn = commandRequest.getDataSource().getConnection();
         conn.setAutoCommit(false);
         Savepoint savepoint1 = conn.setSavepoint("Savepoint1");
         int uid = Integer.parseInt(stringUid);

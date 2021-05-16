@@ -22,28 +22,24 @@ public class PostActivityHandler implements CommandHandler {
 
         String sql;
         PreparedStatement pstmt;
-        Connection conn = commandRequest.getDataSource().getConnection();
-        try {
+        try (Connection conn = commandRequest.getDataSource().getConnection()) {
             if (commandRequest.getParameters().size() == MAX_AMOUNT_OF_PARAMETERS) {
                 String rid = parameters.get("rid");
                 wrongParameters += checkRid(rid);
 
                 sql = "INSERT INTO activities(date,duration_time,sid,uid,rid) values(?,?,?,?,?)";
                 if (!wrongParameters.equals("")) {
-                    conn.close();
                     return new WrongParametersResult(wrongParameters);
                 }
 
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setInt(5, Integer.parseInt(rid));
             } else if (!wrongParameters.equals("")) {
-                conn.close();
                 return new WrongParametersResult(wrongParameters);
             } else if (commandRequest.getParameters().size() < MAX_AMOUNT_OF_PARAMETERS) {
                 sql = "INSERT INTO activities(date,duration_time,sid,uid) values(?,?,?,?)";
                 pstmt = conn.prepareStatement(sql);
             } else {
-                conn.close();
                 return new WrongParametersResult(wrongParameters);
             }
 
@@ -53,13 +49,11 @@ public class PostActivityHandler implements CommandHandler {
             try {
                 parsedDate = Date.valueOf(date);
             } catch (IllegalStateException e) {
-                conn.close();
                 return new WrongParametersResult("date");
             }
             try {
                 parsedTime = Time.valueOf(duration);
             } catch (IllegalStateException e) {
-                conn.close();
                 return new WrongParametersResult("duration");
             }
 
@@ -81,8 +75,6 @@ public class PostActivityHandler implements CommandHandler {
                 return new WrongParametersResult();
             }
 
-        } finally {
-            conn.close();
         }
     }
 
