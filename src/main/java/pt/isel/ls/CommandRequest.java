@@ -42,16 +42,12 @@ public class CommandRequest {
         return pathParameters;
     }
 
-    public void setPathParameters(PathParameters pathParameters) {
-        this.pathParameters = pathParameters;
-    }
-
     public Parameters getParameters() {
         return parameters;
     }
 
-    public boolean hasParameters() {
-        return parameters != null;
+    public boolean hasPagingParameters() {
+        return parameters.get("skip") != null && parameters.get("top") != null;
     }
 
     public Headers getHeaders() {

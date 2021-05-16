@@ -1,4 +1,4 @@
-package pt.isel.ls.handlers.get;
+package pt.isel.ls.handlers.get.gettables;
 
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Headers;
@@ -8,12 +8,14 @@ import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
+import pt.isel.ls.handlers.get.GetHandler;
 import pt.isel.ls.models.Activity;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class GetTopsActivitiesHandler extends GetHandler implements CommandHandler {
+public class GetTopsActivitiesHandler extends GetTablesHandler implements CommandHandler {
     private static final int PARAMETERS_WITH_3_OPTIONALS = 5;
     private static final int PARAMETERS_WITH_2_OPTIONALS = 4;
     private static final int PARAMETERS_WITH_1_OPTIONAL = 3;
@@ -30,6 +32,18 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
         String minDistance = parameters.get("distance");
 
         String wrongParameters = checkParametersWithoutRidAndDate(sid, orderBy);
+
+        if (!commandRequest.hasPagingParameters()) {
+            return new WrongParametersResult("skip and top missing");
+        }
+
+        String skip = parameters.get("skip");
+        String top = parameters.get("top");
+
+        wrongParameters += validateParameters(skip, top);
+
+        int skipInt = Integer.parseInt(skip) + 1;
+        int topInt = Integer.parseInt(top);
 
         Headers headers = commandRequest.getHeaders();
         wrongParameters += validateHeaders(headers);
@@ -69,7 +83,7 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                 pstmt.setInt(3, Integer.parseInt(rid));
                 pstmt.setDouble(4, Double.parseDouble(minDistance));
                 resultSet = pstmt.executeQuery();
-                return executeActivitiesResult(resultSet, commandRequest.getHeaders());
+                return executeActivitiesResult(resultSet, commandRequest.getHeaders(), skipInt, topInt);
             } else if (parameters.size() == PARAMETERS_WITH_2_OPTIONALS) {
                 if (date == null) {
                     wrongParameters += checkRid(rid);
@@ -85,7 +99,7 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                     pstmt.setInt(2, Integer.parseInt(rid));
                     pstmt.setDouble(3, Double.parseDouble(minDistance));
                     ResultSet resultSet = pstmt.executeQuery();
-                    return executeActivitiesResult(resultSet, commandRequest.getHeaders());
+                    return executeActivitiesResult(resultSet, commandRequest.getHeaders(), skipInt, topInt);
                 } else if (rid == null) {
                     wrongParameters += checkDistance(minDistance);
                     wrongParameters += checkDate(date);
@@ -100,7 +114,7 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                     pstmt.setDate(2, Date.valueOf(date));
                     pstmt.setDouble(3, Double.parseDouble(minDistance));
                     ResultSet resultSet = pstmt.executeQuery();
-                    return executeActivitiesResult(resultSet, commandRequest.getHeaders());
+                    return executeActivitiesResult(resultSet, commandRequest.getHeaders(), skipInt, topInt);
                 } else if (minDistance == null) {
                     wrongParameters += checkRid(rid);
                     wrongParameters += checkDate(date);
@@ -115,7 +129,7 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                     pstmt.setDate(2, Date.valueOf(date));
                     pstmt.setInt(3, Integer.parseInt(rid));
                     ResultSet resultSet = pstmt.executeQuery();
-                    return executeActivitiesResult(resultSet, commandRequest.getHeaders());
+                    return executeActivitiesResult(resultSet, commandRequest.getHeaders(), skipInt, topInt);
                 }
             } else if (parameters.size() == PARAMETERS_WITH_1_OPTIONAL) {
                 if (date != null) {
@@ -124,7 +138,7 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                     pstmt.setInt(1, Integer.parseInt(sid));
                     pstmt.setDate(2, Date.valueOf(date));
                     ResultSet resultSet = pstmt.executeQuery();
-                    return executeActivitiesResult(resultSet, commandRequest.getHeaders());
+                    return executeActivitiesResult(resultSet, commandRequest.getHeaders(), skipInt, topInt);
                 } else if (rid != null) {
                     wrongParameters += checkRid(rid);
                     if (!wrongParameters.equals("")) {
@@ -136,7 +150,7 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                     pstmt.setInt(1, Integer.parseInt(sid));
                     pstmt.setInt(2, Integer.parseInt(rid));
                     ResultSet resultSet = pstmt.executeQuery();
-                    return executeActivitiesResult(resultSet, commandRequest.getHeaders());
+                    return executeActivitiesResult(resultSet, commandRequest.getHeaders(), skipInt, topInt);
                 } else if (minDistance != null) {
                     wrongParameters += checkDistance(minDistance);
                     if (!wrongParameters.equals("")) {
@@ -150,7 +164,7 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                     pstmt.setInt(1, Integer.parseInt(sid));
                     pstmt.setInt(2, Integer.parseInt(minDistance));
                     ResultSet resultSet = pstmt.executeQuery();
-                    return executeActivitiesResult(resultSet, commandRequest.getHeaders());
+                    return executeActivitiesResult(resultSet, commandRequest.getHeaders(), skipInt, topInt);
                 }
             } else if (parameters.size() == MIN_AMOUNT_OF_PARAMETERS) {
                 String sql = "SELECT * FROM activities WHERE sid=? ORDER BY duration_time " + orderBy;
@@ -158,13 +172,13 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
 
                 pstmt.setInt(1, Integer.parseInt(sid));
                 ResultSet resultSet = pstmt.executeQuery();
-                return executeActivitiesResult(resultSet, commandRequest.getHeaders());
+                return executeActivitiesResult(resultSet, commandRequest.getHeaders(), skipInt, topInt);
             }
             return new WrongParametersResult(wrongParameters);
         }
     }
 
-    private CommandResult executeActivitiesResult(ResultSet resultSet, Headers headers) throws SQLException {
+    private CommandResult executeActivitiesResult(ResultSet resultSet, Headers headers, int skip, int top) throws SQLException {
         int aid;
         int sid;
         int rid;
@@ -174,15 +188,18 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
         Activity activity;
         ArrayList<Activity> activities = new ArrayList<>();
 
+        int i = 1;
         while (resultSet.next()) {
-            aid = resultSet.getInt("aid");
-            date = resultSet.getDate("date");
-            durationTime = resultSet.getTime("duration_time");
-            sid = resultSet.getInt("sid");
-            uid = resultSet.getInt("uid");
-            rid = resultSet.getInt("rid");
-            activity = new Activity(aid, date, durationTime, sid, uid, rid);
-            activities.add(activity);
+            if (i >= skip && i < skip + top) {
+                aid = resultSet.getInt("aid");
+                date = resultSet.getDate("date");
+                durationTime = resultSet.getTime("duration_time");
+                sid = resultSet.getInt("sid");
+                uid = resultSet.getInt("uid");
+                rid = resultSet.getInt("rid");
+                activity = new Activity(aid, date, durationTime, sid, uid, rid);
+                activities.add(activity);
+            }
         }
         if (activities.size() == 0) {
             return new WrongParametersResult();

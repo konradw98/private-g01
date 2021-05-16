@@ -9,6 +9,7 @@ import pt.isel.ls.commandresults.getresult.GetUsersResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.User;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +20,7 @@ import java.util.Optional;
 public class GetUsersHandler extends GetTablesHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
-        if (!commandRequest.hasParameters()) {
+        if (!commandRequest.hasPagingParameters()) {
             return new WrongParametersResult("skip and top missing");
         }
 
@@ -44,10 +45,8 @@ public class GetUsersHandler extends GetTablesHandler implements CommandHandler 
                 return emptyTableResult.get();
             }
 
-            String sql1 = "SELECT * FROM users WHERE uid BETWEEN ? AND ?";
+            String sql1 = "SELECT * FROM users ORDER BY uid";
             PreparedStatement pstmt = conn.prepareStatement(sql1);
-            pstmt.setInt(1, skipInt);
-            pstmt.setInt(2, Integer.parseInt(top) + skipInt - 1);
             ResultSet resultSet = pstmt.executeQuery();
 
             int uid;
@@ -56,12 +55,16 @@ public class GetUsersHandler extends GetTablesHandler implements CommandHandler 
             User user;
             ArrayList<User> users = new ArrayList<>();
 
+            int i = 1;
             while (resultSet.next()) {
-                uid = resultSet.getInt("uid");
-                name = resultSet.getString("name");
-                email = resultSet.getString("email");
-                user = new User(uid, email, name);
-                users.add(user);
+                if (i >= skipInt && i < skipInt + Integer.parseInt(top)) {
+                    uid = resultSet.getInt("uid");
+                    name = resultSet.getString("name");
+                    email = resultSet.getString("email");
+                    user = new User(uid, email, name);
+                    users.add(user);
+                }
+                i++;
             }
             if (users.size() == 0) {
                 return new WrongParametersResult();

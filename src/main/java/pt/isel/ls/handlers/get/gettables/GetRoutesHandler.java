@@ -9,6 +9,7 @@ import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.commandresults.getresult.GetRoutesResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Route;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +20,7 @@ import java.util.Optional;
 public class GetRoutesHandler extends GetTablesHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
-        if (!commandRequest.hasParameters()) {
+        if (!commandRequest.hasPagingParameters()) {
             return new WrongParametersResult("skip and top missing");
         }
 
@@ -44,10 +45,8 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
                 return emptyTableResult.get();
             }
 
-            String sql1 = "SELECT * FROM routes WHERE rid BETWEEN ? AND ?";
+            String sql1 = "SELECT * FROM routes ORDER BY rid";
             PreparedStatement pstmt = conn.prepareStatement(sql1);
-            pstmt.setInt(1, skipInt);
-            pstmt.setInt(2, Integer.parseInt(top) + skipInt - 1);
             ResultSet resultSet = pstmt.executeQuery();
 
             int rid;
@@ -57,13 +56,16 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
             double distance;
             ArrayList<Route> routes = new ArrayList<>();
 
+            int i = 1;
             while (resultSet.next()) {
-                rid = resultSet.getInt("rid");
-                startLocation = resultSet.getString("start_location");
-                endLocation = resultSet.getString("end_location");
-                distance = resultSet.getDouble("distance");
-                route = new Route(rid, startLocation, endLocation, distance);
-                routes.add(route);
+                if (i >= skipInt && i < skipInt + Integer.parseInt(top)) {
+                    rid = resultSet.getInt("rid");
+                    startLocation = resultSet.getString("start_location");
+                    endLocation = resultSet.getString("end_location");
+                    distance = resultSet.getDouble("distance");
+                    route = new Route(rid, startLocation, endLocation, distance);
+                    routes.add(route);
+                }
             }
             if (routes.size() == 0) {
                 return new WrongParametersResult();

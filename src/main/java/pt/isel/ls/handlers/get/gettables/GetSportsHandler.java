@@ -7,6 +7,7 @@ import pt.isel.ls.commandresults.*;
 import pt.isel.ls.commandresults.getresult.GetSportsResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Sport;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +20,7 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
-        if (!commandRequest.hasParameters()) {
+        if (!commandRequest.hasPagingParameters()) {
             return new WrongParametersResult("skip and top missing");
         }
 
@@ -46,10 +47,8 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
                 return emptyTableResult.get();
             }
 
-            String sql1 = "SELECT * FROM sports WHERE sid BETWEEN ? AND ?";
+            String sql1 = "SELECT * FROM sports ORDER BY sid";
             PreparedStatement pstmt = conn.prepareStatement(sql1);
-            pstmt.setInt(1, skipInt);
-            pstmt.setInt(2, Integer.parseInt(top) + skipInt - 1);
             ResultSet resultSet = pstmt.executeQuery();
 
             int sid;
@@ -58,17 +57,20 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
             Sport sport;
             ArrayList<Sport> sports = new ArrayList<>();
 
+            int i = 1;
             while (resultSet.next()) {
-                sid = resultSet.getInt("sid");
-                name = resultSet.getString("name");
-                description = resultSet.getString("description");
-                sport = new Sport(sid, name, description);
-                sports.add(sport);
+                if (i >= skipInt && i < skipInt + Integer.parseInt(top)) {
+                    sid = resultSet.getInt("sid");
+                    name = resultSet.getString("name");
+                    description = resultSet.getString("description");
+                    sport = new Sport(sid, name, description);
+                    sports.add(sport);
+                }
             }
             if (sports.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetSportsResult(sports,commandRequest.getHeaders());
+                return new GetSportsResult(sports, commandRequest.getHeaders());
             }
         } finally {
             conn.close();
