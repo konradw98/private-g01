@@ -49,7 +49,7 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
             return new WrongParametersResult(wrongParameters);
         }
 
-        int skipInt = Integer.parseInt(skip) + 1;
+        int skipInt = Integer.parseInt(skip);
         int topInt = Integer.parseInt(top);
 
         try (Connection conn = commandRequest.getDataSource().getConnection()) {
@@ -188,7 +188,7 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
         Activity activity;
         ArrayList<Activity> activities = new ArrayList<>();
 
-        int i = 1;
+        int i = 0;
         while (resultSet.next()) {
             if (i >= skip && i < skip + top) {
                 aid = resultSet.getInt("aid");

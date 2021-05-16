@@ -37,7 +37,7 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
             return new WrongParametersResult(wrongParameters);
         }
 
-        int skipInt = Integer.parseInt(skip) + 1;
+        int skipInt = Integer.parseInt(skip);
 
         try (Connection conn = commandRequest.getDataSource().getConnection()) {
             Optional<EmptyTableResult> emptyTableResult = checkIfTableIsEmpty(conn, "sports");
@@ -55,7 +55,7 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
             Sport sport;
             ArrayList<Sport> sports = new ArrayList<>();
 
-            int i = 1;
+            int i = 0;
             while (resultSet.next()) {
                 if (i >= skipInt && i < skipInt + Integer.parseInt(top)) {
                     sid = resultSet.getInt("sid");
