@@ -22,3 +22,4 @@ CREATE TABLE activities (
     sid INT REFERENCES sports(sid)NOT NULL,
     uid INT REFERENCES users(uid) NOT NULL,
     rid INT REFERENCES routes(rid));
+    timestamp TIMESTAMP;
