@@ -40,7 +40,7 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
         }
 
         try (Connection conn = commandRequest.getDataSource().getConnection()) {
-            Optional<EmptyTableResult> emptyTableResult = checkIfTableIsEmpty(conn);
+            Optional<EmptyTableResult> emptyTableResult = checkIfTableIsEmpty(conn, "routes");
             if (emptyTableResult.isPresent()) {
                 return emptyTableResult.get();
             }

@@ -41,7 +41,7 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
         Connection conn = commandRequest.getDataSource().getConnection();
 
         try {
-            Optional<EmptyTableResult> emptyTableResult = checkIfTableIsEmpty(conn);
+            Optional<EmptyTableResult> emptyTableResult = checkIfTableIsEmpty(conn, "sports");
             if (emptyTableResult.isPresent()) {
                 return emptyTableResult.get();
             }

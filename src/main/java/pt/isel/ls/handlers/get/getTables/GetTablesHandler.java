@@ -34,8 +34,8 @@ public abstract class GetTablesHandler extends GetHandler implements CommandHand
         return wrongParameters;
     }
 
-    protected Optional<EmptyTableResult> checkIfTableIsEmpty(Connection conn) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM users";
+    protected Optional<EmptyTableResult> checkIfTableIsEmpty(Connection conn, String name) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM " + name + "";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet resultSet = pstmt.executeQuery();
         int count = 1;
@@ -43,7 +43,7 @@ public abstract class GetTablesHandler extends GetHandler implements CommandHand
             count = resultSet.getInt(1);
         }
         if (count == 0) {
-            return Optional.of(new EmptyTableResult("users"));
+            return Optional.of(new EmptyTableResult(name));
         }
         return Optional.empty();
     }
