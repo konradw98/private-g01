@@ -114,9 +114,32 @@ public class Phase2Tests {
         Method method = Method.GET;
         Optional<RouteResult> optional = router.findRoute(method, correctPath);
         RouteResult routeResult = optional.get();
-        Headers headers = new Headers("accept=text/plain");
-        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), headers,
+        Parameters parameters = new Parameters("skip=1,top=3");
+        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters,
                 dataSource);
+        CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
+        assertThat(commandResult, instanceOf(WrongParametersResult.class));
+    }
+
+    @Test
+    public void notEnoughParametersTest() throws SQLException {
+        Path path = new Path("/users");
+        Method method = Method.GET;
+        Optional<RouteResult> optional = router.findRoute(method, path);
+        RouteResult routeResult = optional.get();
+        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), dataSource);
+        CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
+        assertThat(commandResult, instanceOf(WrongParametersResult.class));
+    }
+
+    @Test
+    public void wrongFileExtensionFormatTest() throws SQLException {
+        PathParameters pathParameters = new PathParameters();
+        RouteResult routeResult = new RouteResult(new GetUsersHandler(), pathParameters);
+        Parameters parameters = new Parameters("skip=1&top=3");
+        Headers headers = new Headers("file-name:users.tx");
+        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(),
+                parameters, headers, dataSource);
         CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
         assertThat(commandResult, instanceOf(WrongParametersResult.class));
     }
