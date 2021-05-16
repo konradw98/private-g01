@@ -238,7 +238,7 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
         } catch (NumberFormatException e) {
             return wrongParameters + "sid ";
         }
-        if (sid == null || sidInt < 1) {
+        if (sidInt < 1) {
             wrongParameters += "sid ";
         }
 
@@ -257,9 +257,6 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
         } catch (IllegalArgumentException e) {
             return wrongParameters + " date";
         }
-        if (date == null) {
-            wrongParameters += " date";
-        }
         return wrongParameters;
     }
 
@@ -271,7 +268,7 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
         } catch (NumberFormatException e) {
             return wrongParameters + "rid ";
         }
-        if (rid == null || ridInt < 1) {
+        if (ridInt < 1) {
             wrongParameters += "rid ";
         }
         return wrongParameters;
@@ -285,7 +282,7 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
         } catch (NumberFormatException e) {
             return wrongParameters + "distance ";
         }
-        if (distance == null || distanceDouble < 0) {
+        if (distanceDouble < 0) {
             wrongParameters += " distance";
         }
 

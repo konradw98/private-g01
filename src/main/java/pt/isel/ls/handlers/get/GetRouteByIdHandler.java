@@ -69,7 +69,7 @@ public class GetRouteByIdHandler extends GetHandler implements CommandHandler {
         } catch (NumberFormatException e) {
             return wrongParameters + "rid ";
         }
-        if (rid == null || ridInt < 1) {
+        if (ridInt < 1) {
             wrongParameters += "rid ";
         }
         return wrongParameters;

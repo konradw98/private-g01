@@ -68,7 +68,7 @@ public class GetSportByIdHandler extends GetHandler implements CommandHandler {
         } catch (NumberFormatException e) {
             return wrongParameters + "sid ";
         }
-        if (sid == null || sidInt < 1) {
+        if (sidInt < 1) {
             wrongParameters += "sid ";
         }
         return wrongParameters;

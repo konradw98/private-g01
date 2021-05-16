@@ -68,7 +68,7 @@ public class GetUserByIdHandler extends GetHandler implements CommandHandler {
         } catch (NumberFormatException e) {
             return wrongParameters + "uid ";
         }
-        if (uid == null || uidInt < 1) {
+        if (uidInt < 1) {
             wrongParameters += "uid ";
         }
         return wrongParameters;

@@ -85,7 +85,7 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
         } catch (NumberFormatException e) {
             return wrongParameters + "uid ";
         }
-        if (uid == null || uidInt < 1) {
+        if (uidInt < 1) {
             wrongParameters += "uid ";
         }
 
@@ -95,7 +95,7 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
         } catch (NumberFormatException e) {
             return wrongParameters + "aid ";
         }
-        if (aid == null || aidInt < 1) {
+        if (aidInt < 1) {
             wrongParameters += "aid ";
         }
         return wrongParameters;

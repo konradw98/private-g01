@@ -85,7 +85,7 @@ public class GetSportActivitiesByIdHandler extends GetHandler implements Command
         } catch (NumberFormatException e) {
             return wrongParameters + "sid ";
         }
-        if (sid == null || sidInt < 1) {
+        if (sidInt < 1) {
             wrongParameters += "sid ";
         }
 
@@ -95,7 +95,7 @@ public class GetSportActivitiesByIdHandler extends GetHandler implements Command
         } catch (NumberFormatException e) {
             return wrongParameters + "aid ";
         }
-        if (aid == null || aidInt < 1) {
+        if (aidInt < 1) {
             wrongParameters += "aid ";
         }
         return wrongParameters;

@@ -80,7 +80,7 @@ public class GetUserActivitiesHandler extends GetHandler implements CommandHandl
         } catch (NumberFormatException e) {
             return wrongParameters + "uid ";
         }
-        if (uid == null || uidInt < 1) {
+        if (uidInt < 1) {
             wrongParameters += "uid ";
         }
         return wrongParameters;
