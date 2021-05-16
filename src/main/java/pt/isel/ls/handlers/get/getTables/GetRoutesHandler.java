@@ -9,11 +9,13 @@ import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.commandresults.getresult.GetRoutesResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Route;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class GetRoutesHandler extends GetTablesHandler implements CommandHandler {
     @Override
@@ -39,22 +41,17 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
 
         Connection conn = commandRequest.getDataSource().getConnection();
         try {
-            String sql = "SELECT COUNT(*) FROM routes";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            ResultSet resultSet = pstmt.executeQuery();
-            int count = 1;
-            if (resultSet.next()) {
-                count = resultSet.getInt(1);
-            }
-            if (count == 0) {
-                return new EmptyTableResult("routes");
+            Optional<EmptyTableResult> emptyTableResult = checkIfTableIsEmpty(conn);
+            if (emptyTableResult.isPresent()) {
+                conn.close();
+                return emptyTableResult.get();
             }
 
             String sql1 = "SELECT * FROM routes WHERE rid BETWEEN ? AND ?";
-            pstmt = conn.prepareStatement(sql1);
+            PreparedStatement pstmt = conn.prepareStatement(sql1);
             pstmt.setInt(1, skipInt);
             pstmt.setInt(2, Integer.parseInt(top) + skipInt - 1);
-            resultSet = pstmt.executeQuery();
+            ResultSet resultSet = pstmt.executeQuery();
             conn.close();
 
             int rid;
