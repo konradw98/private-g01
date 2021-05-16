@@ -8,6 +8,7 @@ import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.OptionHandler;
 import pt.isel.ls.handlers.PostRouteHandler;
 import pt.isel.ls.handlers.PostUserHandler;
+import pt.isel.ls.handlers.get.gettables.GetTopsActivitiesHandler;
 import pt.isel.ls.handlers.get.gettables.GetUsersHandler;
 
 import java.io.File;
@@ -45,18 +46,20 @@ public class Phase2Tests {
         assertEquals(Optional.empty(), optional);
     }
 
-   /*@Test(expected = SQLException.class)
+    @Test(expected = SQLException.class)
     public void exceptionThrowableTest() throws SQLException {
         PGSimpleDataSource testDataSource = new PGSimpleDataSource();
         testDataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
         testDataSource.setPassword("wrong_password");
         testDataSource.setUser("postgres");
 
-        PathParameters pathParameters = new PathParameters();
-        RouteResult routeResult = new RouteResult(new GetUsersHandler(), pathParameters);
+        Path correctPath = new Path("/sports/1");
+        Method method = Method.GET;
+        Optional<RouteResult> optional = router.findRoute(method, correctPath);
+        RouteResult routeResult = optional.get();
         CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), testDataSource);
         routeResult.getHandler().execute(commandRequest);
-    }*/
+    }
 
     @Test
     public void wrongPathParamsNegativeDistanceTest() throws SQLException {
@@ -73,12 +76,51 @@ public class Phase2Tests {
     public void wrongPathParamsTypoInNameTest() throws SQLException {
         PathParameters pathParameters = new PathParameters();
         RouteResult routeResult = new RouteResult(new PostUserHandler(), pathParameters);
-        Parameters parameters = new Parameters("nam=John email=mail");
+        Parameters parameters = new Parameters("nam=John&email=mail");
         CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), parameters,
                 dataSource);
         CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
         assertThat(commandResult, instanceOf(WrongParametersResult.class));
     }
+
+
+    @Test
+    public void wrongParamFormatTest() throws SQLException {
+        PathParameters pathParameters = new PathParameters();
+        RouteResult routeResult = new RouteResult(new GetTopsActivitiesHandler(), pathParameters);
+        Parameters parametersWithWrongDate = new Parameters("uid=1&duration=00:10:30&date=2021:04:21&rid=1");
+        Parameters parametersWithWrongRidFormat = new Parameters("uid=1000&duration=00:10:30&rid=a");
+        Parameters parametersWithWrongDurationFormat = new Parameters("uid=1&duration=00-10-30");
+        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), parametersWithWrongDate,
+                dataSource);
+        CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
+        assertThat(commandResult, instanceOf(WrongParametersResult.class));
+
+        commandRequest = new CommandRequest(routeResult.getPathParameters(), parametersWithWrongRidFormat,
+                dataSource);
+        commandResult = routeResult.getHandler().execute(commandRequest);
+        assertThat(commandResult, instanceOf(WrongParametersResult.class));
+
+        commandRequest = new CommandRequest(routeResult.getPathParameters(), parametersWithWrongDurationFormat,
+                dataSource);
+        commandResult = routeResult.getHandler().execute(commandRequest);
+        assertThat(commandResult, instanceOf(WrongParametersResult.class));
+
+    }
+
+    @Test
+    public void wrongRegexTest() throws SQLException {
+        Path correctPath = new Path("/sports/1");
+        Method method = Method.GET;
+        Optional<RouteResult> optional = router.findRoute(method, correctPath);
+        RouteResult routeResult = optional.get();
+        Headers headers = new Headers("accept=text/plain");
+        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), headers,
+                dataSource);
+        CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
+        assertThat(commandResult, instanceOf(WrongParametersResult.class));
+    }
+
 
     @Test
     public void getUsersPlainTest() {

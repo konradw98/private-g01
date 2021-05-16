@@ -14,12 +14,12 @@ public abstract class GetHandler {
         String acceptArgument = headers.get("accept");
         String fileNameArgument = headers.get("file-name");
 
-        if (acceptArgument != null && !acceptArgument.equals("text/html") && !acceptArgument.equals("text/plain")
-                && !acceptArgument.equals("application/json")) {
+        if (acceptArgument == null || (!acceptArgument.equals("text/html") && !acceptArgument.equals("text/plain")
+                && !acceptArgument.equals("application/json"))) {
             wrongParameters += acceptArgument;
         }
-        if (fileNameArgument != null && !fileNameArgument.endsWith("txt") && !fileNameArgument.endsWith("html")
-                && !fileNameArgument.endsWith("htm") && !fileNameArgument.endsWith("json")) {
+        if (fileNameArgument == null || (!fileNameArgument.endsWith("txt") && !fileNameArgument.endsWith("html")
+                && !fileNameArgument.endsWith("htm") && !fileNameArgument.endsWith("json"))) {
             wrongParameters += fileNameArgument;
         }
         return wrongParameters;
