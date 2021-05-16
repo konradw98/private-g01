@@ -14,6 +14,9 @@ import pt.isel.ls.handlers.get.gettables.GetUsersHandler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.Scanner;
@@ -303,11 +306,11 @@ public class Phase2Tests {
     public void getActivitiesPlainTest() {
 
         CommandExecutor.runCommand("GET /tops/activities  " +
-                "accept:text/plain|file-name:src/test/files/activitiesPlain.txt" +
+                "accept:text/plain|file-name:src/test/files/activitiesPlain1.txt" +
                 " sid=3&orderBy=desc&rid=2&distance=1&skip=0&top=3", router, dataSource);
         String data = "";
         try {
-            File myObj = new File("src/test/files/activitiesPlain.txt");
+            File myObj = new File("src/test/files/activitiesPlain1.txt");
             Scanner myReader = new Scanner(myObj);
 
             while (myReader.hasNextLine()) {
@@ -319,9 +322,10 @@ public class Phase2Tests {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String excepted = "id: 5 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: 2 route id: 2id:" +
-                " 8 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: 2 route id: 2id: 11 date: 2002-02-02" +
-                " duration time: 02:02:02 sport id: 3 user id: 2 route id: 2";
+        String excepted = "id: 11 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id:" +
+                " 2 route id: 2id: 15 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: " +
+                "2 route id: 2id: 17 date: 2002-02-02 duration time: 02:02:02 sport id: 3 user id: " +
+                "2 route id: 2";
 
         assertEquals(excepted, data);
 
@@ -415,4 +419,30 @@ public class Phase2Tests {
     }
 
 
+    @Test
+    public void deleteHandlerTest() throws SQLException {
+        int uid = 2;
+        int activity1 = 5;
+        int activity2 = 8;
+
+        CommandExecutor.runCommand("DELETE /users/" + uid + "/activities activity=" + activity1
+                + "&activity=" + activity2, router, dataSource);
+        //CommandExecutor.runCommand("DELETE /users/4/activities activity=5&activity=6", router, dataSource);
+
+        Connection conn = dataSource.getConnection();
+
+        String sql = "SELECT COUNT(timestamp) FROM activities WHERE uid=? and aid=? or aid=?;";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1, uid);
+        pstmt.setInt(2, activity1);
+        pstmt.setInt(3, activity2);
+        ResultSet resultSet = pstmt.executeQuery();
+        int result = 0;
+        if (resultSet.next()) {
+            result = resultSet.getInt("count");
+        }
+
+        assertEquals(2, result);
+
+    }
 }
