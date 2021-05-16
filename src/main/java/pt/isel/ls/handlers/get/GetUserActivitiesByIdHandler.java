@@ -28,8 +28,7 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
             return new WrongParametersResult(wrongParameters);
         }
 
-        Connection conn = commandRequest.getDataSource().getConnection();
-        try {
+        try (Connection conn = commandRequest.getDataSource().getConnection()) {
             String sql = "SELECT COUNT(*) FROM activities";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet resultSet = pstmt.executeQuery();
@@ -46,7 +45,6 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
             pstmt.setInt(1, Integer.parseInt(stringUid));
             pstmt.setInt(2, Integer.parseInt(stringAid));
             resultSet = pstmt.executeQuery();
-            conn.close();
 
             int aid;
             int sid;
@@ -72,8 +70,6 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
             } else {
                 return new GetActivitiesResult(activities, commandRequest.getHeaders());
             }
-        } finally {
-            conn.close();
         }
     }
 

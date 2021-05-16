@@ -39,11 +39,9 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
             return new WrongParametersResult(wrongParameters);
         }
 
-        Connection conn = commandRequest.getDataSource().getConnection();
-        try {
+        try (Connection conn = commandRequest.getDataSource().getConnection()) {
             Optional<EmptyTableResult> emptyTableResult = checkIfTableIsEmpty(conn);
             if (emptyTableResult.isPresent()) {
-                conn.close();
                 return emptyTableResult.get();
             }
 
@@ -52,7 +50,6 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
             pstmt.setInt(1, skipInt);
             pstmt.setInt(2, Integer.parseInt(top) + skipInt - 1);
             ResultSet resultSet = pstmt.executeQuery();
-            conn.close();
 
             int rid;
             String startLocation;
@@ -75,8 +72,6 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
                 return new GetRoutesResult(routes, commandRequest.getHeaders());
             }
 
-        } finally {
-            conn.close();
         }
     }
 }

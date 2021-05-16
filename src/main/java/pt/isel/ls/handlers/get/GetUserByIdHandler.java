@@ -2,12 +2,14 @@ package pt.isel.ls.handlers.get;
 
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Headers;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.getresult.GetUserByIdResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.User;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +21,9 @@ public class GetUserByIdHandler extends GetHandler implements CommandHandler {
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
         String stringUid = commandRequest.getPathParameters().get("uid");
         String wrongParameters = validatePathParameters(stringUid);
+
+        Parameters parameters = commandRequest.getParameters();
+        wrongParameters += validateParameters(parameters);
 
         Headers headers = commandRequest.getHeaders();
         wrongParameters += validateHeaders(headers);
@@ -58,6 +63,12 @@ public class GetUserByIdHandler extends GetHandler implements CommandHandler {
         } finally {
             conn.close();
         }
+    }
+
+    private String validateParameters(Parameters parameters) {
+        if (parameters != null) {
+            return "no parameters are needed ";
+        } else return "";
     }
 
     private String validatePathParameters(String uid) {

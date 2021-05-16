@@ -38,8 +38,7 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
             return new WrongParametersResult(wrongParameters);
         }
 
-        Connection conn = commandRequest.getDataSource().getConnection();
-        try {
+        try (Connection conn = commandRequest.getDataSource().getConnection()) {
             PreparedStatement pstmt;
 
             if (parameters.size() == PARAMETERS_WITH_3_OPTIONALS) {
@@ -65,59 +64,47 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                 String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid=? AND rid IN"
                         + " (SELECT rid FROM routes WHERE distance > ?) ORDER BY duration_time " + orderBy;
                 pstmt = conn.prepareStatement(sql);
-
                 pstmt.setInt(1, Integer.parseInt(sid));
                 pstmt.setDate(2, Date.valueOf(date));
                 pstmt.setInt(3, Integer.parseInt(rid));
                 pstmt.setDouble(4, Double.parseDouble(minDistance));
-
                 resultSet = pstmt.executeQuery();
-                conn.close();
                 return executeActivitiesResult(resultSet, commandRequest.getHeaders());
             } else if (parameters.size() == PARAMETERS_WITH_2_OPTIONALS) {
                 if (date == null) {
                     wrongParameters += checkRid(rid);
                     wrongParameters += checkDistance(minDistance);
                     if (!wrongParameters.equals("")) {
-                        conn.close();
                         return new WrongParametersResult(wrongParameters);
                     }
 
                     String sql = "SELECT * FROM activities WHERE sid=? AND rid=? AND rid IN (SELECT rid FROM routes "
                             + "WHERE distance > ?) ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
-
                     pstmt.setInt(1, Integer.parseInt(sid));
                     pstmt.setInt(2, Integer.parseInt(rid));
                     pstmt.setDouble(3, Double.parseDouble(minDistance));
-
                     ResultSet resultSet = pstmt.executeQuery();
-                    conn.close();
                     return executeActivitiesResult(resultSet, commandRequest.getHeaders());
                 } else if (rid == null) {
                     wrongParameters += checkDistance(minDistance);
                     wrongParameters += checkDate(date);
                     if (!wrongParameters.equals("")) {
-                        conn.close();
                         return new WrongParametersResult(wrongParameters);
                     }
 
                     String sql = "SELECT * FROM activities WHERE sid=? AND date=? AND rid IN (SELECT rid FROM routes "
                             + "WHERE distance > ?) ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
-
                     pstmt.setInt(1, Integer.parseInt(sid));
                     pstmt.setDate(2, Date.valueOf(date));
                     pstmt.setDouble(3, Double.parseDouble(minDistance));
-
                     ResultSet resultSet = pstmt.executeQuery();
-                    conn.close();
                     return executeActivitiesResult(resultSet, commandRequest.getHeaders());
                 } else if (minDistance == null) {
                     wrongParameters += checkRid(rid);
                     wrongParameters += checkDate(date);
                     if (!wrongParameters.equals("")) {
-                        conn.close();
                         return new WrongParametersResult(wrongParameters);
                     }
 
@@ -127,30 +114,20 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                     pstmt.setInt(1, Integer.parseInt(sid));
                     pstmt.setDate(2, Date.valueOf(date));
                     pstmt.setInt(3, Integer.parseInt(rid));
-
                     ResultSet resultSet = pstmt.executeQuery();
-                    conn.close();
                     return executeActivitiesResult(resultSet, commandRequest.getHeaders());
                 }
             } else if (parameters.size() == PARAMETERS_WITH_1_OPTIONAL) {
                 if (date != null) {
-                    if (!wrongParameters.equals("")) {
-                        conn.close();
-                        return new WrongParametersResult(wrongParameters);
-                    }
-
                     String sql = "SELECT * FROM activities WHERE sid=? AND date=? ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
                     pstmt.setInt(1, Integer.parseInt(sid));
                     pstmt.setDate(2, Date.valueOf(date));
-
                     ResultSet resultSet = pstmt.executeQuery();
-                    conn.close();
                     return executeActivitiesResult(resultSet, commandRequest.getHeaders());
                 } else if (rid != null) {
                     wrongParameters += checkRid(rid);
                     if (!wrongParameters.equals("")) {
-                        conn.close();
                         return new WrongParametersResult(wrongParameters);
                     }
 
@@ -158,14 +135,11 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                     pstmt = conn.prepareStatement(sql);
                     pstmt.setInt(1, Integer.parseInt(sid));
                     pstmt.setInt(2, Integer.parseInt(rid));
-
                     ResultSet resultSet = pstmt.executeQuery();
-                    conn.close();
                     return executeActivitiesResult(resultSet, commandRequest.getHeaders());
                 } else if (minDistance != null) {
                     wrongParameters += checkDistance(minDistance);
                     if (!wrongParameters.equals("")) {
-                        conn.close();
                         return new WrongParametersResult(wrongParameters);
                     }
 
@@ -176,29 +150,17 @@ public class GetTopsActivitiesHandler extends GetHandler implements CommandHandl
                     pstmt.setInt(1, Integer.parseInt(sid));
                     pstmt.setInt(2, Integer.parseInt(minDistance));
                     ResultSet resultSet = pstmt.executeQuery();
-
-                    conn.close();
                     return executeActivitiesResult(resultSet, commandRequest.getHeaders());
                 }
             } else if (parameters.size() == MIN_AMOUNT_OF_PARAMETERS) {
-                if (!wrongParameters.equals("")) {
-                    conn.close();
-                    return new WrongParametersResult(wrongParameters);
-                }
-
                 String sql = "SELECT * FROM activities WHERE sid=? ORDER BY duration_time " + orderBy;
                 pstmt = conn.prepareStatement(sql);
 
                 pstmt.setInt(1, Integer.parseInt(sid));
                 ResultSet resultSet = pstmt.executeQuery();
-
-                conn.close();
                 return executeActivitiesResult(resultSet, commandRequest.getHeaders());
             }
-            conn.close();
             return new WrongParametersResult(wrongParameters);
-        } finally {
-            conn.close();
         }
     }
 

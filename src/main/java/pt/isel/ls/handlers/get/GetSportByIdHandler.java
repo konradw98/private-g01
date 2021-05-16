@@ -2,6 +2,7 @@ package pt.isel.ls.handlers.get;
 
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Headers;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.getresult.GetSportResult;
@@ -23,12 +24,14 @@ public class GetSportByIdHandler extends GetHandler implements CommandHandler {
         Headers headers = commandRequest.getHeaders();
         wrongParameters += validateHeaders(headers);
 
+        Parameters parameters = commandRequest.getParameters();
+        wrongParameters += validateParameters(parameters);
+
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }
 
-        Connection conn = commandRequest.getDataSource().getConnection();
-        try {
+        try (Connection conn = commandRequest.getDataSource().getConnection()) {
             String sql = "SELECT COUNT(*) FROM sports";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet resultSet = pstmt.executeQuery();
@@ -44,7 +47,6 @@ public class GetSportByIdHandler extends GetHandler implements CommandHandler {
             pstmt = conn.prepareStatement(sql1);
             pstmt.setInt(1, Integer.parseInt(stringSid));
             resultSet = pstmt.executeQuery();
-            conn.close();
 
             if (resultSet.next()) {
                 int sid = resultSet.getInt("sid");
@@ -55,8 +57,6 @@ public class GetSportByIdHandler extends GetHandler implements CommandHandler {
             } else {
                 return new WrongParametersResult();
             }
-        } finally {
-            conn.close();
         }
     }
 
@@ -72,5 +72,11 @@ public class GetSportByIdHandler extends GetHandler implements CommandHandler {
             wrongParameters += "sid ";
         }
         return wrongParameters;
+    }
+
+    private String validateParameters(Parameters parameters) {
+        if (parameters != null) {
+            return "no parameters are needed ";
+        } else return "";
     }
 }

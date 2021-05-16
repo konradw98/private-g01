@@ -9,7 +9,6 @@ import pt.isel.ls.commandresults.getresult.GetUsersResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.User;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,12 +38,9 @@ public class GetUsersHandler extends GetTablesHandler implements CommandHandler 
             return new WrongParametersResult(wrongParameters);
         }
 
-        Connection conn = commandRequest.getDataSource().getConnection();
-
-        try {
+        try (Connection conn = commandRequest.getDataSource().getConnection()) {
             Optional<EmptyTableResult> emptyTableResult = checkIfTableIsEmpty(conn);
             if (emptyTableResult.isPresent()) {
-                conn.close();
                 return emptyTableResult.get();
             }
 
@@ -53,7 +49,6 @@ public class GetUsersHandler extends GetTablesHandler implements CommandHandler 
             pstmt.setInt(1, skipInt);
             pstmt.setInt(2, Integer.parseInt(top) + skipInt - 1);
             ResultSet resultSet = pstmt.executeQuery();
-            conn.close();
 
             int uid;
             String name;
@@ -73,9 +68,6 @@ public class GetUsersHandler extends GetTablesHandler implements CommandHandler 
             } else {
                 return new GetUsersResult(users, commandRequest.getHeaders());
             }
-
-        } finally {
-            conn.close();
         }
     }
 }

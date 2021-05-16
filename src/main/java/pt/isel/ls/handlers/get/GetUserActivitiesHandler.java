@@ -24,8 +24,7 @@ public class GetUserActivitiesHandler extends GetHandler implements CommandHandl
             return new WrongParametersResult(wrongParameters);
         }
 
-        Connection conn = commandRequest.getDataSource().getConnection();
-        try {
+        try (Connection conn = commandRequest.getDataSource().getConnection()) {
             String sql = "SELECT COUNT(*) FROM activites";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet resultSet = pstmt.executeQuery();
@@ -41,7 +40,6 @@ public class GetUserActivitiesHandler extends GetHandler implements CommandHandl
             pstmt = conn.prepareStatement(sql1);
             pstmt.setInt(1, Integer.parseInt(stringUid));
             resultSet = pstmt.executeQuery();
-            conn.close();
 
             int aid;
             int sid;
@@ -67,8 +65,6 @@ public class GetUserActivitiesHandler extends GetHandler implements CommandHandl
             } else {
                 return new GetActivitiesResult(activities, commandRequest.getHeaders());
             }
-        } finally {
-            conn.close();
         }
     }
 

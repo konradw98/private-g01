@@ -2,12 +2,14 @@ package pt.isel.ls.handlers.get;
 
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Headers;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.getresult.GetRouteResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Route;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,12 +24,14 @@ public class GetRouteByIdHandler extends GetHandler implements CommandHandler {
         Headers headers = commandRequest.getHeaders();
         wrongParameters += validateHeaders(headers);
 
+        Parameters parameters = commandRequest.getParameters();
+        wrongParameters += validateParameters(parameters);
+
         if (!wrongParameters.equals("")) {
             return new WrongParametersResult(wrongParameters);
         }
 
-        Connection conn = commandRequest.getDataSource().getConnection();
-        try {
+        try (Connection conn = commandRequest.getDataSource().getConnection()) {
             String sql = "SELECT COUNT(*) FROM routes";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet resultSet = pstmt.executeQuery();
@@ -39,13 +43,10 @@ public class GetRouteByIdHandler extends GetHandler implements CommandHandler {
                 return new EmptyTableResult("routes");
             }
 
-
-
             String sql1 = "SELECT * FROM routes WHERE rid=?";
             pstmt = conn.prepareStatement(sql1);
             pstmt.setInt(1, Integer.parseInt(stringRid));
             resultSet = pstmt.executeQuery();
-            conn.close();
             if (resultSet.next()) {
                 int rid = resultSet.getInt("rid");
                 String startLocation = resultSet.getString("start_location");
@@ -56,8 +57,6 @@ public class GetRouteByIdHandler extends GetHandler implements CommandHandler {
             } else {
                 return new WrongParametersResult();
             }
-        } finally {
-            conn.close();
         }
     }
 
@@ -73,5 +72,11 @@ public class GetRouteByIdHandler extends GetHandler implements CommandHandler {
             wrongParameters += "rid ";
         }
         return wrongParameters;
+    }
+
+    private String validateParameters(Parameters parameters) {
+        if (parameters != null) {
+            return "no parameters are needed ";
+        } else return "";
     }
 }

@@ -43,7 +43,6 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
         try {
             Optional<EmptyTableResult> emptyTableResult = checkIfTableIsEmpty(conn);
             if (emptyTableResult.isPresent()) {
-                conn.close();
                 return emptyTableResult.get();
             }
 
@@ -52,8 +51,6 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
             pstmt.setInt(1, skipInt);
             pstmt.setInt(2, Integer.parseInt(top) + skipInt - 1);
             ResultSet resultSet = pstmt.executeQuery();
-            conn.close();
-
 
             int sid;
             String name;
@@ -73,7 +70,6 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
             } else {
                 return new GetSportsResult(sports,commandRequest.getHeaders());
             }
-
         } finally {
             conn.close();
         }
