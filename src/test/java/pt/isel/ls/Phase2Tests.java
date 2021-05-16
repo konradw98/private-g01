@@ -2,22 +2,18 @@ package pt.isel.ls;
 
 import org.junit.*;
 import org.postgresql.ds.PGSimpleDataSource;
-import org.postgresql.util.PSQLException;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
-import pt.isel.ls.handlers.OptionHandler;
+import pt.isel.ls.handlers.DeleteHandler;
 import pt.isel.ls.handlers.PostRouteHandler;
 import pt.isel.ls.handlers.PostUserHandler;
 import pt.isel.ls.handlers.get.gettables.GetTopsActivitiesHandler;
 import pt.isel.ls.handlers.get.gettables.GetUsersHandler;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Scanner;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -140,6 +136,17 @@ public class Phase2Tests {
         Headers headers = new Headers("file-name:users.tx");
         CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(),
                 parameters, headers, dataSource);
+        CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
+        assertThat(commandResult, instanceOf(WrongParametersResult.class));
+    }
+
+    @Test
+    public void wrongActivitiesParametersTest() throws SQLException {
+        PathParameters pathParameters = new PathParameters();
+        RouteResult routeResult = new RouteResult(new DeleteHandler(), pathParameters);
+        Parameters parameters = new Parameters("activity=2&activity=-1");
+        CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(),
+                parameters, dataSource);
         CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
         assertThat(commandResult, instanceOf(WrongParametersResult.class));
     }
