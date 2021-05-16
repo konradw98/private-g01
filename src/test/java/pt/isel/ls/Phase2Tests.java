@@ -288,4 +288,31 @@ public class Phase2Tests {
 
     }
 
+    @Test
+    public void getActivitiesPlainTest() {
+
+        CommandExecutor.runCommand("GET /tops/activities  " +
+                "accept:text/plain|file-name:src/test/files/activitiesPlain.txt" +
+                " sid=3&orderBy=desc&rid=2&distance=1&skip=0&top=3", router, dataSource);
+        String data = "";
+        try {
+            File myObj = new File("src/test/files/activitiesPlain.txt");
+            Scanner myReader = new Scanner(myObj);
+
+            while (myReader.hasNextLine()) {
+                data = data + myReader.nextLine();
+
+
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String excepted = "id: 11 date: 2020-05-02 duration time: 00:00:30 sport id: 3 user id: 6 route id: 2id: 12 " +
+                "date: 2020-05-02 duration time: 00:00:30 sport id: 3 user id: 4 route id: 2";
+
+        assertEquals(excepted, data);
+
+    }
+
 }

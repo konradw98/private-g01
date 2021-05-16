@@ -21,5 +21,5 @@ CREATE TABLE activities (
     duration_time TIME NOT NULL,
     sid INT REFERENCES sports(sid)NOT NULL,
     uid INT REFERENCES users(uid) NOT NULL,
-    rid INT REFERENCES routes(rid));
-    timestamp TIMESTAMP;
+    rid INT REFERENCES routes(rid),
+    timestamp TIMESTAMP);
