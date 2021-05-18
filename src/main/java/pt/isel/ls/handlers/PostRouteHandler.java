@@ -5,6 +5,7 @@ import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.PostResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,7 +57,14 @@ public class PostRouteHandler implements CommandHandler {
             wrongParameters += "end location ";
         }
 
-        if (distance == null || Float.parseFloat(distance) <= 0) {
+        float distanceInt;
+        try {
+            distanceInt = Float.parseFloat(distance);
+        } catch (NumberFormatException | NullPointerException e) {
+            return wrongParameters + "distance ";
+        }
+
+        if (distanceInt <= 0) {
             wrongParameters += "distance ";
         }
         return wrongParameters;

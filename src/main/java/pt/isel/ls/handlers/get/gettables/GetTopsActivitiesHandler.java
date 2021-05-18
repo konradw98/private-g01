@@ -215,7 +215,6 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
     }
 
     private String checkParametersWithoutRidAndDate(String sid, String orderBy) {
-
         String wrongParameters = "";
         int sidInt;
         try {
@@ -235,14 +234,12 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
     }
 
     private String checkDate(String date) {
-
-        String wrongParameters = "";
         try {
             Date.valueOf(date);
         } catch (IllegalArgumentException | NullPointerException e) {
-            return wrongParameters + " date";
+            return "date ";
         }
-        return wrongParameters;
+        return "";
     }
 
     private String checkRid(String rid) {

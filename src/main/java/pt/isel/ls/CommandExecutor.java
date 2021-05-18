@@ -70,7 +70,7 @@ public class CommandExecutor {
 
     private static boolean executeProperCommand(RouteResult routeResult, String[] command,
                                                 PGSimpleDataSource dataSource) {
-        boolean exit = false;
+        boolean exit;
         CommandRequest commandRequest = chooseRequest(command, routeResult, dataSource);
 
         try {

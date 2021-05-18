@@ -25,7 +25,5 @@ public class App {
         } else {
             CommandExecutor.runCommand(args[0], router, dataSource);
         }
-
-
     }
 }

@@ -5,6 +5,7 @@ import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.PostResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+
 import java.sql.*;
 
 public class PostActivityHandler implements CommandHandler {
@@ -80,21 +81,38 @@ public class PostActivityHandler implements CommandHandler {
 
     private String checkParametersWithoutRid(String sid, String uid, String duration, String date) {
         String wrongParameters = "";
-        if (sid == null || Integer.parseInt(sid) < 1) {
+        int sidInt;
+        try {
+            sidInt = Integer.parseInt(sid);
+        } catch (NumberFormatException | NullPointerException e) {
+            return wrongParameters + "sid ";
+        }
+        if (sidInt < 1) {
             wrongParameters += "sid ";
         }
 
-        if (uid == null || Integer.parseInt(uid) < 1) {
+        int uidInt;
+        try {
+            uidInt = Integer.parseInt(uid);
+        } catch (NumberFormatException | NullPointerException e) {
+            return wrongParameters + "rid ";
+        }
+        if (uidInt < 1) {
             wrongParameters += "uid ";
         }
 
-        if (duration == null) {
-            wrongParameters += "duration ";
+        try {
+            Time.valueOf(duration);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return wrongParameters + "duration ";
         }
 
-        if (date == null) {
-            wrongParameters += "date ";
+        try {
+            Date.valueOf(date);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return wrongParameters + "date ";
         }
+
         return wrongParameters;
     }
 
