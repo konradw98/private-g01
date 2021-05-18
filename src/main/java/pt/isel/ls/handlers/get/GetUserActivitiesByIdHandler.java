@@ -40,7 +40,7 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
                 return new EmptyTableResult("activites");
             }
 
-            String sql1 = "SELECT * FROM activities WHERE uid=? AND aid=?";
+            String sql1 = "SELECT * FROM activities WHERE uid=? AND aid=? AND timestamp IS NULL";
             pstmt = conn.prepareStatement(sql1);
             pstmt.setInt(1, Integer.parseInt(stringUid));
             pstmt.setInt(2, Integer.parseInt(stringAid));

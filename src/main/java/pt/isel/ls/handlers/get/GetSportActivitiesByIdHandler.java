@@ -40,7 +40,7 @@ public class GetSportActivitiesByIdHandler extends GetHandler implements Command
                 return new EmptyTableResult("activities");
             }
 
-            String sql1 = "SELECT * FROM activities WHERE sid=? AND aid=?";
+            String sql1 = "SELECT * FROM activities WHERE sid=? AND aid=? AND timestamp IS NULL";
             pstmt = conn.prepareStatement(sql1);
             pstmt.setInt(1, Integer.parseInt(stringSid));
             pstmt.setInt(2, Integer.parseInt(stringAid));
