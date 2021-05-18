@@ -64,7 +64,7 @@ public class GetSportActivitiesHandler extends GetTablesHandler implements Comma
             Activity activity;
             ArrayList<Activity> activities = new ArrayList<>();
 
-            int i = 1;
+            int i = 0;
             while (resultSet.next()) {
                 if (i >= skipInt && i < skipInt + Integer.parseInt(top)) {
                     aid = resultSet.getInt("aid");
