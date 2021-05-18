@@ -51,7 +51,6 @@ public class DeleteHandler implements CommandHandler {
 
             if (bug) {
                 conn.rollback(savepoint1);
-                System.out.println("ROLLBACK W BUG");
                 return new WrongParametersResult("activities");
             }
             conn.commit();

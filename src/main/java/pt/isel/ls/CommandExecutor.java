@@ -2,6 +2,7 @@ package pt.isel.ls;
 
 import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.commandresults.CommandResult;
+import pt.isel.ls.commandresults.WrongParametersResult;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -76,7 +77,7 @@ public class CommandExecutor {
             CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
             exit = commandResult.results();
         } catch (SQLException e) {
-            e.printStackTrace();
+            return new WrongParametersResult().results();
         }
         return exit;
     }

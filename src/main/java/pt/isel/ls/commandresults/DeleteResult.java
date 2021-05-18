@@ -9,9 +9,13 @@ public class DeleteResult implements CommandResult {
     @Override
     public boolean results() {
         System.out.println("user id: " + userId + " activities id:");
-        for (String id : activitiesId) {
-            System.out.print(id + ", ");
+        for (int i = 0; i < activitiesId.size(); i++) {
+            System.out.print(activitiesId.get(i));
+            if (i != activitiesId.size() - 1) {
+                System.out.print(", ");
+            }
         }
+        System.out.println();
         return false;
     }
 

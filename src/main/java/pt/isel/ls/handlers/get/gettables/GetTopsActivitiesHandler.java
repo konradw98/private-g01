@@ -73,8 +73,8 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
                     return new EmptyTableResult("routes");
                 }
 
-                String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL AND  date=? AND rid=? AND rid IN"
-                        + " (SELECT rid FROM routes WHERE distance > ?) ORDER BY duration_time " + orderBy;
+                String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL AND  date=? AND rid=?"
+                       + "AND rid IN (SELECT rid FROM routes WHERE distance > ?) ORDER BY duration_time " + orderBy;
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setInt(1, Integer.parseInt(sid));
                 pstmt.setDate(2, Date.valueOf(date));
@@ -90,7 +90,8 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
                         return new WrongParametersResult(wrongParameters);
                     }
 
-                    String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL AND rid=? AND rid IN (SELECT rid FROM routes "
+                    String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL AND rid=? AND rid "
+                            + "IN (SELECT rid FROM routes "
                             + "WHERE distance > ?) ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
                     pstmt.setInt(1, Integer.parseInt(sid));
@@ -105,7 +106,8 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
                         return new WrongParametersResult(wrongParameters);
                     }
 
-                    String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL AND date=? AND rid IN (SELECT rid FROM routes "
+                    String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL AND date=? AND rid "
+                            + "IN (SELECT rid FROM routes "
                             + "WHERE distance > ?) ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
                     pstmt.setInt(1, Integer.parseInt(sid));
@@ -131,7 +133,8 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
                 }
             } else if (parameters.size() == PARAMETERS_WITH_1_OPTIONAL) {
                 if (date != null) {
-                    String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL AND date=? ORDER BY duration_time " + orderBy;
+                    String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL AND date=? "
+                            + "ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
                     pstmt.setInt(1, Integer.parseInt(sid));
                     pstmt.setDate(2, Date.valueOf(date));
@@ -143,7 +146,8 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
                         return new WrongParametersResult(wrongParameters);
                     }
 
-                    String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL AND rid=? ORDER BY duration_time " + orderBy;
+                    String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL AND rid=? ORDER BY "
+                            + "duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
                     pstmt.setInt(1, Integer.parseInt(sid));
                     pstmt.setInt(2, Integer.parseInt(rid));
@@ -155,7 +159,8 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
                         return new WrongParametersResult(wrongParameters);
                     }
 
-                    String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL AND rid IN (SELECT rid FROM routes "
+                    String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL AND rid "
+                            + "IN (SELECT rid FROM routes "
                             + "WHERE distance>?) AND  ORDER BY duration_time " + orderBy;
                     pstmt = conn.prepareStatement(sql);
 
@@ -165,7 +170,8 @@ public class GetTopsActivitiesHandler extends GetTablesHandler implements Comman
                     return executeActivitiesResult(resultSet, commandRequest.getHeaders(), skipInt, topInt);
                 }
             } else if (parameters.size() == MIN_AMOUNT_OF_PARAMETERS) {
-                String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL ORDER BY duration_time " + orderBy;
+                String sql = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL ORDER BY duration_time "
+                        + orderBy;
                 pstmt = conn.prepareStatement(sql);
 
                 pstmt.setInt(1, Integer.parseInt(sid));

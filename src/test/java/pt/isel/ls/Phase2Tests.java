@@ -430,7 +430,6 @@ public class Phase2Tests {
 
         CommandExecutor.runCommand("DELETE /users/" + uid + "/activities activity=" + activity1
                 + "&activity=" + activity2, router, dataSource);
-        //CommandExecutor.runCommand("DELETE /users/4/activities activity=5&activity=6", router, dataSource);
 
         Connection conn = dataSource.getConnection();
 
