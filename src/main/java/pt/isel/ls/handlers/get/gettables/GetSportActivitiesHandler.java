@@ -8,9 +8,7 @@ import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
-import pt.isel.ls.handlers.get.GetHandler;
 import pt.isel.ls.models.Activity;
-
 import java.sql.*;
 import java.util.ArrayList;
 

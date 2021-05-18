@@ -4,7 +4,6 @@ import com.google.common.collect.ArrayListMultimap;
 import pt.isel.ls.handlers.*;
 import pt.isel.ls.handlers.get.*;
 import pt.isel.ls.handlers.get.gettables.*;
-
 import java.util.*;
 
 public class Router {

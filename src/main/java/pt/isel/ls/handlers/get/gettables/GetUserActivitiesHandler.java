@@ -8,7 +8,6 @@ import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
-import pt.isel.ls.handlers.get.GetHandler;
 import pt.isel.ls.models.Activity;
 import java.sql.*;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 public class GetUserActivitiesHandler extends GetTablesHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
+
         if (!commandRequest.hasPagingParameters()) {
             return new WrongParametersResult("skip and top missing");
         }
@@ -38,7 +38,7 @@ public class GetUserActivitiesHandler extends GetTablesHandler implements Comman
 
         int skipInt = Integer.parseInt(skip);
         try (Connection conn = commandRequest.getDataSource().getConnection()) {
-            String sql = "SELECT COUNT(*) FROM activites";
+            String sql = "SELECT COUNT(*) FROM activities";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet resultSet = pstmt.executeQuery();
             int count = 1;
