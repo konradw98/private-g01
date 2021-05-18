@@ -1,21 +1,33 @@
-package pt.isel.ls.handlers.get;
+package pt.isel.ls.handlers.get.gettables;
 
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Headers;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
+import pt.isel.ls.handlers.get.GetHandler;
 import pt.isel.ls.models.Activity;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class GetSportActivitiesHandler extends GetHandler implements CommandHandler {
+public class GetUserActivitiesHandler extends GetTablesHandler implements CommandHandler {
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
-        String stringSid = commandRequest.getPathParameters().get("sid");
-        String wrongParameters = validatePathParameters(stringSid);
+        if (!commandRequest.hasPagingParameters()) {
+            return new WrongParametersResult("skip and top missing");
+        }
+
+        Parameters parameters = commandRequest.getParameters();
+        String skip = parameters.get("skip");
+        String top = parameters.get("top");
+
+        String wrongParameters = validateParameters(skip, top);
+
+        String stringUid = commandRequest.getPathParameters().get("uid");
+        wrongParameters += validatePathParameters(stringUid);
 
         Headers headers = commandRequest.getHeaders();
         wrongParameters += validateHeaders(headers);
@@ -24,8 +36,9 @@ public class GetSportActivitiesHandler extends GetHandler implements CommandHand
             return new WrongParametersResult(wrongParameters);
         }
 
+        int skipInt = Integer.parseInt(skip);
         try (Connection conn = commandRequest.getDataSource().getConnection()) {
-            String sql = "SELECT COUNT(*) FROM activities";
+            String sql = "SELECT COUNT(*) FROM activites";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet resultSet = pstmt.executeQuery();
             int count = 1;
@@ -33,12 +46,12 @@ public class GetSportActivitiesHandler extends GetHandler implements CommandHand
                 count = resultSet.getInt(1);
             }
             if (count == 0) {
-                return new EmptyTableResult("activites");
+                return new EmptyTableResult("activities");
             }
 
-            String sql1 = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL";
+            String sql1 = "SELECT * FROM activities WHERE uid=? AND timestamp IS NULL";
             pstmt = conn.prepareStatement(sql1);
-            pstmt.setInt(1, Integer.parseInt(stringSid));
+            pstmt.setInt(1, Integer.parseInt(stringUid));
             resultSet = pstmt.executeQuery();
 
             int aid;
@@ -50,15 +63,19 @@ public class GetSportActivitiesHandler extends GetHandler implements CommandHand
             Activity activity;
             ArrayList<Activity> activities = new ArrayList<>();
 
+            int i = 0;
             while (resultSet.next()) {
-                aid = resultSet.getInt("aid");
-                date = resultSet.getDate("date");
-                durationTime = resultSet.getTime("duration_time");
-                sid = resultSet.getInt("sid");
-                uid = resultSet.getInt("uid");
-                rid = resultSet.getInt("rid");
-                activity = new Activity(aid, date, durationTime, sid, uid, rid);
-                activities.add(activity);
+                if (i >= skipInt && i < skipInt + Integer.parseInt(top)) {
+                    aid = resultSet.getInt("aid");
+                    date = resultSet.getDate("date");
+                    durationTime = resultSet.getTime("duration_time");
+                    sid = resultSet.getInt("sid");
+                    uid = resultSet.getInt("uid");
+                    rid = resultSet.getInt("rid");
+                    activity = new Activity(aid, date, durationTime, sid, uid, rid);
+                    activities.add(activity);
+                }
+                i++;
             }
             if (activities.size() == 0) {
                 return new WrongParametersResult();
@@ -68,16 +85,16 @@ public class GetSportActivitiesHandler extends GetHandler implements CommandHand
         }
     }
 
-    private String validatePathParameters(String sid) {
+    private String validatePathParameters(String uid) {
         String wrongParameters = "";
-        int sidInt;
+        int uidInt;
         try {
-            sidInt = Integer.parseInt(sid);
+            uidInt = Integer.parseInt(uid);
         } catch (NumberFormatException | NullPointerException e) {
-            return wrongParameters + "sid ";
+            return wrongParameters + "uid ";
         }
-        if (sidInt < 1) {
-            wrongParameters += "sid ";
+        if (uidInt < 1) {
+            wrongParameters += "uid ";
         }
         return wrongParameters;
     }
