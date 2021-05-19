@@ -15,6 +15,7 @@ public class Parameters {
         if (parameters.length > 0) {
             for (int i = 0; i < parameters.length; i++) {
                 if (parameters[i].contains("=")) {
+                    parameters[i] = parameters[i].replace('+', ' ');
                     String[] value = parameters[i].split("=");
                     if (value[0].equals("activity")) {
                         value[0] += i;
