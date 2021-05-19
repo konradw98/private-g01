@@ -74,7 +74,7 @@ public class GetRoutesResult extends GetCommandResult {
         for (Route route : routes) {
             json.append("\n").append(route.generateJson()).append(",");
         }
-        json.deleteCharAt(json.length()-1);
+        json.deleteCharAt(json.length() - 1);
         json.append("\n]");
 
         return json.toString();

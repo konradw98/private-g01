@@ -231,29 +231,6 @@ public class Phase2Tests {
 
     }
 
-    @Test
-    public void getSportsByIdJsonTest() {
-
-        CommandExecutor.runCommand("GET /sports/1 accept:application/json|file-name:src/test/files/sportsJson.json",
-                router, dataSource);
-        String data = "";
-        try {
-            File myObj = new File("src/test/files/sportsJson.json");
-            Scanner myReader = new Scanner(myObj);
-            while (myReader.hasNextLine()) {
-                data = data + myReader.nextLine();
-
-
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        String excepted = "{  \"id\": 1, \"name\": football, \"description\":kicking a ball to score a goal,}";
-
-        assertEquals(excepted, data);
-
-    }
 
     @Test
     public void getRoutesByIdPlainTest() {
@@ -275,31 +252,6 @@ public class Phase2Tests {
             e.printStackTrace();
         }
         String excepted = " rid: 2 start location: Poland end location: Portugal";
-
-        assertEquals(excepted, data);
-
-    }
-
-    @Test
-    public void getUsersByIdJsonTest() {
-
-        CommandExecutor.runCommand("GET /users/3 accept:application/json|file-name:src/test/files/usersJson.json",
-                router, dataSource);
-        String data = "";
-        try {
-            File myObj = new File("src/test/files/usersJson.json");
-            Scanner myReader = new Scanner(myObj);
-
-            while (myReader.hasNextLine()) {
-                data = data + myReader.nextLine();
-
-
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        String excepted = "{  \"id\": 3, \"name\": ZnKal, \"email\":ZnKal@gmail.com,}";
 
         assertEquals(excepted, data);
 
