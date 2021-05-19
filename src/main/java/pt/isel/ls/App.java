@@ -9,7 +9,7 @@ public class App {
         boolean exit = false;
 
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test1");
+        dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/demonstration");
         dataSource.setPassword("password");
         dataSource.setUser("postgres");
 

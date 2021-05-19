@@ -74,6 +74,7 @@ public class GetSportsResult extends GetCommandResult {
         for (Sport sport : sports) {
             json.append("\n").append(sport.generateJson()).append(",");
         }
+        json.deleteCharAt(json.length()-1);
         json.append("\n]");
 
         return json.toString();

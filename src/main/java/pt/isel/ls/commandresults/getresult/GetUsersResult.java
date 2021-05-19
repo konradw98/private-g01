@@ -83,6 +83,7 @@ public class GetUsersResult extends GetCommandResult {
         for (User user : users) {
             json.append("\n").append(user.generateJson()).append(",");
         }
+        json.deleteCharAt(json.length()-1);
         json.append("\n]");
 
         return json.toString();

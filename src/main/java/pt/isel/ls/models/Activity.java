@@ -84,8 +84,8 @@ public class Activity implements Model {
 
     @Override
     public String generateJson() {
-        return "{ \n \"id\": " + aid + ",\n \"date\": " + date + ",\n \"duration time\":" + durationTime
-                + ",\n \"sport id\":" + sid + ",\n \"user id\":" + uid + ",\n \"route id\":" + rid + ",\n}";
+        return "{ \n \"id\": " + aid + ",\n \"date\": \"" + date + "\",\n \"duration time\": \"" + durationTime
+                + "\",\n \"sport id\": " + sid + ",\n \"user id\": " + uid + ",\n \"route id\":" + rid + "\n}";
     }
 
 }

@@ -75,6 +75,7 @@ public class GetActivitiesResult extends GetCommandResult {
         for (Activity activity : activities) {
             json.append("\n").append(activity.generateJson()).append(",");
         }
+        json.deleteCharAt(json.length()-1);
         json.append("\n]");
 
         return json.toString();

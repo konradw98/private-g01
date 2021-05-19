@@ -48,6 +48,6 @@ public class User implements Model {
 
     @Override
     public String generateJson() {
-        return "{ \n \"id\": " + uid + ",\n \"name\": " + name + ",\n \"email\":" + email + ",\n}";
+        return "{ \n \"id\": " + uid + ",\n \"name\": \"" + name + "\",\n \"email\": \"" + email + "\"\n}";
     }
 }
