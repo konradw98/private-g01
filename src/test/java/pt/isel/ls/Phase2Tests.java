@@ -399,4 +399,58 @@ public class Phase2Tests {
         assertEquals(2, result);
 
     }
+
+    // EVAULATION TESTS
+
+    @Test
+    public void getNumberActivitiesBySportIdPlainTest() {
+
+        CommandExecutor.runCommand("GET /sports/2/activities/values/count accept:text/plain|file-name:src/test/files/sportsPlainTest.txt",
+                router, dataSource);
+        String data = "";
+        try {
+            File myObj = new File("src/test/files/sportsPlainText.txt");
+            Scanner myReader = new Scanner(myObj);
+
+            while (myReader.hasNextLine()) {
+                data = data + myReader.nextLine();
+
+
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        //"name: " +sport.getName()+ " description "+sport.getDescription() + " amount activities: " + number
+        String excepted = " name: sport2 description opissportu2 amount activities: 2";
+
+        assertEquals(excepted, data);
+
+    }
+
+    @Test
+    public void getNumberActivitiesBySportIdJsonTest() {
+
+        CommandExecutor.runCommand("GET /sports/2/activities/values/count accept:application/json|file-name:src/test/files/sportsJosnTest.txt",
+                router, dataSource);
+        String data = "";
+        try {
+            File myObj = new File("src/test/files/sportsJsonText.txt");
+            Scanner myReader = new Scanner(myObj);
+
+            while (myReader.hasNextLine()) {
+                data = data + myReader.nextLine();
+
+
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        String excepted = "{ \n \"name\": \" sport2 \",\n \"description\": \" opissportu2 \",\n \"amount activities\":2 \n}";
+
+        assertEquals(excepted, data);
+
+    }
 }

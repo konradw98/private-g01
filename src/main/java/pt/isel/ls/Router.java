@@ -32,6 +32,7 @@ public class Router {
         addRoute(Method.EXIT, new PathTemplate("/"), new ExitHandler());
         addRoute(Method.OPTION, new PathTemplate("/"), new OptionHandler());
         addRoute(Method.DELETE, new PathTemplate("/users/{uid}/activities"), new DeleteHandler());
+        addRoute(Method.GET, new PathTemplate("/sports/{sid}/activities/values/count/"), new GetActivitiesNumberBySidHandler());
 
     }
 

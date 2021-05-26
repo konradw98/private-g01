@@ -1,0 +1,6 @@
+Gradle forces us to follow a certain project structure, by sticking to this convention it can easily find the files. JAR.
+ In addition, we can specify their location of jar files in the "build.gradle" file in "dependencies", using
+"implementation fileTree". Gradle retrieves these files from the repository specified in the same file in
+ "repositories", generally this is the Maven repository.
+
+Konrad Wodnicki var1 26.05.2021
