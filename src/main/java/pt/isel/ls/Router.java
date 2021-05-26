@@ -32,7 +32,7 @@ public class Router {
         addRoute(Method.EXIT, new PathTemplate("/"), new ExitHandler());
         addRoute(Method.OPTION, new PathTemplate("/"), new OptionHandler());
         addRoute(Method.DELETE, new PathTemplate("/users/{uid}/activities"), new DeleteHandler());
-
+        addRoute(Method.GET, new PathTemplate("/routes/{rid}/activities/count/"), new GetCountActivitiesByRidHandler());
     }
 
     public void addRoute(Method method, PathTemplate pathTemplate, CommandHandler commandHandler) {
@@ -40,7 +40,6 @@ public class Router {
         mapOfHandlers.put(method, map);
     }
 
-    //TODO: refactor
     public Optional<RouteResult> findRoute(Method method, Path path) {
         if (mapOfHandlers.containsKey(method)) {
             List<String> pathSegments = path.splitSegmentsFromPath();

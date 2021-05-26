@@ -185,7 +185,7 @@ public class Phase2Tests {
     public void getSportsPlainTest() {
 
         CommandExecutor.runCommand("GET /sports/ accept:text/plain|file-name:src/test/files/sportsPlain.txt "
-               + "skip=0&top=3", router, dataSource);
+                + "skip=0&top=3", router, dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/sportsPlain.txt");
@@ -398,5 +398,106 @@ public class Phase2Tests {
 
         assertEquals(2, result);
 
+    }
+
+    //evaluation tests
+    @Test
+    public void getCountActByRidTest_wrongParameters1() throws SQLException {
+        Path incorrectPath = new Path("/routes/-1/activities/count/");
+        Method method = Method.GET;
+        Optional<RouteResult> optional = router.findRoute(method, incorrectPath);
+        if (optional.isPresent()) {
+            RouteResult routeResult = optional.get();
+            Headers headers = new Headers("");
+            CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), headers,
+                    dataSource);
+            CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
+            assertThat(commandResult, instanceOf(WrongParametersResult.class));
+        }
+    }
+
+    @Test
+    public void getCountActByRidTest_wrongParameters2() throws SQLException {
+        Path incorrectPath = new Path("/routes/1/activities/cunt/");
+        Method method = Method.GET;
+        Optional<RouteResult> optional = router.findRoute(method, incorrectPath);
+        if (optional.isPresent()) {
+            RouteResult routeResult = optional.get();
+            Headers headers = new Headers("");
+            CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), headers,
+                    dataSource);
+            CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
+            assertThat(commandResult, instanceOf(WrongParametersResult.class));
+        }
+    }
+
+    @Test
+    public void getCountActByRidTest_wrongParameters3() throws SQLException {
+        Path incorrectPath = new Path("/routes/1000/activities/cunt/");
+        Method method = Method.GET;
+        Optional<RouteResult> optional = router.findRoute(method, incorrectPath);
+        if (optional.isPresent()) {
+            RouteResult routeResult = optional.get();
+            Headers headers = new Headers("");
+            CommandRequest commandRequest = new CommandRequest(routeResult.getPathParameters(), headers,
+                    dataSource);
+            CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
+            assertThat(commandResult, instanceOf(WrongParametersResult.class));
+        }
+    }
+
+    @Test
+    public void getCountActByRidTest_noActivities() {
+        CommandExecutor.runCommand("GET /routes/3/activities/count "
+                + "accept:text/plain|file-name:src/test/files/eval1.txt",
+                router, dataSource);
+        String data = "";
+        try {
+            File myObj = new File("src/test/files/eval1.txt");
+            Scanner myReader = new Scanner(myObj);
+
+            while (myReader.hasNextLine()) {
+                data = data + myReader.nextLine();
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String excepted = "start location: Wroclaw end location: Lisbon number of activities: 0";
+
+        assertEquals(excepted, data);
+    }
+
+    @Test
+    public void getCountActByRidTest_correctParameters() throws SQLException {
+        CommandExecutor.runCommand("GET /routes/1/activities/count/"
+                + " accept:text/plain|file-name:src/test/files/eval2.txt",
+                router, dataSource);
+
+        try (Connection conn = dataSource.getConnection()) {
+            String sql2 = "SELECT COUNT(*) FROM activities WHERE rid = 1";
+            PreparedStatement pstmt = conn.prepareStatement(sql2);
+            ResultSet resultSet = pstmt.executeQuery();
+            int numberOfActivities = 0;
+            if (resultSet.next()) {
+                numberOfActivities = resultSet.getInt("count");
+            }
+            String data = "";
+            try {
+                File myObj = new File("src/test/files/eval2.txt");
+                Scanner myReader = new Scanner(myObj);
+
+                while (myReader.hasNextLine()) {
+                    data = data + myReader.nextLine();
+                }
+                myReader.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            String excepted = "start location: Bairro Alto end location: Alameda number of activities: "
+                    + numberOfActivities;
+
+            assertEquals(excepted, data);
+        }
     }
 }
