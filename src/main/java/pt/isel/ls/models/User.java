@@ -50,4 +50,9 @@ public class User implements Model {
     public String generateJson() {
         return "{ \n \"id\": " + uid + ",\n \"name\": \"" + name + "\",\n \"email\": \"" + email + "\"\n}";
     }
+
+    public String generateJson(int numActivities) {
+        return "{ \n \"name\": \"" + name + "\",\n \"email\": \"" + email + "\",\n \"Number of Activities\": \""
+                + numActivities + "\"\n}";
+    }
 }

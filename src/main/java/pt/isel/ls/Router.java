@@ -24,6 +24,7 @@ public class Router {
         addRoute(Method.GET, new PathTemplate("/sports/{sid}/activities/{aid}"), new GetSportActivitiesByIdHandler());
         addRoute(Method.GET, new PathTemplate("/users/{uid}/activities"), new GetUserActivitiesHandler());
         addRoute(Method.GET, new PathTemplate("/users/{uid}/activities/{aid}"), new GetUserActivitiesByIdHandler());
+        addRoute(Method.GET, new PathTemplate("/users/{uid}/activities/count"), new GetNumUserActivitiesHandler());
         addRoute(Method.POST, new PathTemplate("/users"), new PostUserHandler());
         addRoute(Method.POST, new PathTemplate("/routes"), new PostRouteHandler());
         addRoute(Method.POST, new PathTemplate("/sports"), new PostSportHandler());
@@ -55,8 +56,14 @@ public class Router {
                         ifSame = true;
                         if (pathTemplateSegments.get(i).startsWith("{")
                                 && pathTemplateSegments.get(i).endsWith("}")) {
-                            pathParameters.addPathParameter(pathTemplateSegments.get(i).substring(1, 4),
-                                    pathSegments.get(i));
+                            try {
+                                Integer.parseInt(pathSegments.get(i));
+                                pathParameters.addPathParameter(pathTemplateSegments.get(i).substring(1, 4),
+                                        pathSegments.get(i));
+                            } catch (NumberFormatException e) {
+                                ifSame = false;
+                                break;
+                            }
                         } else if (!pathTemplateSegments.get(i).equals(pathSegments.get(i))) {
                             pathParameters.clear();
                             ifSame = false;

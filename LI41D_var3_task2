@@ -1,0 +1,11 @@
+Git commands: add, commit and push are graduating steps for adding a new file to the remote repository.
+
+The first step is add, which add changes to the working directory and put them on a stage.
+We can add all the changes using “add . “ or desired files giving the full path of the file.
+
+The second step is commit, which we use to confirm all the changes. It takes all the files from the stage
+and saves their state in time. The commit has a pointer to the object with the content of a stage.
+We need to add a description to the commit using “-m <some text>”.
+
+The last, third step is a push, which sends the update to the remote repository with all the commits previously made.
+We can give the name of the branch form which we made changes, by default it’s main
