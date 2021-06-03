@@ -31,6 +31,8 @@ public class ListenHandler implements CommandHandler {
                 "/sports/*");
         handler.addServletWithMapping(new ServletHolder(new GetTablesServlet(commandRequest.getDataSource())),
                 "/sports");
+        handler.addServletWithMapping(new ServletHolder(new GetIndexServlet(commandRequest.getDataSource())),
+                "/");
 
         server.setHandler(handler);
         server.start();
