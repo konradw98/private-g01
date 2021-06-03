@@ -8,15 +8,21 @@ public class DeleteResult implements CommandResult {
 
     @Override
     public boolean results() {
-        System.out.println("user id: " + userId + " activities id:");
+        System.out.println(generateResults());
+        return false;
+    }
+
+    @Override
+    public String generateResults() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("user id: ").append(userId).append(" activities id:");
         for (int i = 0; i < activitiesId.size(); i++) {
-            System.out.print(activitiesId.get(i));
+            stringBuilder.append(activitiesId.get(i));
             if (i != activitiesId.size() - 1) {
-                System.out.print(", ");
+                stringBuilder.append(", ");
             }
         }
-        System.out.println();
-        return false;
+        return stringBuilder.append("\n").toString();
     }
 
     public DeleteResult(int userId, List<String> activitiesId) {

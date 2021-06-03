@@ -48,4 +48,10 @@ public abstract class GetCommandResult implements CommandResult {
     public Element td() {
         return new Element("td");
     }
+
+    public void printResults(String result) {
+        if (!result.equals("")) {
+            System.out.println(result);
+        }
+    }
 }

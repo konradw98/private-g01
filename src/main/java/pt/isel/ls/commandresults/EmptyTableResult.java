@@ -10,8 +10,13 @@ public class EmptyTableResult implements CommandResult {
 
     @Override
     public boolean results() {
-        System.out.println("Empty " + emptyTable + " table!");
+        System.out.println(generateResults());
         return false;
+    }
+
+    @Override
+    public String generateResults() {
+        return "Empty " + emptyTable + " table!";
     }
 }
 

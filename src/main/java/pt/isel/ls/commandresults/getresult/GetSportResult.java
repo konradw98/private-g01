@@ -16,7 +16,14 @@ public class GetSportResult extends GetCommandResult {
         this.sport = sport;
     }
 
-    public void generateResult(Headers headers) {
+    @Override
+    public boolean results() {
+        printResults(generateResults());
+        return false;
+    }
+
+    @Override
+    public String generateResults() {
         String accept;
         String fileName;
         if (headers == null) {
@@ -43,17 +50,18 @@ public class GetSportResult extends GetCommandResult {
             }
         } else {
             switch (accept) {
-                case "text/plain" -> System.out.println(sport);
-                case "application/json" -> System.out.println(generateJson());
-                default -> System.out.println(generateHtml().generateStringHtml(""));
+                case "text/plain" -> {
+                    return sport.toString();
+                }
+                case "application/json" -> {
+                    return generateJson();
+                }
+                default -> {
+                    return generateHtml().generateStringHtml("");
+                }
             }
         }
-    }
-
-    @Override
-    public boolean results() {
-        generateResult(headers);
-        return false;
+        return "";
     }
 
     public String generateJson() {

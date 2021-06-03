@@ -43,7 +43,7 @@ public class GetSportByIdHandler extends GetHandler implements CommandHandler {
                 return new EmptyTableResult("sports");
             }
 
-            String sql1 = "SELECT * FROM sports WHERE sid=? AND timestamp IS NULL";
+            String sql1 = "SELECT * FROM sports WHERE sid=?";
             pstmt = conn.prepareStatement(sql1);
             pstmt.setInt(1, Integer.parseInt(stringSid));
             resultSet = pstmt.executeQuery();

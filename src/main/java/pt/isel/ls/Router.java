@@ -7,11 +7,7 @@ import pt.isel.ls.handlers.get.gettables.*;
 import java.util.*;
 
 public class Router {
-    private final ArrayListMultimap<Method, Tuple<PathTemplate, CommandHandler>> mapOfHandlers;
-
-    public Router() {
-        mapOfHandlers = ArrayListMultimap.create();
-    }
+    private static final ArrayListMultimap<Method, Tuple<PathTemplate, CommandHandler>> mapOfHandlers = ArrayListMultimap.create();
 
     public void addHandlers() {
         addRoute(Method.GET, new PathTemplate("/users"), new GetUsersHandler());
@@ -32,7 +28,7 @@ public class Router {
         addRoute(Method.EXIT, new PathTemplate("/"), new ExitHandler());
         addRoute(Method.OPTION, new PathTemplate("/"), new OptionHandler());
         addRoute(Method.DELETE, new PathTemplate("/users/{uid}/activities"), new DeleteHandler());
-
+        addRoute(Method.LISTEN, new PathTemplate("/"), new ListenHandler());
     }
 
     public void addRoute(Method method, PathTemplate pathTemplate, CommandHandler commandHandler) {
@@ -40,8 +36,7 @@ public class Router {
         mapOfHandlers.put(method, map);
     }
 
-    //TODO: refactor
-    public Optional<RouteResult> findRoute(Method method, Path path) {
+    public static Optional<RouteResult> findRoute(Method method, Path path) {
         if (mapOfHandlers.containsKey(method)) {
             List<String> pathSegments = path.splitSegmentsFromPath();
             PathParameters pathParameters = new PathParameters();

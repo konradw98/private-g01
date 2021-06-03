@@ -19,7 +19,12 @@ public class PostResult implements CommandResult {
 
     @Override
     public boolean results() {
-        System.out.println(label + ": " + id);
+        System.out.println(generateResults());
         return false;
+    }
+
+    @Override
+    public String generateResults() {
+        return label + ": " + id;
     }
 }

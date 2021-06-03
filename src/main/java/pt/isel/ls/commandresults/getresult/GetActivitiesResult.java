@@ -19,6 +19,18 @@ public class GetActivitiesResult extends GetCommandResult {
     }
 
     public void generateResult(Headers headers) {
+
+
+    }
+
+    @Override
+    public boolean results() {
+        generateResult(headers);
+        return false;
+    }
+
+    @Override
+    public String generateResults() {
         String accept;
         String fileName;
         if (headers == null) {
@@ -52,21 +64,21 @@ public class GetActivitiesResult extends GetCommandResult {
         } else {
             switch (accept) {
                 case "text/plain" -> {
+                    StringBuilder stringBuilder = new StringBuilder();
                     for (Activity activity : activities) {
-                        System.out.println(activity);
+                        stringBuilder.append(activity);
                     }
+                    return stringBuilder.toString();
                 }
-                case "application/json" -> System.out.println(generateJson());
-                default -> System.out.println(generateHtml().generateStringHtml(""));
+                case "application/json" -> {
+                    return generateJson();
+                }
+                default -> {
+                    return generateHtml().generateStringHtml("");
+                }
             }
         }
-
-    }
-
-    @Override
-    public boolean results() {
-        generateResult(headers);
-        return false;
+        return "";
     }
 
     public String generateJson() {

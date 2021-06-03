@@ -4,6 +4,7 @@ import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.User;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -18,7 +19,28 @@ public class GetUsersResult extends GetCommandResult {
         this.users = users;
     }
 
-    public void generateResult(Headers headers) {
+    public void printResults(String result) {
+        if (!result.equals("")) {
+            System.out.println(result);
+        }
+    }
+
+    public Headers getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Headers headers) {
+        this.headers = headers;
+    }
+
+    @Override
+    public boolean results() {
+        printResults(generateResults());
+        return false;
+    }
+
+    @Override
+    public String generateResults() {
         String accept;
         String fileName;
         if (headers == null) {
@@ -52,29 +74,21 @@ public class GetUsersResult extends GetCommandResult {
         } else {
             switch (accept) {
                 case "text/plain" -> {
+                    StringBuilder stringBuilder = new StringBuilder();
                     for (User user : users) {
-                        System.out.println(user);
+                        stringBuilder.append(user.toString());
                     }
+                    return stringBuilder.toString();
                 }
-                case "application/json" -> System.out.println(generateJson());
-                default -> System.out.println(generateHtml().generateStringHtml(""));
+                case "application/json" -> {
+                    return generateJson();
+                }
+                default -> {
+                    return generateHtml().generateStringHtml("");
+                }
             }
         }
-
-    }
-
-    public Headers getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(Headers headers) {
-        this.headers = headers;
-    }
-
-    @Override
-    public boolean results() {
-        generateResult(headers);
-        return false;
+        return "";
     }
 
     public String generateJson() {

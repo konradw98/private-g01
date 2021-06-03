@@ -6,5 +6,6 @@ public enum Method {
     EXIT,
     OPTION,
     DELETE,
+    LISTEN,
     WRONG_METHOD
 }

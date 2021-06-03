@@ -62,6 +62,9 @@ public class CommandExecutor {
             case "EXIT" -> {
                 return Method.EXIT;
             }
+            case "LISTEN" -> {
+                return Method.LISTEN;
+            }
             default -> {
                 return Method.WRONG_METHOD;
             }
@@ -76,7 +79,8 @@ public class CommandExecutor {
         try {
             CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
             exit = commandResult.results();
-        } catch (SQLException e) {
+            //TODO: not exception
+        } catch (Exception e) {
             return new WrongParametersResult().results();
         }
         return exit;

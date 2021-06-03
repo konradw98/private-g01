@@ -3,7 +3,13 @@ package pt.isel.ls.commandresults;
 public class OptionResult implements CommandResult {
     @Override
     public boolean results() {
-        System.out.println("""
+        System.out.println(generateResults());
+        return false;
+    }
+
+    @Override
+    public String generateResults() {
+        return """
                 AVAILABLE COMMANDS:
                 COMMAND STRUCTURE: {method} {path} {headers} {parameters}
                     Where:
@@ -75,9 +81,6 @@ public class OptionResult implements CommandResult {
                             activity - the set of activities to remove
                     2. EXIT / - terminates the application
                     3. OPTION / - presents a list of available commands\s"""
-        );
-
-        return false;
-
+        ;
     }
 }

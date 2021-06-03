@@ -16,7 +16,14 @@ public class GetRouteResult extends GetCommandResult {
         this.route = route;
     }
 
-    public void generateResult(Headers headers) {
+    @Override
+    public boolean results() {
+        printResults(generateResults());
+        return false;
+    }
+
+    @Override
+    public String generateResults() {
         String accept;
         String fileName;
         if (headers == null) {
@@ -43,18 +50,18 @@ public class GetRouteResult extends GetCommandResult {
             }
         } else {
             switch (accept) {
-                case "text/plain" -> System.out.println(route);
-                case "application/json" -> System.out.println(generateJson());
-                default -> System.out.println(generateHtml().generateStringHtml(""));
+                case "text/plain" -> {
+                    return route.toString();
+                }
+                case "application/json" -> {
+                    return generateJson();
+                }
+                default -> {
+                    return generateHtml().generateStringHtml("");
+                }
             }
         }
-
-    }
-
-    @Override
-    public boolean results() {
-        generateResult(headers);
-        return false;
+        return "";
     }
 
     public String generateJson() {

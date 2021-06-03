@@ -5,5 +5,5 @@ import pt.isel.ls.commandresults.CommandResult;
 import java.sql.SQLException;
 
 public interface CommandHandler {
-    CommandResult execute(CommandRequest commandRequest) throws SQLException;
+    CommandResult execute(CommandRequest commandRequest) throws Exception;
 }

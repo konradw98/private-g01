@@ -5,11 +5,11 @@ import java.util.Scanner;
 
 public class App {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         boolean exit = false;
 
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/demonstration");
+        dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
         dataSource.setPassword("password");
         dataSource.setUser("postgres");
 

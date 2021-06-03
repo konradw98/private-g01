@@ -4,6 +4,7 @@ import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.User;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
@@ -16,7 +17,14 @@ public class GetUserByIdResult extends GetCommandResult {
         this.headers = headers;
     }
 
-    public void generateResult(Headers headers) {
+    @Override
+    public boolean results() {
+        printResults(generateResults());
+        return false;
+    }
+
+    @Override
+    public String generateResults() {
         String accept;
         String fileName;
         if (headers == null) {
@@ -43,18 +51,18 @@ public class GetUserByIdResult extends GetCommandResult {
             }
         } else {
             switch (accept) {
-                case "text/plain" -> System.out.println(user);
-                case "application/json" -> System.out.println(generateJson());
-                default -> System.out.println(generateHtml().generateStringHtml(""));
+                case "text/plain" -> {
+                    return user.toString();
+                }
+                case "application/json" -> {
+                    return generateJson();
+                }
+                default -> {
+                    return generateHtml().generateStringHtml("");
+                }
             }
         }
-
-    }
-
-    @Override
-    public boolean results() {
-        generateResult(headers);
-        return false;
+        return "";
     }
 
     public String generateJson() {
