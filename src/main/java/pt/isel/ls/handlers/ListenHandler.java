@@ -21,13 +21,16 @@ public class ListenHandler implements CommandHandler {
 
         handler.addServletWithMapping(new ServletHolder(new GetByIdServlet(commandRequest.getDataSource())),
                 "/users/*");
-        handler.addServletWithMapping(new ServletHolder(new GetUsersServlet()), "/users");
+        handler.addServletWithMapping(new ServletHolder(new GetTablesServlet(commandRequest.getDataSource())),
+                "/users");
         handler.addServletWithMapping(new ServletHolder(new GetByIdServlet(commandRequest.getDataSource())),
                 "/routes/*");
-        handler.addServletWithMapping(new ServletHolder(new GetRoutesServlet()), "/routes");
+        handler.addServletWithMapping(new ServletHolder(new GetTablesServlet(commandRequest.getDataSource())),
+                "/routes");
         handler.addServletWithMapping(new ServletHolder(new GetByIdServlet(commandRequest.getDataSource())),
                 "/sports/*");
-        handler.addServletWithMapping(new ServletHolder(new GetSportsServlet()), "/sports");
+        handler.addServletWithMapping(new ServletHolder(new GetTablesServlet(commandRequest.getDataSource())),
+                "/sports");
 
         server.setHandler(handler);
         server.start();

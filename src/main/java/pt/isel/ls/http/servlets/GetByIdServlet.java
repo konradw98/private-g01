@@ -38,7 +38,6 @@ public class GetByIdServlet extends HttpServlet {
                 respBody = new WrongParametersResult().generateResults();
             } finally {
                 Charset utf8 = StandardCharsets.UTF_8;
-                resp.setContentType(String.format("text/plain; charset=%s", utf8.name()));
                 byte[] respBodyBytes = respBody.getBytes(utf8);
                 resp.setStatus(200);
                 resp.setContentType("text/html");
