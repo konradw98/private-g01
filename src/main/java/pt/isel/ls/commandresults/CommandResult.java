@@ -1,6 +1,6 @@
 package pt.isel.ls.commandresults;
 
 public interface CommandResult {
-    boolean results();
-    String generateResults();
+    boolean results(boolean http);
+    String generateResults(boolean http);
 }

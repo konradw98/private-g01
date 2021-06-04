@@ -18,13 +18,13 @@ public class PostResult implements CommandResult {
     }
 
     @Override
-    public boolean results() {
-        System.out.println(generateResults());
+    public boolean results(boolean http) {
+        System.out.println(generateResults(http));
         return false;
     }
 
     @Override
-    public String generateResults() {
+    public String generateResults(boolean http) {
         return label + ": " + id;
     }
 }

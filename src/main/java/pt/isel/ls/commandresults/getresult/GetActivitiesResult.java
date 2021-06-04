@@ -24,13 +24,13 @@ public class GetActivitiesResult extends GetCommandResult {
     }
 
     @Override
-    public boolean results() {
+    public boolean results(boolean http) {
         generateResult(headers);
         return false;
     }
 
     @Override
-    public String generateResults() {
+    public String generateResults(boolean http) {
         String accept;
         String fileName;
         if (headers == null) {

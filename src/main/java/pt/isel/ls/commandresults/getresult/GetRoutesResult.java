@@ -18,13 +18,13 @@ public class GetRoutesResult extends GetCommandResult {
     }
 
     @Override
-    public boolean results() {
-        printResults(generateResults());
+    public boolean results(boolean http) {
+        printResults(generateResults(http));
         return false;
     }
 
     @Override
-    public String generateResults() {
+    public String generateResults(boolean http) {
         String accept;
         String fileName;
         if (headers == null) {

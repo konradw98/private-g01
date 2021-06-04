@@ -3,10 +3,11 @@ package pt.isel.ls;
 import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
-import java.sql.SQLException;
+
 import java.util.Optional;
 
 public class CommandExecutor {
+    static boolean http = false;
     private static final int SIMPLEST_COMMAND_SEGMENTS = 2;
     private static final int COMMAND_WITHOUT_HEADERS_OR_WITH_PARAMETERS_ONLY = 3;
     private static final int COMMAND_WITH_HEADERS = 4;
@@ -78,10 +79,10 @@ public class CommandExecutor {
 
         try {
             CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
-            exit = commandResult.results();
+            exit = commandResult.results(http);
             //TODO: not exception
         } catch (Exception e) {
-            return new WrongParametersResult().results();
+            return new WrongParametersResult().results(http);
         }
         return exit;
     }

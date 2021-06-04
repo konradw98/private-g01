@@ -37,6 +37,10 @@ public abstract class GetCommandResult implements CommandResult {
         return new Element("table");
     }
 
+    public Element table(String param) {
+        return new Element("table", param);
+    }
+
     public Element tr() {
         return new Element("tr");
     }
@@ -48,6 +52,8 @@ public abstract class GetCommandResult implements CommandResult {
     public Element td() {
         return new Element("td");
     }
+
+    public Element a(String param) { return new Element("a", param); }
 
     public void printResults(String result) {
         if (!result.equals("")) {

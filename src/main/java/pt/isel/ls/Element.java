@@ -8,8 +8,15 @@ public class Element {
     private final ArrayList<Element> children;
     private Text text;
     private final String name;
+    private String param;
 
     public Element(String name) {
+        this.name = name;
+        children = new ArrayList<>();
+    }
+
+    public Element(String name, String param) {
+        this.param = param;
         this.name = name;
         children = new ArrayList<>();
     }
@@ -19,13 +26,21 @@ public class Element {
         return this;
     }
 
+    public Element with(Text text, Element... elements) {
+        Collections.addAll(children, elements);
+        this.text = text;
+        return this;
+    }
+
     public Element with(Text text) {
         this.text = text;
         return this;
     }
 
     public String generateStringHtml(String prefix) {
-        StringBuilder html = new StringBuilder(prefix + "<" + name + ">");
+        StringBuilder html;
+        if (param != null) html = new StringBuilder(prefix + "<" + name + " " + param + " >");
+        else html = new StringBuilder(prefix + "<" + name + ">");
         if (text != null) {
             html.append(text);
         } else {

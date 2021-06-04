@@ -34,13 +34,13 @@ public class GetUsersResult extends GetCommandResult {
     }
 
     @Override
-    public boolean results() {
-        printResults(generateResults());
+    public boolean results(boolean http) {
+        printResults(generateResults(http));
         return false;
     }
 
     @Override
-    public String generateResults() {
+    public String generateResults(boolean http) {
         String accept;
         String fileName;
         if (headers == null) {
@@ -62,7 +62,8 @@ public class GetUsersResult extends GetCommandResult {
                     str = stringBuilder.toString();
                 }
                 case "application/json" -> str = generateJson();
-                default -> str = generateHtml().generateStringHtml("");
+                default -> str = http ? generateHtmlWithLinks().generateStringHtml("")
+                        : generateHtml().generateStringHtml("");
             }
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
@@ -84,7 +85,8 @@ public class GetUsersResult extends GetCommandResult {
                     return generateJson();
                 }
                 default -> {
-                    return generateHtml().generateStringHtml("");
+                    return http ? generateHtmlWithLinks().generateStringHtml("")
+                            : generateHtml().generateStringHtml("");
                 }
             }
         }
@@ -105,7 +107,7 @@ public class GetUsersResult extends GetCommandResult {
 
     public Element generateHtml() {
         Element html = html();
-        Element table = table();
+        Element table = table("border=1");
 
         html.with(head().with(title().with(new Text("Users"))));
         html.with(body().with(table));
@@ -123,6 +125,32 @@ public class GetUsersResult extends GetCommandResult {
                     td().with(new Text(user.getEmail()))));
         }
 
+        return html;
+
+    }
+
+    public Element generateHtmlWithLinks() {
+        Element html = html();
+        Element body = body();
+        Element table = table("border=1");
+
+        html.with(head().with(title().with(new Text("Users"))));
+        body.with(a("href=\"/\"").with(new Text("Root")));
+        html.with(body.with(table));
+        table.with(h1().with(new Text("Users Page ?")));
+
+        table.with(tr().with(
+                th().with(new Text("Identifier")),
+                th().with(new Text("Name"))));
+
+        for (User user : users) {
+            table.with(tr().with(
+                    td().with(a("href=\"/users/"+user.getUid()+"\"").with(new Text(user.getUid()))),
+                    td().with(new Text(user.getName()))));
+        }
+
+        body.with(a("href=\"/users?top=5&skip=?\"").with(new Text("Next")));
+        body.with(a("href=\"/users?top=5&skip=?\"").with(new Text("Previous")));
         return html;
 
     }

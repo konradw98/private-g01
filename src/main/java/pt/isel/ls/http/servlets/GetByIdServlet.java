@@ -15,6 +15,7 @@ import java.util.Optional;
 
 public class GetByIdServlet extends HttpServlet {
     private final PGSimpleDataSource dataSource;
+    boolean http = true;
 
     public GetByIdServlet(PGSimpleDataSource dataSource) {
         this.dataSource = dataSource;
@@ -32,10 +33,10 @@ public class GetByIdServlet extends HttpServlet {
             String respBody = "";
             try {
                 CommandResult commandResult = routeResult.get().getHandler().execute(commandRequest);
-                respBody = commandResult.generateResults();
+                respBody = commandResult.generateResults(http);
                 //TODO: not exception
             } catch (Exception e) {
-                respBody = new WrongParametersResult().generateResults();
+                respBody = new WrongParametersResult().generateResults(http);
             } finally {
                 Charset utf8 = StandardCharsets.UTF_8;
                 byte[] respBodyBytes = respBody.getBytes(utf8);

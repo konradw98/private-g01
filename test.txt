@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<title>Users</title>
+	</head>
+	<body>
+		<table border=1 >
+			<h1>User Details</h1>
+			<tr>
+				<th>Identifier</th>
+				<th>Name</th>
+				<th>Email</th>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>First User</td>
+				<td>user@gmail.com</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>EOxDZ</td>
+				<td>EOxDZ@gmail.com</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>ZnKal</td>
+				<td>ZnKal@gmail.com</td>
+			</tr>
+		</table>
+	</body>
+</html>

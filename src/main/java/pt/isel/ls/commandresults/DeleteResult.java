@@ -7,13 +7,13 @@ public class DeleteResult implements CommandResult {
     private List<String> activitiesId;
 
     @Override
-    public boolean results() {
-        System.out.println(generateResults());
+    public boolean results(boolean http) {
+        System.out.println(generateResults(http));
         return false;
     }
 
     @Override
-    public String generateResults() {
+    public String generateResults(boolean http) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("user id: ").append(userId).append(" activities id:");
         for (int i = 0; i < activitiesId.size(); i++) {

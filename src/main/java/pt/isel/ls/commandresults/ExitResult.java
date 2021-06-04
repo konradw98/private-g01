@@ -2,13 +2,13 @@ package pt.isel.ls.commandresults;
 
 public class ExitResult implements CommandResult {
     @Override
-    public boolean results() {
-        System.out.println(generateResults());
+    public boolean results(boolean http) {
+        System.out.println(generateResults(http));
         return true;
     }
 
     @Override
-    public String generateResults() {
+    public String generateResults(boolean http) {
         return "Application stopped";
     }
 
