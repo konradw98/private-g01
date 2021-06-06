@@ -69,7 +69,7 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
             if (routes.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetRoutesResult(routes, commandRequest.getHeaders());
+                return new GetRoutesResult(routes, commandRequest.getHeaders(), commandRequest.getParameters());
             }
 
         }

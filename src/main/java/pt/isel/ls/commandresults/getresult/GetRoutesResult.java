@@ -2,8 +2,11 @@ package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Route;
+import pt.isel.ls.models.Sport;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -11,10 +14,14 @@ import java.util.ArrayList;
 public class GetRoutesResult extends GetCommandResult {
     private final ArrayList<Route> routes;
     private Headers headers;
+    private int skip;
+    private int top;
 
-    public GetRoutesResult(ArrayList<Route> routes, Headers headers) {
+    public GetRoutesResult(ArrayList<Route> routes, Headers headers, Parameters parameters) {
         this.headers = headers;
         this.routes = routes;
+        this.skip = Integer.parseInt(parameters.get("skip"));
+        this.top = Integer.parseInt(parameters.get("top"));
     }
 
     @Override
@@ -46,7 +53,8 @@ public class GetRoutesResult extends GetCommandResult {
                     str = stringBuilder.toString();
                 }
                 case "application/json" -> str = generateJson();
-                default -> str = generateHtml().generateStringHtml("");
+                default -> str = http ? generateHtmlWithLinks().generateStringHtml("")
+                        : generateHtml().generateStringHtml("");
             }
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
@@ -68,7 +76,8 @@ public class GetRoutesResult extends GetCommandResult {
                     return generateJson();
                 }
                 default -> {
-                    return generateHtml().generateStringHtml("");
+                    return http ? generateHtmlWithLinks().generateStringHtml("")
+                            : generateHtml().generateStringHtml("");
                 }
             }
         }
@@ -108,6 +117,36 @@ public class GetRoutesResult extends GetCommandResult {
                     td().with(new Text(route.getDistance()))));
         }
 
+        return html;
+
+    }
+
+    public Element generateHtmlWithLinks() {
+        int pageNumber = getPageNumber(skip, top);
+        //not valid
+        if (pageNumber == -1) return null;
+
+        Element html = html();
+        Element body = body();
+        Element table = table("border=1");
+
+        html.with(head().with(title().with(new Text("Routes"))));
+        body.with(a("href=\"/\"").with(new Text("Root")));
+        html.with(body.with(table));
+        table.with(h1().with(new Text("Routes Page " + pageNumber)));
+
+        table.with(tr().with(
+                th().with(new Text("Identifier")),
+                th().with(new Text("Distance"))));
+
+        for (Route route : routes) {
+            table.with(tr().with(
+                    td().with(a("href=\"/routes/" + route.getRid() + "\"").with(new Text(route.getRid()))),
+                    td().with(new Text(route.getDistance()))));
+        }
+
+        if (routes.size() == 5) body.with(a("href=\"/routes?top=5&skip=" + (skip + 5) + "\"").with(new Text("Next")));
+        if (skip >= 5) body.with(a("href=\"/routes?top=5&skip=" + (skip - 5) + "\"").with(new Text("Previous")));
         return html;
 
     }

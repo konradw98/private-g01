@@ -2,6 +2,7 @@ package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.User;
 
@@ -12,11 +13,15 @@ import java.util.ArrayList;
 public class GetUsersResult extends GetCommandResult {
     private final ArrayList<User> users;
     private Headers headers;
+    private int skip;
+    private int top;
 
 
-    public GetUsersResult(ArrayList<User> users, Headers headers) {
+    public GetUsersResult(ArrayList<User> users, Headers headers, Parameters parameters) {
         this.headers = headers;
         this.users = users;
+        this.skip = Integer.parseInt(parameters.get("skip"));
+        this.top = Integer.parseInt(parameters.get("top"));
     }
 
     public void printResults(String result) {
@@ -130,6 +135,10 @@ public class GetUsersResult extends GetCommandResult {
     }
 
     public Element generateHtmlWithLinks() {
+        int pageNumber = getPageNumber(skip, top);
+        //not valid
+        if (pageNumber == -1) return null;
+
         Element html = html();
         Element body = body();
         Element table = table("border=1");
@@ -137,7 +146,7 @@ public class GetUsersResult extends GetCommandResult {
         html.with(head().with(title().with(new Text("Users"))));
         body.with(a("href=\"/\"").with(new Text("Root")));
         html.with(body.with(table));
-        table.with(h1().with(new Text("Users Page ?")));
+        table.with(h1().with(new Text("Users Page " + pageNumber)));
 
         table.with(tr().with(
                 th().with(new Text("Identifier")),
@@ -145,12 +154,12 @@ public class GetUsersResult extends GetCommandResult {
 
         for (User user : users) {
             table.with(tr().with(
-                    td().with(a("href=\"/users/"+user.getUid()+"\"").with(new Text(user.getUid()))),
+                    td().with(a("href=\"/users/" + user.getUid() + "\"").with(new Text(user.getUid()))),
                     td().with(new Text(user.getName()))));
         }
 
-        body.with(a("href=\"/users?top=5&skip=?\"").with(new Text("Next")));
-        body.with(a("href=\"/users?top=5&skip=?\"").with(new Text("Previous")));
+        if (users.size() == 5) body.with(a("href=\"/users?top=5&skip=" + (skip + 5) + "\"").with(new Text("Next")));
+        if (skip >= 5) body.with(a("href=\"/users?top=5&skip=" + (skip - 5) + "\"").with(new Text("Previous")));
         return html;
 
     }

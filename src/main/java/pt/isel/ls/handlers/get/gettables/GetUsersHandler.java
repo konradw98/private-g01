@@ -67,7 +67,7 @@ public class GetUsersHandler extends GetTablesHandler implements CommandHandler 
             if (users.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetUsersResult(users, commandRequest.getHeaders());
+                return new GetUsersResult(users, commandRequest.getHeaders(), commandRequest.getParameters());
             }
         }
     }

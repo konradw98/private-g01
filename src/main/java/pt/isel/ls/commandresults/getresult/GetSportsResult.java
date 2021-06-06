@@ -2,8 +2,11 @@ package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Sport;
+import pt.isel.ls.models.User;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -11,10 +14,14 @@ import java.util.ArrayList;
 public class GetSportsResult extends GetCommandResult {
     private ArrayList<Sport> sports;
     private Headers headers;
+    private int skip;
+    private int top;
 
-    public GetSportsResult(ArrayList<Sport> sports, Headers headers) {
+    public GetSportsResult(ArrayList<Sport> sports, Headers headers, Parameters parameters) {
         this.headers = headers;
         this.sports = sports;
+        this.skip = Integer.parseInt(parameters.get("skip"));
+        this.top = Integer.parseInt(parameters.get("top"));
     }
 
     @Override
@@ -46,7 +53,8 @@ public class GetSportsResult extends GetCommandResult {
                     str = stringBuilder.toString();
                 }
                 case "application/json" -> str = generateJson();
-                default -> str = generateHtml().generateStringHtml("");
+                default -> str = http ? generateHtmlWithLinks().generateStringHtml("")
+                        : generateHtml().generateStringHtml("");
             }
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
@@ -68,7 +76,8 @@ public class GetSportsResult extends GetCommandResult {
                     return generateJson();
                 }
                 default -> {
-                    return generateHtml().generateStringHtml("");
+                    return http ? generateHtmlWithLinks().generateStringHtml("")
+                            : generateHtml().generateStringHtml("");
                 }
             }
         }
@@ -89,7 +98,7 @@ public class GetSportsResult extends GetCommandResult {
 
     public Element generateHtml() {
         Element html = html();
-        Element table = table();
+        Element table = table("border=1");
 
         html.with(head().with(title().with(new Text("Sports"))));
         html.with(body().with(table));
@@ -107,6 +116,36 @@ public class GetSportsResult extends GetCommandResult {
                     td().with(new Text(sport.getDescription()))));
         }
 
+        return html;
+
+    }
+
+    public Element generateHtmlWithLinks() {
+        int pageNumber = getPageNumber(skip, top);
+        //not valid
+        if (pageNumber == -1) return null;
+
+        Element html = html();
+        Element body = body();
+        Element table = table("border=1");
+
+        html.with(head().with(title().with(new Text("Sports"))));
+        body.with(a("href=\"/\"").with(new Text("Root")));
+        html.with(body.with(table));
+        table.with(h1().with(new Text("Sports Page " + pageNumber)));
+
+        table.with(tr().with(
+                th().with(new Text("Identifier")),
+                th().with(new Text("Name"))));
+
+        for (Sport sport : sports) {
+            table.with(tr().with(
+                    td().with(a("href=\"/sports/" + sport.getSid() + "\"").with(new Text(sport.getSid()))),
+                    td().with(new Text(sport.getName()))));
+        }
+
+        if (sports.size() == 5) body.with(a("href=\"/sports?top=5&skip=" + (skip + 5) + "\"").with(new Text("Next")));
+        if (skip >= 5) body.with(a("href=\"/sports?top=5&skip=" + (skip - 5) + "\"").with(new Text("Previous")));
         return html;
 
     }

@@ -29,7 +29,7 @@ public class GetTablesServlet extends HttpServlet {
         Optional<RouteResult> routeResult = Router.findRoute(Method.GET, new Path(path));
 
         if (routeResult.isPresent()) {
-            Parameters parameters = new Parameters("skip=0&top=10");
+            Parameters parameters = new Parameters(req.getQueryString());
             CommandRequest commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters, dataSource);
             String respBody = "";
             try {

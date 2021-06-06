@@ -36,7 +36,7 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
             return new WrongParametersResult(wrongParameters);
         }
 
-        int skipInt = 0;
+        int skipInt = Integer.parseInt(skip);
 
         try (Connection conn = commandRequest.getDataSource().getConnection()) {
             Optional<EmptyTableResult> emptyTableResult = checkIfTableIsEmpty(conn, "sports");
@@ -56,7 +56,7 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
 
             int i = 0;
             while (resultSet.next()) {
-                if (i >= skipInt && i < skipInt + Integer.parseInt("100")) {
+                if (i >= skipInt && i < skipInt + Integer.parseInt(top)) {
                     sid = resultSet.getInt("sid");
                     name = resultSet.getString("name");
                     description = resultSet.getString("description");
@@ -68,7 +68,7 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
             if (sports.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetSportsResult(sports, commandRequest.getHeaders());
+                return new GetSportsResult(sports, commandRequest.getHeaders(), commandRequest.getParameters());
             }
         }
     }

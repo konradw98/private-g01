@@ -31,9 +31,9 @@ public class GetIndexServlet extends HttpServlet {
                 "    </head>\n" +
                 "    <body>\n" +
                 "        <h1>Root</h1>\n" +
-                "        <p><a href = \"/users\">Users</a></p>\n" +
-                "        <p><a href = \"/sports\">Sports</a></p>\n" +
-                "        <p><a href = \"/routes\">Routes</a></p>\n" +
+                "        <p><a href = \"/users?top=5&skip=0\">Users</a></p>\n" +
+                "        <p><a href = \"/sports?top=5&skip=0\">Sports</a></p>\n" +
+                "        <p><a href = \"/routes?top=5&skip=0\">Routes</a></p>\n" +
                 "    </body>\n" +
                 "</html> ";
 

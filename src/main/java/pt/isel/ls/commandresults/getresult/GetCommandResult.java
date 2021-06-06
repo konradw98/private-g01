@@ -60,4 +60,10 @@ public abstract class GetCommandResult implements CommandResult {
             System.out.println(result);
         }
     }
+
+    public int getPageNumber(int skip, int top) {
+        int pageNumber = -1;
+        if (top == 5 && skip % 5 == 0) pageNumber = (skip / 5) + 1;
+        return pageNumber;
+    }
 }
