@@ -2,6 +2,7 @@ package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Activity;
 import java.io.BufferedWriter;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 public class GetActivitiesResult extends GetCommandResult {
     private ArrayList<Activity> activities;
     private final Headers headers;
+    private int skip;
+    private int top;
 
 
     public GetActivitiesResult(ArrayList<Activity> activities, Headers headers) {
@@ -18,14 +21,16 @@ public class GetActivitiesResult extends GetCommandResult {
         this.activities = activities;
     }
 
-    public void generateResult(Headers headers) {
-
-
+    public GetActivitiesResult(ArrayList<Activity> activities, Headers headers, Parameters parameters) {
+        this.headers = headers;
+        this.activities = activities;
+        this.skip = Integer.parseInt(parameters.get("skip"));
+        this.top = Integer.parseInt(parameters.get("top"));
     }
 
     @Override
     public boolean results(boolean http) {
-        generateResult(headers);
+        printResults(generateResults(http));
         return false;
     }
 
@@ -52,7 +57,8 @@ public class GetActivitiesResult extends GetCommandResult {
                     str = stringBuilder.toString();
                 }
                 case "application/json" -> str = generateJson();
-                default -> str = generateHtml().generateStringHtml("");
+                default -> str = http ? generateHtmlWithLinks().generateStringHtml("")
+                        : generateHtml().generateStringHtml("");
             }
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
@@ -74,7 +80,8 @@ public class GetActivitiesResult extends GetCommandResult {
                     return generateJson();
                 }
                 default -> {
-                    return generateHtml().generateStringHtml("");
+                    return http ? generateHtmlWithLinks().generateStringHtml("")
+                            : generateHtml().generateStringHtml("");
                 }
             }
         }
@@ -119,6 +126,43 @@ public class GetActivitiesResult extends GetCommandResult {
         }
 
         return html;
+    }
+
+    public Element generateHtmlWithLinks() {
+        int pageNumber = getPageNumber(skip, top);
+        //not valid
+        if (pageNumber == -1) return null;
+
+        Element html = html();
+        Element body = body();
+        Element table = table("border=1");
+
+        html.with(head().with(title().with(new Text("Activities"))));
+        body.with(a("href=\"/\"").with(new Text("Root")));
+        html.with(body.with(table));
+        table.with(h1().with(new Text("Activities Page " + pageNumber)));
+
+        table.with(tr().with(
+                th().with(new Text("Identifier")),
+                th().with(new Text("Date"))));
+
+        for (Activity activity : activities) {
+            table.with(tr().with(
+                    td().with(a("href=\"/sports/" + activity.getSid() + "/activities/"
+                            + activity.getAid() + "\"").with(new Text(activity.getAid()))),
+                    td().with(new Text(activity.getDate()))));
+        }
+
+        if (activities.size() == 5) {
+            body.with(a("href=\"/sports/" + activities.get(0).getSid() + "/activities?top=5&skip="
+                    + (skip + 5) + "\"").with(new Text("Next")));
+        }
+        if (skip >= 5) {
+            body.with(a("href=\"/sports/" + activities.get(0).getSid() + "/activities?top=5&skip="
+                    + (skip - 5) + "\"").with(new Text("Previous")));
+        }
+        return html;
+
     }
 
     public ArrayList<Activity> getActivities() {

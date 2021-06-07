@@ -3,23 +3,23 @@ package pt.isel.ls.commandresults.getresult;
 import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
-import pt.isel.ls.models.User;
-
+import pt.isel.ls.models.Activity;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
-public class GetUserByIdResult extends GetCommandResult {
-    private User user;
-    private Headers headers;
+public class GetActivityResult extends GetCommandResult {
+    private Activity activity;
+    private final Headers headers;
 
-    public GetUserByIdResult(User user, Headers headers) {
-        this.user = user;
+
+    public GetActivityResult(Activity activity, Headers headers) {
+        this.activity = activity;
         this.headers = headers;
     }
 
     @Override
     public boolean results(boolean http) {
-        printResults(generateResults(http));
+        generateResults(http);
         return false;
     }
 
@@ -38,7 +38,9 @@ public class GetUserByIdResult extends GetCommandResult {
         if (fileName != null) {
             String str;
             switch (accept) {
-                case "text/plain" -> str = user.toString();
+                case "text/plain" -> {
+                    str = activity.toString();
+                }
                 case "application/json" -> str = generateJson();
                 default -> str = http ? generateHtmlWithLinks().generateStringHtml("")
                         : generateHtml().generateStringHtml("");
@@ -53,7 +55,7 @@ public class GetUserByIdResult extends GetCommandResult {
         } else {
             switch (accept) {
                 case "text/plain" -> {
-                    return user.toString();
+                    return activity.toString();
                 }
                 case "application/json" -> {
                     return generateJson();
@@ -68,21 +70,20 @@ public class GetUserByIdResult extends GetCommandResult {
     }
 
     public String generateJson() {
-        return user.generateJson();
+        return activity.generateJson();
     }
 
     public Element generateHtml() {
         Element html = html();
-        Element body = body();
 
-        html.with(head().with(title().with(new Text("Users"))));
-        html.with(body);
-        body.with(a("href=\"/\"").with(new Text("Root")));
-        html.with(body.with(h1().with(new Text("User Details")),
+        html.with(head().with(title().with(new Text("Activity"))));
+        html.with(body()).with(h1().with(new Text("User Details")),
                 ul().with(
-                        li().with(new Text("Identifier : " + user.getUid())),
-                        li().with(new Text("Name : " + user.getName())),
-                        li().with(new Text("Email : " + user.getEmail())))));
+                        li().with(new Text("Identifier : " + activity.getAid())),
+                        li().with(new Text("Duration Time : " + activity.getDurationTime())),
+                        li().with(new Text("Sport Id : " + activity.getSid())),
+                        li().with(new Text("User Id : " + activity.getUid())),
+                        li().with(new Text("Route Id : " + activity.getRid()))));
 
         return html;
     }
@@ -91,26 +92,17 @@ public class GetUserByIdResult extends GetCommandResult {
         Element html = html();
         Element body = body();
 
-        html.with(head().with(title().with(new Text("User"))));
+        html.with(head().with(title().with(new Text("Activity"))));
         html.with(body);
         body.with(a("href=\"/\"").with(new Text("Root")));
-        body.with(a("href=\"/users?top=5&skip=0\"").with(new Text("Users")));
         body.with(h1().with(new Text("User Details")),
                 ul().with(
-                        li().with(new Text("Identifier : " + user.getUid())),
-                        li().with(new Text("Name : " + user.getName())),
-                        li().with(new Text("Email : " + user.getEmail()))));
-
-        body.with(h2().with(new Text("Sports")));
-        body.with(h2().with(new Text("Activities")));
+                        li().with(new Text("Identifier : " + activity.getAid())),
+                        li().with(new Text("Duration Time : " + activity.getDurationTime())),
+                        li().with(a("href=\"/sports/" + activity.getSid() + "\"").with(new Text("Sport Id : " + activity.getSid()))),
+                        li().with(a("href=\"/users/" + activity.getUid() + "\"").with(new Text("User Id : " + activity.getUid()))),
+                        li().with(a("href=\"/routes/" + activity.getRid() + "\"").with(new Text("Route Id : " + activity.getRid())))));
         return html;
-    }
 
-    public Headers getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(Headers headers) {
-        this.headers = headers;
     }
 }

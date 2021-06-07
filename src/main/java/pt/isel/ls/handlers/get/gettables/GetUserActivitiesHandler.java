@@ -80,7 +80,7 @@ public class GetUserActivitiesHandler extends GetTablesHandler implements Comman
             if (activities.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetActivitiesResult(activities, commandRequest.getHeaders());
+                return new GetActivitiesResult(activities, commandRequest.getHeaders(), commandRequest.getParameters());
             }
         }
     }

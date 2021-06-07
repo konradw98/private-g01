@@ -25,6 +25,10 @@ public abstract class GetCommandResult implements CommandResult {
         return new Element("h1");
     }
 
+    public Element h2() {
+        return new Element("h2");
+    }
+
     public Element ul() {
         return new Element("ul");
     }
