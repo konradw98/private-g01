@@ -31,7 +31,7 @@ public class CommandExecutor {
         if (command.length >= SIMPLEST_COMMAND_SEGMENTS && command.length <= COMMAND_WITH_HEADERS) {
             Method method = validateMethod(command[METHOD_INDEX]);
             if (!method.equals(Method.WRONG_METHOD)) {
-                Optional<RouteResult> optional = router.findRoute(method, new Path(command[PATH_INDEX]));
+                Optional<RouteResult> optional = Router.findRoute(method, new Path(command[PATH_INDEX]));
                 if (optional.isPresent()) {
                     exit = executeProperCommand(optional.get(), command, dataSource);
                 } else {
