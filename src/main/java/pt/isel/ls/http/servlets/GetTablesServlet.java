@@ -4,6 +4,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.*;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,20 +26,27 @@ public class GetTablesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //TODO: headers
         String accept = req.getHeader("accept");
-        String header="accept:"+accept;
-        Headers headers= new Headers(header);
+        if (accept == null) {
+            accept = "text/html";
+        } else if (!accept.equals("application/json") && !accept.equals("text/plain")) {
+            accept = "text/html";
+        }
+
+
+        String header = "accept:" + accept;
+        Headers headers = new Headers(header);
         String path = req.getRequestURI();
         Optional<RouteResult> routeResult = Router.findRoute(Method.GET, new Path(path));
 
         if (routeResult.isPresent()) {
             CommandRequest commandRequest;
-            String queryString=req.getQueryString();
-            if(queryString==null){
-              queryString="skip=0&top=9999";
+            String queryString = req.getQueryString();
+            if (queryString == null) {
+                queryString = "skip=0&top=9999";
             }
             Parameters parameters = new Parameters(queryString);
 
-            commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters,headers, dataSource);
+            commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters, headers, dataSource);
 
 
             String respBody = "";
@@ -52,7 +60,7 @@ public class GetTablesServlet extends HttpServlet {
                 Charset utf8 = StandardCharsets.UTF_8;
                 byte[] respBodyBytes = respBody.getBytes(utf8);
                 resp.setStatus(200);
-                switch (accept){
+                switch (accept) {
                     case "text/plain" -> {
                         resp.setContentType("text/plain");
                     }
