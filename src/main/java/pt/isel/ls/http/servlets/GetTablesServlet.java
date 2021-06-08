@@ -29,7 +29,6 @@ public class GetTablesServlet extends HttpServlet {
         Headers headers= new Headers(header);
         String path = req.getRequestURI();
         Optional<RouteResult> routeResult = Router.findRoute(Method.GET, new Path(path));
-        System.out.println("parameters="+req.getQueryString());
 
         if (routeResult.isPresent()) {
             CommandRequest commandRequest;
