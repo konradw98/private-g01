@@ -19,7 +19,7 @@ public class GetActivityResult extends GetCommandResult {
 
     @Override
     public boolean results(boolean http) {
-        generateResults(http);
+        printResults(generateResults(http));
         return false;
     }
 

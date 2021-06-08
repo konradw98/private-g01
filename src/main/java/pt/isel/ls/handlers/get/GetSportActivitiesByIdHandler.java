@@ -5,12 +5,11 @@ import pt.isel.ls.Headers;
 import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.EmptyTableResult;
-import pt.isel.ls.commandresults.getresult.GetActivitiesResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+import pt.isel.ls.commandresults.getresult.GetActivityResult;
 import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Activity;
 import java.sql.*;
-import java.util.ArrayList;
 
 public class GetSportActivitiesByIdHandler extends GetHandler implements CommandHandler {
 
@@ -53,9 +52,8 @@ public class GetSportActivitiesByIdHandler extends GetHandler implements Command
             Date date;
             Time durationTime;
             Activity activity;
-            ArrayList<Activity> activities = new ArrayList<>();
 
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 aid = resultSet.getInt("aid");
                 date = resultSet.getDate("date");
                 durationTime = resultSet.getTime("duration_time");
@@ -63,12 +61,10 @@ public class GetSportActivitiesByIdHandler extends GetHandler implements Command
                 uid = resultSet.getInt("uid");
                 rid = resultSet.getInt("rid");
                 activity = new Activity(aid, date, durationTime, sid, uid, rid);
-                activities.add(activity);
+                return new GetActivityResult(activity, commandRequest.getHeaders());
             }
-            if (activities.size() == 0) {
+            else {
                 return new WrongParametersResult(wrongParameters);
-            } else {
-                return new GetActivitiesResult(activities, commandRequest.getHeaders());
             }
         }
     }
