@@ -25,12 +25,23 @@ public class GetTablesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //TODO: headers
         String accept = req.getHeader("accept");
+        String header="accept:"+accept;
+        Headers headers= new Headers(header);
         String path = req.getRequestURI();
         Optional<RouteResult> routeResult = Router.findRoute(Method.GET, new Path(path));
+        System.out.println("parameters="+req.getQueryString());
 
         if (routeResult.isPresent()) {
-            Parameters parameters = new Parameters(req.getQueryString());
-            CommandRequest commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters, dataSource);
+            CommandRequest commandRequest;
+            String queryString=req.getQueryString();
+            if(queryString==null){
+              queryString="skip=0&top=9999";
+            }
+            Parameters parameters = new Parameters(queryString);
+
+            commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters,headers, dataSource);
+
+
             String respBody = "";
             try {
                 CommandResult commandResult = routeResult.get().getHandler().execute(commandRequest);
@@ -42,7 +53,18 @@ public class GetTablesServlet extends HttpServlet {
                 Charset utf8 = StandardCharsets.UTF_8;
                 byte[] respBodyBytes = respBody.getBytes(utf8);
                 resp.setStatus(200);
-                resp.setContentType("text/html");
+                switch (accept){
+                    case "text/plain" -> {
+                        resp.setContentType("text/plain");
+                    }
+                    case "application/json" -> {
+                        resp.setContentType("application/json");
+                    }
+
+                    default -> {
+                        resp.setContentType("text/html");
+                    }
+                }
                 resp.setContentLength(respBodyBytes.length);
                 OutputStream os = resp.getOutputStream();
                 os.write(respBodyBytes);
