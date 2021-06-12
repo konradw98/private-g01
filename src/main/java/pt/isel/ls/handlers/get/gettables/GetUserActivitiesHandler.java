@@ -13,6 +13,8 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class GetUserActivitiesHandler extends GetTablesHandler implements CommandHandler {
+    private ArrayList<Activity> activities;
+
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
 
@@ -61,7 +63,7 @@ public class GetUserActivitiesHandler extends GetTablesHandler implements Comman
             Date date;
             Time durationTime;
             Activity activity;
-            ArrayList<Activity> activities = new ArrayList<>();
+            activities = new ArrayList<>();
 
             int i = 0;
             while (resultSet.next()) {
@@ -97,5 +99,9 @@ public class GetUserActivitiesHandler extends GetTablesHandler implements Comman
             wrongParameters += "uid ";
         }
         return wrongParameters;
+    }
+
+    public ArrayList<Activity> getActivities() {
+        return activities;
     }
 }

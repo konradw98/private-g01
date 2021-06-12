@@ -1,15 +1,36 @@
 package pt.isel.ls.models;
 
+import java.util.ArrayList;
+
 public class User implements Model {
     private int uid;
     private String email;
     private String name;
+    private ArrayList<Activity> activities = new ArrayList<>();
+    private ArrayList<Sport> sports = new ArrayList<>();
+
+    public ArrayList<Activity> getActivities() {
+        return activities;
+    }
+
+    public ArrayList<Sport> getSports() {
+        return sports;
+    }
+
 
 
     public User(int uid, String email, String name) {
         this.uid = uid;
         this.email = email;
         this.name = name;
+    }
+
+    public User(int uid, String email, String name, ArrayList<Activity> activities, ArrayList<Sport> sports) {
+        this.uid = uid;
+        this.email = email;
+        this.name = name;
+        this.activities = activities;
+        this.sports = sports;
     }
 
     public int getUid() {

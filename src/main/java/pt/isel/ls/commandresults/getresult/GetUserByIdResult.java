@@ -3,18 +3,30 @@ package pt.isel.ls.commandresults.getresult;
 import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
+import pt.isel.ls.models.Activity;
+import pt.isel.ls.models.Sport;
 import pt.isel.ls.models.User;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.ArrayList;
 
 public class GetUserByIdResult extends GetCommandResult {
     private User user;
     private Headers headers;
+    private ArrayList<Activity> activities = new ArrayList<>();
+    private ArrayList<Sport> sports = new ArrayList<>();
 
     public GetUserByIdResult(User user, Headers headers) {
         this.user = user;
         this.headers = headers;
+    }
+
+    public GetUserByIdResult(User user, Headers headers, ArrayList<Sport> sports, ArrayList<Activity> activities) {
+        this.user = user;
+        this.headers = headers;
+        this.sports = sports;
+        this.activities = activities;
     }
 
     @Override
@@ -41,7 +53,7 @@ public class GetUserByIdResult extends GetCommandResult {
                 case "text/plain" -> str = user.toString();
                 case "application/json" -> str = generateJson();
                 default -> str = http ? generateHtmlWithLinks().generateStringHtml("")
-                        : generateHtml().generateStringHtml("");
+                        : generateHtmlWithLinks().generateStringHtml("");
             }
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
@@ -60,7 +72,7 @@ public class GetUserByIdResult extends GetCommandResult {
                 }
                 default -> {
                     return http ? generateHtmlWithLinks().generateStringHtml("")
-                            : generateHtml().generateStringHtml("");
+                            : generateHtmlWithLinks().generateStringHtml("");
                 }
             }
         }
@@ -90,6 +102,8 @@ public class GetUserByIdResult extends GetCommandResult {
     public Element generateHtmlWithLinks() {
         Element html = html();
         Element body = body();
+        Element table1 = table("border=1");
+        Element table2 = table("border=1");
 
         html.with(head().with(title().with(new Text("User"))));
         html.with(body);
@@ -102,7 +116,32 @@ public class GetUserByIdResult extends GetCommandResult {
                         li().with(new Text("Email : " + user.getEmail()))));
 
         body.with(h2().with(new Text("Sports")));
+        body.with(table1);
+        table1.with(tr().with(
+                th().with(new Text("Identifier")),
+                th().with(new Text("Name"))));
+
+        for (Sport sport : sports) {
+            table1.with(tr().with(
+                    td().with(a("href=\"/sports/" + sport.getSid() + "\"").with(new Text(sport.getSid()))),
+                    td().with(new Text(sport.getName()))));
+        }
+
         body.with(h2().with(new Text("Activities")));
+        body.with(table2);
+
+        table2.with(tr().with(
+                th().with(new Text("Number")),
+                th().with(new Text("Sport")),
+                th().with(new Text("Date"))));
+
+        for (Activity activity : activities) {
+            table2.with(tr().with(
+                    td().with(a("href=\"/sports/" + activity.getSid() + "/activities/" +activity.getAid() + "\"").
+                            with(new Text(activity.getAid()))),
+                    td().with(new Text(getSportName(activity.getSid()))),
+                    td().with(new Text(activity.getDate()))));
+        }
         return html;
     }
 
@@ -112,5 +151,12 @@ public class GetUserByIdResult extends GetCommandResult {
 
     public void setHeaders(Headers headers) {
         this.headers = headers;
+    }
+
+    public String getSportName(int sid){
+        for(Sport sport: sports){
+            if(sport.getSid() == sid) return sport.getName();
+        }
+        return null;
     }
 }
