@@ -1,16 +1,30 @@
 package pt.isel.ls.models;
 
+import java.util.ArrayList;
+
 public class Route implements Model {
     private int rid;
     private String startLocation;
     private String endLocation;
     private double distance;
+    private ArrayList<Activity> activities = new ArrayList<>();
+    private ArrayList<Sport> sports = new ArrayList<>();
 
     public Route(int rid, String startLocation, String endLocation, double distance) {
         this.rid = rid;
         this.startLocation = startLocation;
         this.endLocation = endLocation;
         this.distance = distance;
+    }
+
+    public Route(int rid, String startLocation, String endLocation, double distance, ArrayList<Activity> activities,
+                 ArrayList<Sport> sports) {
+        this.rid = rid;
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
+        this.distance = distance;
+        this.activities = activities;
+        this.sports = sports;
     }
 
     public int getRid() {

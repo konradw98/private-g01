@@ -52,7 +52,6 @@ public class GetUserByIdHandler extends GetHandler implements CommandHandler {
             String sql1 = "SELECT * FROM activities WHERE uid=" + uid + " AND timestamp IS NULL";
             pstmt = conn.prepareStatement(sql1);
             resultSet = pstmt.executeQuery();
-            //conn.close();
 
             int aid;
             Date date;
@@ -77,7 +76,6 @@ public class GetUserByIdHandler extends GetHandler implements CommandHandler {
             String sql2 = "SELECT * FROM sports WHERE sid IN (SELECT sid FROM activities WHERE uid = " + uid + ")";
             pstmt = conn.prepareStatement(sql2);
             resultSet = pstmt.executeQuery();
-            // conn.close();
 
             int sid;
             String sportName;
@@ -98,7 +96,6 @@ public class GetUserByIdHandler extends GetHandler implements CommandHandler {
             pstmt = conn.prepareStatement(sql3);
             pstmt.setInt(1, Integer.parseInt(stringUid));
             resultSet = pstmt.executeQuery();
-            //conn.close();
 
             if (resultSet.next()) {
                 uid = resultSet.getInt("uid");
