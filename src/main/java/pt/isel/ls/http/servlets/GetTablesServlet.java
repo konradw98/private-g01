@@ -4,6 +4,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.*;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,11 +45,12 @@ public class GetTablesServlet extends HttpServlet {
             System.out.println(req.getQueryString() == null);
             System.out.println(req.getQueryString());
             if (queryString == null) {
-                queryString = "skip=0&top=9999";
+                if (accept.equals("text/html")) {
+                    queryString = "skip=0&top=5";
+                } else {
+                    queryString = "skip=0&top=9999";
+                }
             }
-           if(queryString.equals("skip=0&top=9999") && accept.equals("text/html")){
-               queryString="skip=0&top=5";
-           }
             Parameters parameters = new Parameters(queryString);
 
             commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters, headers, dataSource);
@@ -79,13 +81,13 @@ public class GetTablesServlet extends HttpServlet {
                     }
                 }
 
-                switch(respBody.substring(0,4)){
+                switch (respBody.substring(0, 4)) {
                     case "Empt" -> {
-                        resp.sendError(404,"resource not found");
+                        resp.sendError(404, "resource not found");
                         //resp.setStatus(404);
                     }
-                    case "Wron" ->{
-                        resp.sendError(400,"wrong parameters");
+                    case "Wron" -> {
+                        resp.sendError(400, "wrong parameters");
                         //resp.setStatus(400);
                     }
                     default -> {

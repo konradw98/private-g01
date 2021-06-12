@@ -139,6 +139,7 @@ public class GetActivitiesResult extends GetCommandResult {
 
         html.with(head().with(title().with(new Text("Activities"))));
         body.with(a("href=\"/\"").with(new Text("Root")));
+        body.with(a("href=\"/Sports/" + activities.get(0).getSid() + "\"").with(new Text("Sport")));
         html.with(body.with(table));
         table.with(h1().with(new Text("Activities Page " + pageNumber)));
 

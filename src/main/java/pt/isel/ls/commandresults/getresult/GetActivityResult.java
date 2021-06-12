@@ -95,13 +95,16 @@ public class GetActivityResult extends GetCommandResult {
         html.with(head().with(title().with(new Text("Activity"))));
         html.with(body);
         body.with(a("href=\"/\"").with(new Text("Root")));
-        body.with(h1().with(new Text("User Details")),
+        body.with(h1().with(new Text("Activity Details")),
                 ul().with(
                         li().with(new Text("Identifier : " + activity.getAid())),
                         li().with(new Text("Duration Time : " + activity.getDurationTime())),
-                        li().with(a("href=\"/sports/" + activity.getSid() + "\"").with(new Text("Sport Id : " + activity.getSid()))),
-                        li().with(a("href=\"/users/" + activity.getUid() + "\"").with(new Text("User Id : " + activity.getUid()))),
-                        li().with(a("href=\"/routes/" + activity.getRid() + "\"").with(new Text("Route Id : " + activity.getRid())))));
+                        li().with(new Text("Sport Id : "), a("href=\"/sports/" + activity.getSid() + "\"").
+                                with(new Text(activity.getSid()))),
+                        li().with(new Text("User Id : "), a("href=\"/users/" + activity.getUid() + "\"").
+                                with(new Text(activity.getUid()))),
+                        li().with(new Text("Rid Id : "), a("href=\"/routes/" + activity.getRid() + "\"").
+                                with(new Text(activity.getRid())))));
         return html;
 
     }
