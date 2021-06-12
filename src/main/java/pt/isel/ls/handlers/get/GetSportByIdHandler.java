@@ -5,6 +5,7 @@ import pt.isel.ls.Headers;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.EmptyTableResult;
+import pt.isel.ls.commandresults.ResourcesNotFoundResult;
 import pt.isel.ls.commandresults.getresult.GetSportResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
@@ -55,7 +56,7 @@ public class GetSportByIdHandler extends GetHandler implements CommandHandler {
                 Sport sport = new Sport(sid, name, description);
                 return new GetSportResult(sport, commandRequest.getHeaders());
             } else {
-                return new WrongParametersResult();
+                return new ResourcesNotFoundResult();
             }
         }
     }

@@ -5,6 +5,7 @@ import pt.isel.ls.Headers;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.EmptyTableResult;
+import pt.isel.ls.commandresults.ResourcesNotFoundResult;
 import pt.isel.ls.commandresults.getresult.GetRouteResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;
@@ -54,7 +55,7 @@ public class GetRouteByIdHandler extends GetHandler implements CommandHandler {
                 Route route = new Route(rid, startLocation, endLocation, distance);
                 return new GetRouteResult(route, commandRequest.getHeaders());
             } else {
-                return new WrongParametersResult();
+                return new ResourcesNotFoundResult();
             }
         }
     }
