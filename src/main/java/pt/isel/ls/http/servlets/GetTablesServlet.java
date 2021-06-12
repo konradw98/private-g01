@@ -43,6 +43,9 @@ public class GetTablesServlet extends HttpServlet {
             if (queryString == null) {
                 queryString = "skip=0&top=9999";
             }
+           if(queryString.equals("skip=0&top=9999") && accept.equals("text/html")){
+               queryString="skip=0&top=5";
+           }
             Parameters parameters = new Parameters(queryString);
 
             commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters, headers, dataSource);
@@ -58,7 +61,7 @@ public class GetTablesServlet extends HttpServlet {
             } finally {
                 Charset utf8 = StandardCharsets.UTF_8;
                 byte[] respBodyBytes = respBody.getBytes(utf8);
-                resp.setStatus(200);
+
                 switch (accept) {
                     case "text/plain" -> {
                         resp.setContentType("text/plain");
@@ -69,6 +72,21 @@ public class GetTablesServlet extends HttpServlet {
 
                     default -> {
                         resp.setContentType("text/html");
+
+                    }
+                }
+
+                switch(respBody.substring(0,4)){
+                    case "Empt" -> {
+                        resp.sendError(404,"resource not found");
+                        //resp.setStatus(404);
+                    }
+                    case "Wron" ->{
+                        resp.sendError(400,"wrong parameters");
+                        //resp.setStatus(400);
+                    }
+                    default -> {
+                        resp.setStatus(200);
                     }
                 }
                 resp.setContentLength(respBodyBytes.length);
