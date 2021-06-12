@@ -24,6 +24,7 @@ public class GetTablesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //TODO: headers
+        System.out.println("poczatek getTables");
         String accept = req.getHeader("accept");
         if (accept == null) {
             accept = "text/html";
@@ -40,6 +41,8 @@ public class GetTablesServlet extends HttpServlet {
         if (routeResult.isPresent()) {
             CommandRequest commandRequest;
             String queryString = req.getQueryString();
+            System.out.println(req.getQueryString() == null);
+            System.out.println(req.getQueryString());
             if (queryString == null) {
                 queryString = "skip=0&top=9999";
             }

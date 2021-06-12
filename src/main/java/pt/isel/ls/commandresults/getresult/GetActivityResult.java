@@ -77,7 +77,7 @@ public class GetActivityResult extends GetCommandResult {
         Element html = html();
 
         html.with(head().with(title().with(new Text("Activity"))));
-        html.with(body()).with(h1().with(new Text("User Details")),
+        html.with(body()).with(h1().with(new Text("Activity Details")),
                 ul().with(
                         li().with(new Text("Identifier : " + activity.getAid())),
                         li().with(new Text("Duration Time : " + activity.getDurationTime())),

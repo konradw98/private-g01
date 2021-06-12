@@ -71,7 +71,7 @@ public class GetByIdServlet extends HttpServlet {
                         //resp.setStatus(404);
                     }
                     case "Wron" ->{
-                        resp.sendError(400,"wrong parameters");
+                        resp.sendError(400, respBody);
                         //resp.setStatus(400);
                     }
                     default -> {

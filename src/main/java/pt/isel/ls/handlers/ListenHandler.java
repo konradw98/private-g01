@@ -35,12 +35,15 @@ public class ListenHandler implements CommandHandler {
         public void run() {
             if (server == null) {
                 Parameters parameters = commandRequest.getParameters();
-                String portDef = parameters.get("port");
+                String portDef = parameters == null ? null : parameters.get("port");
                 int port = portDef != null ? Integer.parseInt(portDef) : LISTEN_PORT;
 
                 server = new Server(port);
 
                 ServletHandler handler = new ServletHandler();
+
+                /*handler.addServletWithMapping(new ServletHolder(new GetTablesServlet(commandRequest.getDataSource())),
+                        "/sports/* /activities");*/
 
                 handler.addServletWithMapping(new ServletHolder(new GetByIdServlet(commandRequest.getDataSource())),
                         "/users/*");
@@ -56,6 +59,8 @@ public class ListenHandler implements CommandHandler {
                         "/sports");
                 handler.addServletWithMapping(new ServletHolder(new GetIndexServlet(commandRequest.getDataSource())),
                         "/");
+                handler.addServletWithMapping(new ServletHolder(new GetByIdServlet(commandRequest.getDataSource())),
+                        "/sports/?/activities/*");
 
                 server.setHandler(handler);
                 try {
