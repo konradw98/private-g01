@@ -31,6 +31,7 @@ public class GetByIdServlet extends HttpServlet {
         } else if (!accept.equals("application/json") && !accept.equals("text/plain")) {
             accept = "text/html";
         }
+
         String header = "accept:" + accept;
         Headers headers = new Headers(header);
         String path = req.getRequestURI();
@@ -48,7 +49,9 @@ public class GetByIdServlet extends HttpServlet {
             } finally {
                 Charset utf8 = StandardCharsets.UTF_8;
                 byte[] respBodyBytes = respBody.getBytes(utf8);
-                resp.setStatus(200);
+
+
+
                 switch (accept) {
                     case "text/plain" -> {
                         resp.setContentType("text/plain");
@@ -62,7 +65,23 @@ public class GetByIdServlet extends HttpServlet {
                     }
                 }
 
+                switch(respBody.substring(0,4)){
+                    case "Reso" -> {
+                        resp.sendError(404,"resource not found");
+                        //resp.setStatus(404);
+                    }
+                    case "Wron" ->{
+                        resp.sendError(400,"wrong parameters");
+                        //resp.setStatus(400);
+                    }
+                    default -> {
+                        resp.setStatus(200);
+                    }
+                }
+
+                resp.setStatus(200);
                 resp.setContentLength(respBodyBytes.length);
+                System.out.println(resp.toString());
                 OutputStream os = resp.getOutputStream();
                 os.write(respBodyBytes);
                 os.flush();

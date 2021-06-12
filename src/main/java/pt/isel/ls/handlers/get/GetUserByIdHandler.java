@@ -6,6 +6,7 @@ import pt.isel.ls.Headers;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.EmptyTableResult;
+import pt.isel.ls.commandresults.ResourcesNotFoundResult;
 import pt.isel.ls.commandresults.getresult.GetSportsResult;
 import pt.isel.ls.commandresults.getresult.GetUserByIdResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
@@ -106,7 +107,7 @@ public class GetUserByIdHandler extends GetHandler implements CommandHandler {
                 User user = new User(uid, email, name);
                 return new GetUserByIdResult(user, commandRequest.getHeaders(), sports, activities);
             } else {
-                return new WrongParametersResult();
+                return new ResourcesNotFoundResult();
             }
         }
     }
