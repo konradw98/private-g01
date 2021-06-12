@@ -4,6 +4,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import pt.isel.ls.CommandRequest;
+import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.ListenResult;
 import pt.isel.ls.http.servlets.GetByIdServlet;
@@ -33,7 +34,8 @@ public class ListenHandler implements CommandHandler {
         @Override
         public void run() {
             if (server == null) {
-                String portDef = System.getenv("PORT");
+                Parameters parameters = commandRequest.getParameters();
+                String portDef = parameters.get("port");
                 int port = portDef != null ? Integer.parseInt(portDef) : LISTEN_PORT;
 
                 server = new Server(port);
