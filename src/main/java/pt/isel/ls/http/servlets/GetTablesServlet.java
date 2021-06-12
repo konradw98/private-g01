@@ -43,6 +43,9 @@ public class GetTablesServlet extends HttpServlet {
             if (queryString == null) {
                 queryString = "skip=0&top=9999";
             }
+           if(queryString.equals("skip=0&top=9999") && accept.equals("text/html")){
+               queryString="skip=0&top=5";
+           }
             Parameters parameters = new Parameters(queryString);
 
             commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters, headers, dataSource);
@@ -69,6 +72,7 @@ public class GetTablesServlet extends HttpServlet {
 
                     default -> {
                         resp.setContentType("text/html");
+
                     }
                 }
 
