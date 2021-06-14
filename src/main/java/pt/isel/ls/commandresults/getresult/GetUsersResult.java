@@ -5,7 +5,6 @@ import pt.isel.ls.Headers;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.User;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -137,14 +136,16 @@ public class GetUsersResult extends GetCommandResult {
     public Element generateHtmlWithLinks() {
         int pageNumber = getPageNumber(skip, top);
         //not valid
-        if (pageNumber == -1) return null;
+        if (pageNumber == -1) {
+            return null;
+        }
 
         Element html = html();
         Element body = body();
         Element table = table("border=1");
 
         html.with(head().with(title().with(new Text("Users"))));
-        body.with(a("href=\"/\"").with(new Text("Root")));
+        body.with(aa("href=\"/\"").with(new Text("Root")));
         html.with(body.with(table));
         table.with(h1().with(new Text("Users Page " + pageNumber)));
 
@@ -154,12 +155,16 @@ public class GetUsersResult extends GetCommandResult {
 
         for (User user : users) {
             table.with(tr().with(
-                    td().with(a("href=\"/users/" + user.getUid() + "\"").with(new Text(user.getUid()))),
+                    td().with(aa("href=\"/users/" + user.getUid() + "\"").with(new Text(user.getUid()))),
                     td().with(new Text(user.getName()))));
         }
 
-        if (users.size() == 5) body.with(a("href=\"/users?top=5&skip=" + (skip + 5) + "\"").with(new Text("Next")));
-        if (skip >= 5) body.with(a("href=\"/users?top=5&skip=" + (skip - 5) + "\"").with(new Text("Previous")));
+        if (users.size() == 5) {
+            body.with(aa("href=\"/users?top=5&skip=" + (skip + 5) + "\"").with(new Text("Next")));
+        }
+        if (skip >= 5) {
+            body.with(aa("href=\"/users?top=5&skip=" + (skip - 5) + "\"").with(new Text("Previous")));
+        }
         return html;
 
     }

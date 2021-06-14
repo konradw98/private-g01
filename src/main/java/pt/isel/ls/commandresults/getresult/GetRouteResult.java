@@ -102,14 +102,12 @@ public class GetRouteResult extends GetCommandResult {
 
     public Element generateHtmlWithLinks() {
         Element html = html();
-        Element body = body();
-        Element table1 = table("border=1");
-        Element table2 = table("border=1");
-
         html.with(head().with(title().with(new Text("Route"))));
+
+        Element body = body();
         html.with(body);
-        body.with(a("href=\"/\"").with(new Text("Root")));
-        body.with(a("href=\"/routes?top=5&skip=0\"").with(new Text("Routes")));
+        body.with(aa("href=\"/\"").with(new Text("Root")));
+        body.with(aa("href=\"/routes?top=5&skip=0\"").with(new Text("Routes")));
         body.with(h1().with(new Text("Route Details")),
                 ul().with(
                         li().with(new Text("Identifier : " + route.getRid())),
@@ -118,6 +116,8 @@ public class GetRouteResult extends GetCommandResult {
                         li().with(new Text("End location : " + route.getEndLocation()))));
 
         body.with(h2().with(new Text("Sports")));
+
+        Element table1 = table("border=1");
         body.with(table1);
         table1.with(tr().with(
                 th().with(new Text("Identifier")),
@@ -125,11 +125,12 @@ public class GetRouteResult extends GetCommandResult {
 
         for (Sport sport : sports) {
             table1.with(tr().with(
-                    td().with(a("href=\"/sports/" + sport.getSid() + "\"").with(new Text(sport.getSid()))),
+                    td().with(aa("href=\"/sports/" + sport.getSid() + "\"").with(new Text(sport.getSid()))),
                     td().with(new Text(sport.getName()))));
         }
 
         body.with(h2().with(new Text("Activities")));
+        Element table2 = table("border=1");
         body.with(table2);
 
         table2.with(tr().with(
@@ -139,7 +140,7 @@ public class GetRouteResult extends GetCommandResult {
 
         for (Activity activity : activities) {
             table2.with(tr().with(
-                    td().with(a("href=\"/sports/" + activity.getSid() + "/activities/" + activity.getAid()
+                    td().with(aa("href=\"/sports/" + activity.getSid() + "/activities/" + activity.getAid()
                             + "\"").with(new Text(activity.getAid()))),
                     td().with(new Text(getSportName(activity.getSid()))),
                     td().with(new Text(activity.getDate()))));
@@ -158,7 +159,9 @@ public class GetRouteResult extends GetCommandResult {
 
     public String getSportName(int sid) {
         for (Sport sport : sports) {
-            if (sport.getSid() == sid) return sport.getName();
+            if (sport.getSid() == sid) {
+                return sport.getName();
+            }
         }
         return null;
     }

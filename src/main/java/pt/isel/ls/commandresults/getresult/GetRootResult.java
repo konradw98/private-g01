@@ -2,9 +2,7 @@ package pt.isel.ls.commandresults.getresult;
 
 import pt.isel.ls.Headers;
 import pt.isel.ls.commandresults.CommandResult;
-import pt.isel.ls.models.Activity;
 import pt.isel.ls.models.Root;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 

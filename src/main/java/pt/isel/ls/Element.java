@@ -39,8 +39,11 @@ public class Element {
 
     public String generateStringHtml(String prefix) {
         StringBuilder html;
-        if (param != null) html = new StringBuilder(prefix + "<" + name + " " + param + " >");
-        else html = new StringBuilder(prefix + "<" + name + ">");
+        if (param != null) {
+            html = new StringBuilder(prefix + "<" + name + " " + param + " >");
+        } else {
+            html = new StringBuilder(prefix + "<" + name + ">");
+        }
         if (text != null) {
             html.append(text);
         } else {

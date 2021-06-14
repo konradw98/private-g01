@@ -28,7 +28,7 @@ public class Phase2Tests {
     private Router router;
     private PGSimpleDataSource dataSource;
 
-    /*@Before
+    @Before
     public void init() {
         router = new Router();
         router.addHandlers();
@@ -47,7 +47,7 @@ public class Phase2Tests {
     }
 
     @Test(expected = SQLException.class)
-    public void exceptionThrowableTest() throws SQLException {
+    public void exceptionThrowableTest() throws Exception {
         PGSimpleDataSource testDataSource = new PGSimpleDataSource();
         testDataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
         testDataSource.setPassword("wrong_password");
@@ -62,7 +62,7 @@ public class Phase2Tests {
     }
 
     @Test
-    public void wrongPathParamsNegativeDistanceTest() throws SQLException {
+    public void wrongPathParamsNegativeDistanceTest() throws Exception {
         PathParameters pathParameters = new PathParameters();
         RouteResult routeResult = new RouteResult(new PostRouteHandler(), pathParameters);
         Parameters parameters = new Parameters("startLocation=Wroclaw endLocation=Warszawa distance=-1.0");
@@ -73,7 +73,7 @@ public class Phase2Tests {
     }
 
     @Test
-    public void wrongPathParamsTypoInNameTest() throws SQLException {
+    public void wrongPathParamsTypoInNameTest() throws Exception {
         PathParameters pathParameters = new PathParameters();
         RouteResult routeResult = new RouteResult(new PostUserHandler(), pathParameters);
         Parameters parameters = new Parameters("nam=John&email=mail");
@@ -85,7 +85,7 @@ public class Phase2Tests {
 
 
     @Test
-    public void wrongParamFormatTest() throws SQLException {
+    public void wrongParamFormatTest() throws Exception {
         PathParameters pathParameters = new PathParameters();
         RouteResult routeResult = new RouteResult(new GetTopsActivitiesHandler(), pathParameters);
         Parameters parametersWithWrongDate = new Parameters("uid=1&duration=00:10:30&date=2021:04:21&rid=1");
@@ -110,7 +110,7 @@ public class Phase2Tests {
     }
 
     @Test
-    public void wrongRegexTest() throws SQLException {
+    public void wrongRegexTest() throws Exception {
         Path correctPath = new Path("/sports/1");
         Method method = Method.GET;
         Optional<RouteResult> optional = router.findRoute(method, correctPath);
@@ -123,7 +123,7 @@ public class Phase2Tests {
     }
 
     @Test
-    public void notEnoughParametersTest() throws SQLException {
+    public void notEnoughParametersTest() throws Exception {
         Path path = new Path("/users");
         Method method = Method.GET;
         Optional<RouteResult> optional = router.findRoute(method, path);
@@ -134,7 +134,7 @@ public class Phase2Tests {
     }
 
     @Test
-    public void wrongFileExtensionFormatTest() throws SQLException {
+    public void wrongFileExtensionFormatTest() throws Exception {
         PathParameters pathParameters = new PathParameters();
         RouteResult routeResult = new RouteResult(new GetUsersHandler(), pathParameters);
         Parameters parameters = new Parameters("skip=1&top=3");
@@ -146,7 +146,7 @@ public class Phase2Tests {
     }
 
     @Test
-    public void wrongActivitiesParametersTest() throws SQLException {
+    public void wrongActivitiesParametersTest() throws Exception {
         PathParameters pathParameters = new PathParameters();
         RouteResult routeResult = new RouteResult(new DeleteHandler(), pathParameters);
         Parameters parameters = new Parameters("activity=2&activity=-1");
@@ -161,7 +161,7 @@ public class Phase2Tests {
     public void getUsersPlainTest() {
 
         CommandExecutor.runCommand("GET /users/ accept:text/plain|file-name:src/test/files/usersPlain.txt "
-                + "skip=0&top=1", router, dataSource);
+                + "skip=0&top=1", dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/usersPlain.txt");
@@ -185,7 +185,7 @@ public class Phase2Tests {
     public void getSportsPlainTest() {
 
         CommandExecutor.runCommand("GET /sports/ accept:text/plain|file-name:src/test/files/sportsPlain.txt "
-               + "skip=0&top=3", router, dataSource);
+               + "skip=0&top=3", dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/sportsPlain.txt");
@@ -211,7 +211,7 @@ public class Phase2Tests {
     public void getRoutesPlainTest() {
 
         CommandExecutor.runCommand("GET /routes/ accept:text/plain|file-name:src/test/files/routesPlain1.txt "
-                + "skip=0&top=3", router, dataSource);
+                + "skip=0&top=3", dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/routesPlain1.txt");
@@ -236,7 +236,7 @@ public class Phase2Tests {
     public void getRoutesByIdPlainTest() {
 
         CommandExecutor.runCommand("GET /routes/2 accept:text/plain|file-name:src/test/files/routesPlain2.txt",
-                router, dataSource);
+                dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/routesPlain2.txt");
@@ -262,7 +262,7 @@ public class Phase2Tests {
 
         CommandExecutor.runCommand("GET /tops/activities  "
                 + "accept:text/plain|file-name:src/test/files/activitiesPlain1.txt"
-                + " sid=3&orderBy=desc&rid=2&distance=1&skip=0&top=3", router, dataSource);
+                + " sid=3&orderBy=desc&rid=2&distance=1&skip=0&top=3", dataSource);
         String data = "";
         try {
             File myObj = new File("src/test/files/activitiesPlain1.txt");
@@ -287,7 +287,7 @@ public class Phase2Tests {
     }
 
     @Test()
-    public void postUserTest() throws SQLException {
+    public void postUserTest() throws Exception {
         String name1 = RandomStringUtils.random(5, true, false);
         String email1 = name1 + "@gmail.com";
         Path path = new Path("/users");
@@ -312,7 +312,7 @@ public class Phase2Tests {
     }
 
     @Test
-    public void postRouteTest() throws SQLException {
+    public void postRouteTest() throws Exception {
         Path path = new Path("/routes");
         Method method = Method.POST;
         Optional<RouteResult> optional = router.findRoute(method, path);
@@ -332,7 +332,7 @@ public class Phase2Tests {
 
 
     @Test
-    public void postSportWithRandomOrderedParamsTest() throws SQLException {
+    public void postSportWithRandomOrderedParamsTest() throws Exception {
         Path path = new Path("/sports");
         Method method = Method.POST;
         Optional<RouteResult> optional = router.findRoute(method, path);
@@ -351,7 +351,7 @@ public class Phase2Tests {
     }
 
     @Test
-    public void postActivityTest() throws SQLException {
+    public void postActivityTest() throws Exception {
 
         Path path = new Path("/sports/3/activities");
         Method method = Method.POST;
@@ -381,7 +381,7 @@ public class Phase2Tests {
         int activity2 = 8;
 
         CommandExecutor.runCommand("DELETE /users/" + uid + "/activities activity=" + activity1
-                + "&activity=" + activity2, router, dataSource);
+                + "&activity=" + activity2, dataSource);
 
         Connection conn = dataSource.getConnection();
 
@@ -398,5 +398,5 @@ public class Phase2Tests {
 
         assertEquals(2, result);
 
-    }*/
+    }
 }

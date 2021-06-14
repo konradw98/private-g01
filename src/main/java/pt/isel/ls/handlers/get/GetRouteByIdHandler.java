@@ -12,7 +12,6 @@ import pt.isel.ls.handlers.CommandHandler;
 import pt.isel.ls.models.Activity;
 import pt.isel.ls.models.Route;
 import pt.isel.ls.models.Sport;
-
 import java.sql.*;
 import java.util.ArrayList;
 

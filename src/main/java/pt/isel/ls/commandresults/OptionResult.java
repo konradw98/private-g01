@@ -80,7 +80,6 @@ public class OptionResult implements CommandResult {
                         given the following additional parameter:
                             activity - the set of activities to remove
                     2. EXIT / - terminates the application
-                    3. OPTION / - presents a list of available commands\s"""
-        ;
+                    3. OPTION / - presents a list of available commands\s""";
     }
 }

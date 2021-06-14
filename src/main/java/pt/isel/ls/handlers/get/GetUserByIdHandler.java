@@ -1,13 +1,11 @@
 package pt.isel.ls.handlers.get;
 
-import org.checkerframework.checker.units.qual.A;
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.ResourcesNotFoundResult;
-import pt.isel.ls.commandresults.getresult.GetSportsResult;
 import pt.isel.ls.commandresults.getresult.GetUserByIdResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.CommandHandler;

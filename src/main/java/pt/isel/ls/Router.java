@@ -7,7 +7,8 @@ import pt.isel.ls.handlers.get.gettables.*;
 import java.util.*;
 
 public class Router {
-    private static final ArrayListMultimap<Method, Tuple<PathTemplate, CommandHandler>> mapOfHandlers = ArrayListMultimap.create();
+    private static final ArrayListMultimap<Method, Tuple<PathTemplate, CommandHandler>>
+            mapOfHandlers = ArrayListMultimap.create();
 
     public void addHandlers() {
         addRoute(Method.GET, new PathTemplate("/users"), new GetUsersHandler());

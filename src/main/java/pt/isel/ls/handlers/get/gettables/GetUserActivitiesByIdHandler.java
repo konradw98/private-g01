@@ -8,7 +8,6 @@ import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.commandresults.getresult.GetActivityResult;
 import pt.isel.ls.handlers.CommandHandler;
-import pt.isel.ls.handlers.get.GetHandler;
 import pt.isel.ls.models.Activity;
 import java.sql.*;
 
@@ -63,8 +62,7 @@ public class GetUserActivitiesByIdHandler extends GetTablesHandler implements Co
                 rid = resultSet.getInt("rid");
                 activity = new Activity(aid, date, durationTime, sid, uid, rid);
                 return new GetActivityResult(activity, commandRequest.getHeaders());
-            }
-            else {
+            } else {
                 return new WrongParametersResult(wrongParameters);
             }
         }

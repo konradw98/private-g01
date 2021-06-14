@@ -57,7 +57,9 @@ public abstract class GetCommandResult implements CommandResult {
         return new Element("td");
     }
 
-    public Element a(String param) { return new Element("a", param); }
+    public Element aa(String param) {
+        return new Element("a", param);
+    }
 
     public void printResults(String result) {
         if (!result.equals("")) {
@@ -67,7 +69,9 @@ public abstract class GetCommandResult implements CommandResult {
 
     public int getPageNumber(int skip, int top) {
         int pageNumber = -1;
-        if (top == 5 && skip % 5 == 0) pageNumber = (skip / 5) + 1;
+        if (top == 5 && skip % 5 == 0) {
+            pageNumber = (skip / 5) + 1;
+        }
         return pageNumber;
     }
 }

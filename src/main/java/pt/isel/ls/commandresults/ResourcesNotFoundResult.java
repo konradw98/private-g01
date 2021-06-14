@@ -1,9 +1,6 @@
 package pt.isel.ls.commandresults;
 
-public class ResourcesNotFoundResult  implements CommandResult{
-    public ResourcesNotFoundResult() {
-
-    }
+public class ResourcesNotFoundResult implements CommandResult {
 
     @Override
     public boolean results(boolean http) {

@@ -3,11 +3,9 @@ package pt.isel.ls.commandresults.getresult;
 import pt.isel.ls.Element;
 import pt.isel.ls.Headers;
 import pt.isel.ls.Text;
-import pt.isel.ls.models.Activity;
 import pt.isel.ls.models.Sport;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.ArrayList;
 
 public class GetSportResult extends GetCommandResult {
     private final Sport sport;
@@ -92,14 +90,14 @@ public class GetSportResult extends GetCommandResult {
 
         html.with(head().with(title().with(new Text("User"))));
         html.with(body);
-        body.with(a("href=\"/\"").with(new Text("Root")));
-        body.with(a("href=\"/sports\"").with(new Text("Sports")));
+        body.with(aa("href=\"/\"").with(new Text("Root")));
+        body.with(aa("href=\"/sports\"").with(new Text("Sports")));
         body.with(h1().with(new Text("Sport Details")),
                 ul().with(
                         li().with(new Text("Identifier : " + sport.getSid())),
                         li().with(new Text("Name : " + sport.getName())),
                         li().with(new Text("Description : " + sport.getDescription()))));
-        body.with(a("href=\"/sports/" + sport.getSid() + "/activities\"").with(new Text("Activities")));
+        body.with(aa("href=\"/sports/" + sport.getSid() + "/activities\"").with(new Text("Activities")));
 
         return html;
     }

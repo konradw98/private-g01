@@ -3,7 +3,6 @@ package pt.isel.ls;
 import org.postgresql.ds.PGSimpleDataSource;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
-
 import java.util.Optional;
 
 public class CommandExecutor {
@@ -24,11 +23,11 @@ public class CommandExecutor {
         router.addHandlers();
     }
 
-    public boolean runCommand(String line, PGSimpleDataSource dataSource) {
+    public static boolean runCommand(String line, PGSimpleDataSource dataSource) {
         return executeCommand(line.split("\\s+"), line, router, dataSource);
     }
 
-    public boolean runCommand(String[] command, PGSimpleDataSource dataSource) {
+    public static boolean runCommand(String[] command, PGSimpleDataSource dataSource) {
         return executeCommand(command, String.join(" ", command), router, dataSource);
     }
 

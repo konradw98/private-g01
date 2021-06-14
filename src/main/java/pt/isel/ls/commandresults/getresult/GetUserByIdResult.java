@@ -6,7 +6,6 @@ import pt.isel.ls.Text;
 import pt.isel.ls.models.Activity;
 import pt.isel.ls.models.Sport;
 import pt.isel.ls.models.User;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -89,7 +88,7 @@ public class GetUserByIdResult extends GetCommandResult {
 
         html.with(head().with(title().with(new Text("Users"))));
         html.with(body);
-        body.with(a("href=\"/\"").with(new Text("Root")));
+        body.with(aa("href=\"/\"").with(new Text("Root")));
         html.with(body.with(h1().with(new Text("User Details")),
                 ul().with(
                         li().with(new Text("Identifier : " + user.getUid())),
@@ -101,14 +100,12 @@ public class GetUserByIdResult extends GetCommandResult {
 
     public Element generateHtmlWithLinks() {
         Element html = html();
-        Element body = body();
-        Element table1 = table("border=1");
-        Element table2 = table("border=1");
-
         html.with(head().with(title().with(new Text("User"))));
+
+        Element body = body();
         html.with(body);
-        body.with(a("href=\"/\"").with(new Text("Root")));
-        body.with(a("href=\"/users?top=5&skip=0\"").with(new Text("Users")));
+        body.with(aa("href=\"/\"").with(new Text("Root")));
+        body.with(aa("href=\"/users?top=5&skip=0\"").with(new Text("Users")));
         body.with(h1().with(new Text("User Details")),
                 ul().with(
                         li().with(new Text("Identifier : " + user.getUid())),
@@ -116,6 +113,8 @@ public class GetUserByIdResult extends GetCommandResult {
                         li().with(new Text("Email : " + user.getEmail()))));
 
         body.with(h2().with(new Text("Sports")));
+
+        Element table1 = table("border=1");
         body.with(table1);
         table1.with(tr().with(
                 th().with(new Text("Identifier")),
@@ -123,11 +122,13 @@ public class GetUserByIdResult extends GetCommandResult {
 
         for (Sport sport : sports) {
             table1.with(tr().with(
-                    td().with(a("href=\"/sports/" + sport.getSid() + "\"").with(new Text(sport.getSid()))),
+                    td().with(aa("href=\"/sports/" + sport.getSid() + "\"").with(new Text(sport.getSid()))),
                     td().with(new Text(sport.getName()))));
         }
 
         body.with(h2().with(new Text("Activities")));
+
+        Element table2 = table("border=1");
         body.with(table2);
 
         table2.with(tr().with(
@@ -137,8 +138,8 @@ public class GetUserByIdResult extends GetCommandResult {
 
         for (Activity activity : activities) {
             table2.with(tr().with(
-                    td().with(a("href=\"/sports/" + activity.getSid() + "/activities/" +activity.getAid() + "\"").
-                            with(new Text(activity.getAid()))),
+                    td().with(aa("href=\"/sports/" + activity.getSid() + "/activities/"
+                            + activity.getAid() + "\"").with(new Text(activity.getAid()))),
                     td().with(new Text(getSportName(activity.getSid()))),
                     td().with(new Text(activity.getDate()))));
         }
@@ -153,9 +154,11 @@ public class GetUserByIdResult extends GetCommandResult {
         this.headers = headers;
     }
 
-    public String getSportName(int sid){
-        for(Sport sport: sports){
-            if(sport.getSid() == sid) return sport.getName();
+    public String getSportName(int sid) {
+        for (Sport sport : sports) {
+            if (sport.getSid() == sid) {
+                return sport.getName();
+            }
         }
         return null;
     }

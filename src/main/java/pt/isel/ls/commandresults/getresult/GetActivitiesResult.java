@@ -131,15 +131,18 @@ public class GetActivitiesResult extends GetCommandResult {
     public Element generateHtmlWithLinks() {
         int pageNumber = getPageNumber(skip, top);
         //not valid
-        if (pageNumber == -1) return null;
+        if (pageNumber == -1) {
+            return null;
+        }
 
         Element html = html();
-        Element body = body();
-        Element table = table("border=1");
-
         html.with(head().with(title().with(new Text("Activities"))));
-        body.with(a("href=\"/\"").with(new Text("Root")));
-        body.with(a("href=\"/Sports/" + activities.get(0).getSid() + "\"").with(new Text("Sport")));
+
+        Element body = body();
+        body.with(aa("href=\"/\"").with(new Text("Root")));
+        body.with(aa("href=\"/Sports/" + activities.get(0).getSid() + "\"").with(new Text("Sport")));
+
+        Element table = table("border=1");
         html.with(body.with(table));
         table.with(h1().with(new Text("Activities Page " + pageNumber)));
 
@@ -149,17 +152,17 @@ public class GetActivitiesResult extends GetCommandResult {
 
         for (Activity activity : activities) {
             table.with(tr().with(
-                    td().with(a("href=\"/sports/" + activity.getSid() + "/activities/"
+                    td().with(aa("href=\"/sports/" + activity.getSid() + "/activities/"
                             + activity.getAid() + "\"").with(new Text(activity.getAid()))),
                     td().with(new Text(activity.getDate()))));
         }
 
         if (activities.size() == 5) {
-            body.with(a("href=\"/sports/" + activities.get(0).getSid() + "/activities?top=5&skip="
+            body.with(aa("href=\"/sports/" + activities.get(0).getSid() + "/activities?top=5&skip="
                     + (skip + 5) + "\"").with(new Text("Next")));
         }
         if (skip >= 5) {
-            body.with(a("href=\"/sports/" + activities.get(0).getSid() + "/activities?top=5&skip="
+            body.with(aa("href=\"/sports/" + activities.get(0).getSid() + "/activities?top=5&skip="
                     + (skip - 5) + "\"").with(new Text("Previous")));
         }
         return html;

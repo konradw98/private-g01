@@ -5,8 +5,6 @@ import pt.isel.ls.Headers;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.Text;
 import pt.isel.ls.models.Route;
-import pt.isel.ls.models.Sport;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -124,14 +122,18 @@ public class GetRoutesResult extends GetCommandResult {
     public Element generateHtmlWithLinks() {
         int pageNumber = getPageNumber(skip, top);
         //not valid
-        if (pageNumber == -1) return null;
+        if (pageNumber == -1) {
+            return null;
+        }
 
         Element html = html();
-        Element body = body();
-        Element table = table("border=1");
 
         html.with(head().with(title().with(new Text("Routes"))));
-        body.with(a("href=\"/\"").with(new Text("Root")));
+
+        Element body = body();
+        body.with(aa("href=\"/\"").with(new Text("Root")));
+
+        Element table = table("border=1");
         html.with(body.with(table));
         table.with(h1().with(new Text("Routes Page " + pageNumber)));
 
@@ -141,12 +143,16 @@ public class GetRoutesResult extends GetCommandResult {
 
         for (Route route : routes) {
             table.with(tr().with(
-                    td().with(a("href=\"/routes/" + route.getRid() + "\"").with(new Text(route.getRid()))),
+                    td().with(aa("href=\"/routes/" + route.getRid() + "\"").with(new Text(route.getRid()))),
                     td().with(new Text(route.getDistance()))));
         }
 
-        if (routes.size() == 5) body.with(a("href=\"/routes?top=5&skip=" + (skip + 5) + "\"").with(new Text("Next")));
-        if (skip >= 5) body.with(a("href=\"/routes?top=5&skip=" + (skip - 5) + "\"").with(new Text("Previous")));
+        if (routes.size() == 5) {
+            body.with(aa("href=\"/routes?top=5&skip=" + (skip + 5) + "\"").with(new Text("Next")));
+        }
+        if (skip >= 5) {
+            body.with(aa("href=\"/routes?top=5&skip=" + (skip - 5) + "\"").with(new Text("Previous")));
+        }
         return html;
 
     }
