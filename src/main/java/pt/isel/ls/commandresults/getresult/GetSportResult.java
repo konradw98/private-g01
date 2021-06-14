@@ -42,7 +42,7 @@ public class GetSportResult extends GetCommandResult {
                 case "text/plain" -> str = sport.toString();
                 case "application/json" -> str = sport.generateJson();
                 default -> str = http ? generateHtmlWithLinks().generateStringHtml("")
-                        : generateHtmlWithLinks().generateStringHtml("");
+                        : generateHtml().generateStringHtml("");
             }
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
@@ -61,7 +61,7 @@ public class GetSportResult extends GetCommandResult {
                 }
                 default -> {
                     return http ? generateHtmlWithLinks().generateStringHtml("")
-                            : generateHtmlWithLinks().generateStringHtml("");
+                            : generateHtml().generateStringHtml("");
                 }
             }
         }

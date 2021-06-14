@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class GetByIdServlet extends HttpServlet {
     private final PGSimpleDataSource dataSource;
-    boolean http = false;
+    boolean http = true;
 
     public GetByIdServlet(PGSimpleDataSource dataSource) {
         this.dataSource = dataSource;
