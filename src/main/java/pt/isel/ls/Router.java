@@ -29,6 +29,7 @@ public class Router {
         addRoute(Method.OPTION, new PathTemplate("/"), new OptionHandler());
         addRoute(Method.DELETE, new PathTemplate("/users/{uid}/activities"), new DeleteHandler());
         addRoute(Method.LISTEN, new PathTemplate("/"), new ListenHandler());
+        addRoute(Method.GET, new PathTemplate("/"), new GetRootHandler());
     }
 
     public void addRoute(Method method, PathTemplate pathTemplate, CommandHandler commandHandler) {
