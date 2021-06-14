@@ -1,24 +1,25 @@
-package pt.isel.ls.handlers.get;
+package pt.isel.ls.handlers.get.gettables;
 
 import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Headers;
-import pt.isel.ls.Parameters;
+import pt.isel.ls.PathParameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.EmptyTableResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.commandresults.getresult.GetActivityResult;
 import pt.isel.ls.handlers.CommandHandler;
+import pt.isel.ls.handlers.get.GetHandler;
 import pt.isel.ls.models.Activity;
 import java.sql.*;
 
-public class GetUserActivitiesByIdHandler extends GetHandler implements CommandHandler {
+public class GetSportActivitiesByIdHandler extends GetTablesHandler implements CommandHandler {
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {
-        Parameters pathParameters = commandRequest.getParameters();
-        String stringUid = pathParameters.get("uid");
+        PathParameters pathParameters = commandRequest.getPathParameters();
+        String stringSid = pathParameters.get("sid");
         String stringAid = pathParameters.get("aid");
-        String wrongParameters = validatePathParameters(stringUid, stringAid);
+        String wrongParameters = validatePathParameters(stringSid, stringAid);
 
         Headers headers = commandRequest.getHeaders();
         wrongParameters += validateHeaders(headers);
@@ -36,12 +37,12 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
                 count = resultSet.getInt(1);
             }
             if (count == 0) {
-                return new EmptyTableResult("activites");
+                return new EmptyTableResult("activities");
             }
 
-            String sql1 = "SELECT * FROM activities WHERE uid=? AND aid=? AND timestamp IS NULL";
+            String sql1 = "SELECT * FROM activities WHERE sid=? AND aid=? AND timestamp IS NULL";
             pstmt = conn.prepareStatement(sql1);
-            pstmt.setInt(1, Integer.parseInt(stringUid));
+            pstmt.setInt(1, Integer.parseInt(stringSid));
             pstmt.setInt(2, Integer.parseInt(stringAid));
             resultSet = pstmt.executeQuery();
 
@@ -69,16 +70,16 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
         }
     }
 
-    private String validatePathParameters(String uid, String aid) {
+    private String validatePathParameters(String sid, String aid) {
         String wrongParameters = "";
-        int uidInt;
+        int sidInt;
         try {
-            uidInt = Integer.parseInt(uid);
-        } catch (NumberFormatException | NullPointerException e) {
-            return wrongParameters + "uid ";
+            sidInt = Integer.parseInt(sid);
+        } catch (NumberFormatException e) {
+            return wrongParameters + "sid ";
         }
-        if (uidInt < 1) {
-            wrongParameters += "uid ";
+        if (sidInt < 1) {
+            wrongParameters += "sid ";
         }
 
         int aidInt;
@@ -92,5 +93,4 @@ public class GetUserActivitiesByIdHandler extends GetHandler implements CommandH
         }
         return wrongParameters;
     }
-
 }

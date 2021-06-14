@@ -40,10 +40,6 @@ public class Activity implements Model {
         return durationTime;
     }
 
-    public void setDurationTime(Time durationTime) {
-        this.durationTime = durationTime;
-    }
-
     public int getSid() {
         return sid;
     }

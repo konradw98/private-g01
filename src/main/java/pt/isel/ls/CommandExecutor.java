@@ -7,7 +7,8 @@ import pt.isel.ls.commandresults.WrongParametersResult;
 import java.util.Optional;
 
 public class CommandExecutor {
-    static boolean http = false;
+    private static boolean http = false;
+    private static Router router;
     private static final int SIMPLEST_COMMAND_SEGMENTS = 2;
     private static final int COMMAND_WITHOUT_HEADERS_OR_WITH_PARAMETERS_ONLY = 3;
     private static final int COMMAND_WITH_HEADERS = 4;
@@ -18,11 +19,16 @@ public class CommandExecutor {
     private static final int PARAMETERS_INDEX_WITH_HEADERS = 3;
     private static final int HEADERS_INDEX = 2;
 
-    public static boolean runCommand(String line, Router router, PGSimpleDataSource dataSource) {
+    public CommandExecutor() {
+        router = new Router();
+        router.addHandlers();
+    }
+
+    public boolean runCommand(String line, PGSimpleDataSource dataSource) {
         return executeCommand(line.split("\\s+"), line, router, dataSource);
     }
 
-    public static boolean runCommand(String[] command, Router router, PGSimpleDataSource dataSource) {
+    public boolean runCommand(String[] command, PGSimpleDataSource dataSource) {
         return executeCommand(command, String.join(" ", command), router, dataSource);
     }
 

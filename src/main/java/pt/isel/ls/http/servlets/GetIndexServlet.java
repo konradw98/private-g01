@@ -45,7 +45,6 @@ public class GetIndexServlet extends HttpServlet {
                 OutputStream os = resp.getOutputStream();
                 os.write(respBodyBytes);
                 os.flush();
-
         }
     }
 

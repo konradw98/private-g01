@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 public class Route implements Model {
     private int rid;
-    private String startLocation;
-    private String endLocation;
-    private double distance;
-    private ArrayList<Activity> activities = new ArrayList<>();
-    private ArrayList<Sport> sports = new ArrayList<>();
+    private final String startLocation;
+    private final String endLocation;
+    private final double distance;
 
     public Route(int rid, String startLocation, String endLocation, double distance) {
         this.rid = rid;
@@ -23,8 +21,6 @@ public class Route implements Model {
         this.startLocation = startLocation;
         this.endLocation = endLocation;
         this.distance = distance;
-        this.activities = activities;
-        this.sports = sports;
     }
 
     public int getRid() {
@@ -39,25 +35,14 @@ public class Route implements Model {
         return startLocation;
     }
 
-    public void setStartLocation(String startLocation) {
-        this.startLocation = startLocation;
-    }
-
     public String getEndLocation() {
         return endLocation;
-    }
-
-    public void setEndLocation(String endLocation) {
-        this.endLocation = endLocation;
     }
 
     public double getDistance() {
         return distance;
     }
 
-    public void setDistance(double distance) {
-        this.distance = distance;
-    }
 
     @Override
     public void print() {

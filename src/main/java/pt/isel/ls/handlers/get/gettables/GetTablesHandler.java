@@ -14,7 +14,7 @@ public abstract class GetTablesHandler extends GetHandler implements CommandHand
     //TODO: zrob cos kurwa z tym
     protected String validateParameters(String skip, String top) {
         String wrongParameters = "";
-        /*int skipInt;
+        int skipInt;
         try {
             skipInt = Integer.parseInt(skip);
         } catch (NumberFormatException e) {
@@ -31,7 +31,7 @@ public abstract class GetTablesHandler extends GetHandler implements CommandHand
         }
         if (topInt < 1) {
             wrongParameters += "top ";
-        }*/
+        }
         return wrongParameters;
     }
 

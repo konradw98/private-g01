@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class App {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         boolean exit = false;
 
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
@@ -13,17 +13,16 @@ public class App {
         dataSource.setPassword("password");
         dataSource.setUser("postgres");
 
-        Router router = new Router();
-        router.addHandlers();
+        CommandExecutor commandExecutor = new CommandExecutor();
 
         if (args.length == 0) {
             Scanner scanner = new Scanner(System.in);
             while (!exit) {
                 String line = scanner.nextLine();
-                exit = CommandExecutor.runCommand(line, router, dataSource);
+                exit = commandExecutor.runCommand(line, dataSource);
             }
         } else {
-            CommandExecutor.runCommand(args[0], router, dataSource);
+            commandExecutor.runCommand(args[0], dataSource);
         }
     }
 }

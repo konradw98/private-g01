@@ -17,8 +17,6 @@ public class User implements Model {
         return sports;
     }
 
-
-
     public User(int uid, String email, String name) {
         this.uid = uid;
         this.email = email;

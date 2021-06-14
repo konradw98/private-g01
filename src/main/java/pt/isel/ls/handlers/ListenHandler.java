@@ -7,9 +7,7 @@ import pt.isel.ls.CommandRequest;
 import pt.isel.ls.Parameters;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.ListenResult;
-import pt.isel.ls.http.servlets.GetByIdServlet;
-import pt.isel.ls.http.servlets.GetIndexServlet;
-import pt.isel.ls.http.servlets.GetTablesServlet;
+import pt.isel.ls.http.servlets.AppServlet;
 
 public class ListenHandler implements CommandHandler {
     private static final int LISTEN_PORT = 8080;
@@ -41,26 +39,8 @@ public class ListenHandler implements CommandHandler {
                 server = new Server(port);
 
                 ServletHandler handler = new ServletHandler();
-
-                /*handler.addServletWithMapping(new ServletHolder(new GetTablesServlet(commandRequest.getDataSource())),
-                        "/sports/* /activities");*/
-
-                handler.addServletWithMapping(new ServletHolder(new GetByIdServlet(commandRequest.getDataSource())),
-                        "/users/*");
-                handler.addServletWithMapping(new ServletHolder(new GetTablesServlet(commandRequest.getDataSource())),
-                        "/users");
-                handler.addServletWithMapping(new ServletHolder(new GetByIdServlet(commandRequest.getDataSource())),
-                        "/routes/*");
-                handler.addServletWithMapping(new ServletHolder(new GetTablesServlet(commandRequest.getDataSource())),
-                        "/routes");
-                handler.addServletWithMapping(new ServletHolder(new GetByIdServlet(commandRequest.getDataSource())),
-                        "/sports/*");
-                handler.addServletWithMapping(new ServletHolder(new GetTablesServlet(commandRequest.getDataSource())),
-                        "/sports");
-                handler.addServletWithMapping(new ServletHolder(new GetIndexServlet(commandRequest.getDataSource())),
-                        "/");
-                handler.addServletWithMapping(new ServletHolder(new GetByIdServlet(commandRequest.getDataSource())),
-                        "/sports/?/activities/*");
+                handler.addServletWithMapping(new ServletHolder(new AppServlet(commandRequest.getDataSource())),
+                        "/*");
 
                 server.setHandler(handler);
                 try {
