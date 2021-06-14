@@ -52,7 +52,7 @@ public class GetUserByIdResult extends GetCommandResult {
                 case "text/plain" -> str = user.toString();
                 case "application/json" -> str = generateJson();
                 default -> str = http ? generateHtmlWithLinks().generateStringHtml("")
-                        : generateHtmlWithLinks().generateStringHtml("");
+                        : generateHtml().generateStringHtml("");
             }
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
@@ -71,7 +71,7 @@ public class GetUserByIdResult extends GetCommandResult {
                 }
                 default -> {
                     return http ? generateHtmlWithLinks().generateStringHtml("")
-                            : generateHtmlWithLinks().generateStringHtml("");
+                            : generateHtml().generateStringHtml("");
                 }
             }
         }
@@ -87,8 +87,6 @@ public class GetUserByIdResult extends GetCommandResult {
         Element body = body();
 
         html.with(head().with(title().with(new Text("Users"))));
-        html.with(body);
-        body.with(aa("href=\"/\"").with(new Text("Root")));
         html.with(body.with(h1().with(new Text("User Details")),
                 ul().with(
                         li().with(new Text("Identifier : " + user.getUid())),

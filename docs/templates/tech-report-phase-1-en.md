@@ -1,4 +1,4 @@
-# Phase 2 Technical Report
+# Phase 3 Technical Report
 
 ## Introduction
 
@@ -59,6 +59,12 @@ Each of them has a Hashmap with name of corresponding parameter and value.
 They are passed and validated in every handler according to handler's specific conditions.
 * Headers are passed to CommandResults, in order to determine how to return our Models passed by handler.
 
+PHASE 3
+* Command processing through the console works the same as in the previous Phases.
+* The new functionality, which is http request processing was added. According to it, we have now special command - LISTEN / 
+which starts listening the server. We're processing http requests in AppServlet. It is the bride between server and the rest of our application.
+After this, everything works exactly the same as in the console version.
+* We can now navigate through application with URI and also using Postman.
 ### Command routing
 
 (_describe how the router works and how path parameters are extracted_)
@@ -72,6 +78,10 @@ PHASE 1
 
 PHASE 2
 * The router works exactly the same as in Phase 1.
+
+PHASE 3
+* The router works exactly the same as in previous phases. 
+
 ### Connection Management
 
 (_describe how connections are created, used and disposed_, namely its relation with transaction scopes).
@@ -83,6 +93,9 @@ PHASE 1
 PHASE 2
 * Data access is handled the same way as in the phase 1.
 
+PHASE 3
+* The router works exactly the same as in previous phases.
+
 ### Data Access
 
 (_describe any created classes to help on data access_).
@@ -93,6 +106,9 @@ PHASE 1
 
 PHASE 2 
 * It is done the same way as it was in the phase 1.
+
+PHASE 3
+* It is done the same way as it was in the previous phases.
 ### Error Handling/Processing
 
 (_describe how errors are handled and communicated to the application user_).
@@ -107,6 +123,11 @@ PHASE 2
 * Also, every execution of handler is surrounded by try-catch construction.
 * In every handler, we are validating parameters - we are checking if parsing is possible for the given input string. 
 If it is not, we are adding the name of parameter to the printing message.
+
+PHASE 3
+* While application is running, we're checking the possible errors (the same as in the previous phases).
+  If any occurs, we return the appropriate result with the message about the error.
+* According to new functionality, we handle http response status codes - we are checking the result handler and sending the appropriate code to the server.
 ## Critical Evaluation
 
 (_enumerate the functionality that is not concluded and the identified defects_)
