@@ -131,6 +131,13 @@ public class GetSportsResult extends GetCommandResult {
         Element body = body();
         body.with(aa("href=\"/\"").with(new Text("Root")));
 
+        Element form = form("action=\"/sports\" method=\"POST\"");
+        form.with(div().with(label(" for=\"name\"").with(new Text("name")),input("type=\"text\" "
+                + "name=\"name\" id=\"name\"")));
+        form.with(div().with(label(" for=\"description\"").with(new Text("description")),
+                input("type=\"text\" name=\"description\" id=\"description\"")));
+        form.with(div().with(button("type=\"submit\"").with(new Text("Submit"))));
+
         Element table = table("border=1");
         html.with(body.with(table));
         table.with(h1().with(new Text("Sports Page " + pageNumber)));
@@ -151,6 +158,8 @@ public class GetSportsResult extends GetCommandResult {
         if (skip >= 5) {
             body.with(aa("href=\"/sports?top=5&skip=" + (skip - 5) + "\"").with(new Text("Previous")));
         }
+        body.with(form);
+
         return html;
 
     }

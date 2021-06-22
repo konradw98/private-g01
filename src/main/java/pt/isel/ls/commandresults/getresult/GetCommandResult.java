@@ -65,6 +65,10 @@ public abstract class GetCommandResult implements CommandResult {
         return new Element("label");
     }
 
+    public Element label(String param) {
+        return new Element("label", param);
+    }
+
     public Element aa(String param) {
         return new Element("a", param);
     }

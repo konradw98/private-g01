@@ -143,10 +143,11 @@ public class GetUsersResult extends GetCommandResult {
         Element body = body();
         Element table = table("border=1");
         Element form = form("action=\"/users\" method=\"POST\"");
-        form.with(div().with(label().with(new Text("name"),input("type=\"text\" name=\"name\""))));
-        form.with(div().with(label().with(new Text("email"),input("type=\"email\" email=\"email\""))));
-        form.with(div().with(label().with(input("type=\"submit\" value=\'submit\'"))));
-        //form.with(div().with(div().with(button("type=\"submit\""))));
+        form.with(div().with(label(" for=\"name\"").with(new Text("name")),input("type=\"text\" "
+                + "name=\"name\" id=\"name\"")));
+        form.with(div().with(label(" for=\"email\"").with(new Text("email")),input("type=\"email\" "
+                + "name=\"email\" id=\"email\"")));
+        form.with(div().with(button("type=\"submit\"").with(new Text("Submit"))));
 
         html.with(head().with(title().with(new Text("Users"))));
         body.with(aa("href=\"/\"").with(new Text("Root")));
@@ -159,7 +160,7 @@ public class GetUsersResult extends GetCommandResult {
 
         for (User user : users) {
             table.with(tr().with(
-                    td().with(aa("href=\"/users" + user.getUid() + "\"").with(new Text(user.getUid()))),
+                    td().with(aa("href=\"/users/" + user.getUid() + "\"").with(new Text(user.getUid()))),
                     td().with(new Text(user.getName()))));
         }
 
