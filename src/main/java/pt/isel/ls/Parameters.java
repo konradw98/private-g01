@@ -15,7 +15,7 @@ public class Parameters {
     }
 
     private void addParametersFromValidString(String sequence) {
-        if(sequence != null){
+        if (sequence != null) {
             String[] parameters = sequence.split("&");
             if (parameters.length > 0) {
                 for (int i = 0; i < parameters.length; i++) {

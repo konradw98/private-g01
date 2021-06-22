@@ -139,10 +139,6 @@ public class GetUsersResult extends GetCommandResult {
             return null;
         }
 
-        Element html = html();
-        Element body = body();
-        Element table = table("border=1");
-
         Element form = form("action=\"/users\" method=\"POST\"");
         form.with(div().with(label(" for=\"name\"").with(new Text("name")),input("type=\"text\" "
                 + "name=\"name\" id=\"name\"")));
@@ -150,8 +146,12 @@ public class GetUsersResult extends GetCommandResult {
                 + "name=\"email\" id=\"email\"")), br());
         form.with(div().with(button("type=\"submit\"").with(new Text("Submit"))));
 
+        Element html = html();
         html.with(head().with(title().with(new Text("Users"))));
+        Element body = body();
         body.with(aa("href=\"/\"").with(new Text("Root")));
+
+        Element table = table("border=1");
         html.with(body.with(table));
         table.with(h1().with(new Text("Users Page " + pageNumber)));
 

@@ -132,9 +132,8 @@ public class AppServlet extends HttpServlet {
             req.getInputStream().read(bytes);
             String content = new String(bytes);
             Parameters parameters = new Parameters(content);
-            System.out.println(parameters.get("duration"));
-            CommandRequest commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters, headers,
-                    dataSource);
+            CommandRequest commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters,
+                    headers, dataSource);
 
             String respBody = "";
             try {

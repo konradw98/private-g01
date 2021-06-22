@@ -85,19 +85,21 @@ public class GetActivityResult extends GetCommandResult {
                         li().with(new Text("Sport Id : " + activity.getSid())),
                         li().with(new Text("User Id : " + activity.getUid()))));
 
-        if(activity.getRid() != 0) ul.with(li().with(new Text("Route Id : " + activity.getRid())));
+        if (activity.getRid() != 0) {
+            ul.with(li().with(new Text("Route Id : " + activity.getRid())));
+        }
 
         return html;
     }
 
     public Element generateHtmlWithLinks() {
-        Element html = html();
-        Element body = body();
-        Element ul = ul();
 
+        Element html = html();
         html.with(head().with(title().with(new Text("Activity"))));
+        Element body = body();
         html.with(body);
         body.with(aa("href=\"/\"").with(new Text("Root")));
+        Element ul = ul();
         body.with(h1().with(new Text("Activity Details")),
                 ul.with(
                         li().with(new Text("Identifier : " + activity.getAid())),
@@ -107,9 +109,10 @@ public class GetActivityResult extends GetCommandResult {
                         li().with(new Text("User Id : "), aa("href=\"/users/" + activity.getUid() + "\"")
                                 .with(new Text(activity.getUid())))));
 
-        if(activity.getRid() != 0) ul.with(li().with(new Text("Rid Id : "), aa("href=\"/routes/" + activity.getRid()
-                + "\"").with(new Text(activity.getRid()))));
-
+        if (activity.getRid() != 0) {
+            ul.with(li().with(new Text("Rid Id : "), aa("href=\"/routes/"
+                    + activity.getRid() + "\"").with(new Text(activity.getRid()))));
+        }
         return html;
 
     }

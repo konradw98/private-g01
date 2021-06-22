@@ -38,7 +38,7 @@ public class Element {
         return this;
     }
 
-    public void setAsSingleTag(){
+    public void setAsSingleTag() {
         singleTag = true;
     }
 
@@ -60,7 +60,7 @@ public class Element {
         if (text != null) {
             html.append("</").append(name).append(">\n");
         } else {
-            if(!singleTag) {
+            if (!singleTag) {
                 html.append(prefix).append("</").append(name).append(">\n");
             }
         }
