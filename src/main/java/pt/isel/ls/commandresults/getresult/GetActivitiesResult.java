@@ -147,8 +147,6 @@ public class GetActivitiesResult extends GetCommandResult {
                 input("type=\"date\"name=\"date\" id=\"date\"")));
         form.with(div().with(label(" for=\"duration\"").with(new Text("duration")),
                 input("type=\"time\" name=\"duration\" id=\"duration\"")));
-        form.with(div().with(label(" for=\"sid\"").with(new Text("sid")),
-                input("type=\"number\" name=\"sid\" id=\"sid\"")));
         form.with(div().with(label(" for=\"uid\"").with(new Text("uid")),
                 input("type=\"number\" name=\"uid\" id=\"uid\"")));
         form.with(div().with(label(" for=\"rid\"").with(new Text("rid")),

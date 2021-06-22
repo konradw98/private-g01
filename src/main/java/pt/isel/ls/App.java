@@ -8,10 +8,9 @@ public class App {
     public static void main(String[] args) {
         boolean exit = false;
 
+
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
-        dataSource.setPassword("password");
-        dataSource.setUser("postgres");
+        dataSource.setURL(System.getenv("JDBC_DATABASE_URL"));
 
         CommandExecutor commandExecutor = new CommandExecutor();
 
