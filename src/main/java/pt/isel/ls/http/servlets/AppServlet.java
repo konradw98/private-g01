@@ -5,7 +5,6 @@ import pt.isel.ls.*;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.get.gettables.GetTablesHandler;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -106,16 +105,6 @@ public class AppServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        System.out.println("JESTEM W DO POST");
-        System.out.println("name="+req.getParameter("name"));
-        System.out.println("email="+req.getParameter("email"));
-
-        System.out.println("name="+req.getHeader("name"));
-        System.out.println("name="+req.getQueryString());
-        System.out.println("name="+req.getPathInfo());
-
-
-
 
         String accept = req.getHeader("accept");
         String fileName = req.getHeader("file-name");
@@ -139,10 +128,11 @@ public class AppServlet extends HttpServlet {
         Optional<RouteResult> routeResult = Router.findRoute(Method.POST, new Path(path));
 
         if (routeResult.isPresent()) {
-            String queryString = req.getQueryString();
-            System.out.println(queryString);
-            Parameters parameters = queryString == null ? null : new Parameters(queryString);
-
+            byte[] bytes = new byte[req.getContentLength()];
+            req.getInputStream().read(bytes);
+            String content = new String(bytes);
+            System.out.println(content);
+            Parameters parameters = new Parameters(content);
             CommandRequest commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters, headers,
                     dataSource);
 
@@ -150,7 +140,6 @@ public class AppServlet extends HttpServlet {
             try {
                 CommandResult commandResult = routeResult.get().getHandler().execute(commandRequest);
                 respBody = commandResult.generateResults(true);
-                //TODO: not exception
             } catch (Exception e) {
                 respBody = new WrongParametersResult().generateResults(true);
             } finally {

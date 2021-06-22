@@ -10,6 +10,10 @@ public class Parameters {
         addParametersFromValidString(sequence);
     }
 
+    public Parameters(HashMap<String, String> parameters) {
+        this.parameters = parameters;
+    }
+
     private void addParametersFromValidString(String sequence) {
         if(sequence != null){
             String[] parameters = sequence.split("&");
