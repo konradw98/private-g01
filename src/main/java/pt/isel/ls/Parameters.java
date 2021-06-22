@@ -21,9 +21,13 @@ public class Parameters {
                 for (int i = 0; i < parameters.length; i++) {
                     if (parameters[i].contains("=")) {
                         parameters[i] = parameters[i].replace('+', ' ');
+                        parameters[i] = parameters[i].replace("%3A", ":");
                         String[] value = parameters[i].split("=");
                         if (value[0].equals("activity")) {
                             value[0] += i;
+                        }
+                        if (value[0].equals("duration") && value[1].length() == 5) {
+                            value[1] += ":00";
                         }
                         addParameter(value[0], value[1]);
                     }

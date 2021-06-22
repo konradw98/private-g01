@@ -8,7 +8,7 @@ import pt.isel.ls.commandresults.WrongParametersResult;
 import java.sql.*;
 
 public class PostActivityHandler implements CommandHandler {
-    private static final int MAX_AMOUNT_OF_PARAMETERS = 4;
+    private static final int MAX_AMOUNT_OF_PARAMETERS = 5;
 
     @Override
     public CommandResult execute(CommandRequest commandRequest) throws SQLException {

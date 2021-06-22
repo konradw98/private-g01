@@ -131,8 +131,8 @@ public class AppServlet extends HttpServlet {
             byte[] bytes = new byte[req.getContentLength()];
             req.getInputStream().read(bytes);
             String content = new String(bytes);
-            System.out.println(content);
             Parameters parameters = new Parameters(content);
+            System.out.println(parameters.get("duration"));
             CommandRequest commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters, headers,
                     dataSource);
 
