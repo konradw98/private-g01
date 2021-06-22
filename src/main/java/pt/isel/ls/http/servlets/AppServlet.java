@@ -101,4 +101,71 @@ public class AppServlet extends HttpServlet {
             }
         }
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String accept = req.getHeader("accept");
+        String fileName = req.getHeader("file-name");
+
+        if (accept == null) {
+            accept = "text/html";
+        } else if (!accept.equals("application/json") && !accept.equals("text/plain")) {
+            accept = "text/html";
+        }
+
+        if (fileName == null) {
+            fileName = "";
+        } else {
+            fileName = "|file-name:" + fileName;
+        }
+
+        String header = "accept:" + accept + fileName;
+        Headers headers = new Headers(header);
+        String path = req.getRequestURI();
+
+        Optional<RouteResult> routeResult = Router.findRoute(Method.POST, new Path(path));
+
+        if (routeResult.isPresent()) {
+            String queryString = req.getQueryString();
+            System.out.println(queryString);
+            Parameters parameters = queryString == null ? null : new Parameters(queryString);
+
+            CommandRequest commandRequest = new CommandRequest(routeResult.get().getPathParameters(), parameters, headers,
+                    dataSource);
+
+            String respBody = "";
+            try {
+                CommandResult commandResult = routeResult.get().getHandler().execute(commandRequest);
+                respBody = commandResult.generateResults(true);
+                //TODO: not exception
+            } catch (Exception e) {
+                respBody = new WrongParametersResult().generateResults(true);
+            } finally {
+                Charset utf8 = StandardCharsets.UTF_8;
+                byte[] respBodyBytes = respBody.getBytes(utf8);
+
+                switch (accept) {
+                    case "text/plain" -> resp.setContentType("text/plain");
+                    case "application/json" -> resp.setContentType("application/json");
+                    default -> resp.setContentType("text/html");
+                }
+
+                if (fileName.equals("")) {
+                    switch (respBody.substring(0, 4)) {
+                        case "Reso" -> //resp.setStatus(404);
+                                resp.sendError(404, "resource not found");
+                        case "Wron" -> //resp.setStatus(400);
+                                resp.sendError(400, respBody);
+                        default -> resp.setStatus(200);
+                    }
+                }
+
+                resp.setContentLength(respBodyBytes.length);
+                System.out.println(resp.toString());
+                OutputStream os = resp.getOutputStream();
+                os.write(respBodyBytes);
+                os.flush();
+            }
+        }
+    }
 }
