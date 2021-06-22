@@ -73,9 +73,19 @@ public abstract class GetCommandResult implements CommandResult {
         return new Element("a", param);
     }
 
+    public Element br() {
+        Element br = new Element("br");
+        br.setAsSingleTag();
+        return br;
+    }
+
     public Element form(String param) { return new Element("form", param); }
 
-    public Element input(String param) { return new Element("input", param); }
+    public Element input(String param) {
+        Element input = new Element("input", param);
+        input.setAsSingleTag();
+        return input;
+    }
 
     public Element button(String param) { return new Element("button", param); }
 

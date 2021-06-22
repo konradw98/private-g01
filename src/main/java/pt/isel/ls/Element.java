@@ -9,6 +9,7 @@ public class Element {
     private Text text;
     private final String name;
     private String param;
+    private boolean singleTag = false;
 
     public Element(String name) {
         this.name = name;
@@ -37,6 +38,10 @@ public class Element {
         return this;
     }
 
+    public void setAsSingleTag(){
+        singleTag = true;
+    }
+
     public String generateStringHtml(String prefix) {
         StringBuilder html;
         if (param != null) {
@@ -55,11 +60,10 @@ public class Element {
         if (text != null) {
             html.append("</").append(name).append(">\n");
         } else {
-            if(!name.equals("input")) {
+            if(!singleTag) {
                 html.append(prefix).append("</").append(name).append(">\n");
             }
         }
-
         return String.valueOf(html);
     }
 }

@@ -133,6 +133,15 @@ public class GetRoutesResult extends GetCommandResult {
         Element body = body();
         body.with(aa("href=\"/\"").with(new Text("Root")));
 
+        Element form = form("action=\"/routes\" method=\"POST\"");
+        form.with(div().with(label(" for=\"startLocation\"").with(new Text("start location")),
+                input("type=\"text\"name=\"startLocation\" id=\"startLocation\"")));
+        form.with(div().with(label(" for=\"endLocation\"").with(new Text("end location")),
+                input("type=\"text\" name=\"endLocation\" id=\"endLocation\"")));
+        form.with(div().with(label(" for=\"distance\"").with(new Text("distance")),
+                input("type=\"text\" name=\"distance\" id=\"distance\"")),br());
+        form.with(div().with(button("type=\"submit\"").with(new Text("Submit"))));
+
         Element table = table("border=1");
         html.with(body.with(table));
         table.with(h1().with(new Text("Routes Page " + pageNumber)));
@@ -153,6 +162,11 @@ public class GetRoutesResult extends GetCommandResult {
         if (skip >= 5) {
             body.with(aa("href=\"/routes?top=5&skip=" + (skip - 5) + "\"").with(new Text("Previous")));
         }
+
+        body.with(br());
+        body.with(br());
+        body.with(form);
+
         return html;
 
     }

@@ -140,7 +140,20 @@ public class GetActivitiesResult extends GetCommandResult {
 
         Element body = body();
         body.with(aa("href=\"/\"").with(new Text("Root")));
-        body.with(aa("href=\"/Sports/" + activities.get(0).getSid() + "\"").with(new Text("Sport")));
+        body.with(aa("href=\"/sports/" + activities.get(0).getSid() + "\"").with(new Text("Sport")));
+
+        Element form = form("action=\"/sports/" + activities.get(0).getSid() + "/activities\" method=\"POST\"");
+        form.with(div().with(label(" for=\"date\"").with(new Text("date")),
+                input("type=\"date\"name=\"date\" id=\"date\"")));
+        form.with(div().with(label(" for=\"duration\"").with(new Text("duration")),
+                input("type=\"time\" name=\"duration\" id=\"duration\"")));
+        form.with(div().with(label(" for=\"sid\"").with(new Text("sid")),
+                input("type=\"number\" name=\"sid\" id=\"sid\"")));
+        form.with(div().with(label(" for=\"uid\"").with(new Text("uid")),
+                input("type=\"number\" name=\"uid\" id=\"uid\"")));
+        form.with(div().with(label(" for=\"rid\"").with(new Text("rid")),
+                input("type=\"number\" name=\"rid\" id=\"rid\"")),br());
+        form.with(div().with(button("type=\"submit\"").with(new Text("Submit"))));
 
         Element table = table("border=1");
         html.with(body.with(table));
@@ -165,6 +178,11 @@ public class GetActivitiesResult extends GetCommandResult {
             body.with(aa("href=\"/sports/" + activities.get(0).getSid() + "/activities?top=5&skip="
                     + (skip - 5) + "\"").with(new Text("Previous")));
         }
+
+        body.with(br());
+        body.with(br());
+        body.with(form);
+
         return html;
 
     }

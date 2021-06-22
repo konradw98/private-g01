@@ -142,11 +142,12 @@ public class GetUsersResult extends GetCommandResult {
         Element html = html();
         Element body = body();
         Element table = table("border=1");
+
         Element form = form("action=\"/users\" method=\"POST\"");
         form.with(div().with(label(" for=\"name\"").with(new Text("name")),input("type=\"text\" "
                 + "name=\"name\" id=\"name\"")));
         form.with(div().with(label(" for=\"email\"").with(new Text("email")),input("type=\"email\" "
-                + "name=\"email\" id=\"email\"")));
+                + "name=\"email\" id=\"email\"")), br());
         form.with(div().with(button("type=\"submit\"").with(new Text("Submit"))));
 
         html.with(head().with(title().with(new Text("Users"))));
@@ -171,6 +172,8 @@ public class GetUsersResult extends GetCommandResult {
             body.with(aa("href=\"/users?top=5&skip=" + (skip - 5) + "\"").with(new Text("Previous")));
         }
 
+        body.with(br());
+        body.with(br());
         body.with(form);
 
         return html;
