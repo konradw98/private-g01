@@ -1,6 +1,6 @@
+drop table if exists activities;
 drop table if exists sports;
 drop table if exists users;
-drop table if exists activities;
 drop table if exists routes;
 
 CREATE TABLE sports (
