@@ -5,6 +5,7 @@ import pt.isel.ls.*;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.get.gettables.GetTablesHandler;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,15 +24,22 @@ public class AppServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        //TODO: headers
         String accept = req.getHeader("accept");
+        String fileName = req.getHeader("file-name");
+
         if (accept == null) {
             accept = "text/html";
         } else if (!accept.equals("application/json") && !accept.equals("text/plain")) {
             accept = "text/html";
         }
 
-        String header = "accept:" + accept;
+        if (fileName == null) {
+            fileName = "";
+        } else {
+            fileName = "|file-name:" + fileName;
+        }
+
+        String header = "accept:" + accept + fileName;
         Headers headers = new Headers(header);
         String path = req.getRequestURI();
 
@@ -74,13 +82,16 @@ public class AppServlet extends HttpServlet {
                     default -> resp.setContentType("text/html");
                 }
 
-                switch (respBody.substring(0, 4)) {
-                    case "Reso" -> //resp.setStatus(404);
-                            resp.sendError(404, "resource not found");
-                    case "Wron" -> //resp.setStatus(400);
-                            resp.sendError(400, respBody);
-                    default -> resp.setStatus(200);
+                if (fileName.equals("")) {
+                    switch (respBody.substring(0, 4)) {
+                        case "Reso" -> //resp.setStatus(404);
+                                resp.sendError(404, "resource not found");
+                        case "Wron" -> //resp.setStatus(400);
+                                resp.sendError(400, respBody);
+                        default -> resp.setStatus(200);
+                    }
                 }
+
 
                 resp.setContentLength(respBodyBytes.length);
                 System.out.println(resp.toString());
