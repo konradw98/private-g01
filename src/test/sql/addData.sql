@@ -15,16 +15,16 @@ INSERT INTO sports(name, description) VALUES('mountains climbing', 'The sport of
 INSERT INTO sports(name, description) VALUES('horse racing', 'Sport of running horses at speed, mainly Thoroughbreds with a rider astride or Standardbreds with the horse pulling a conveyance with a driver. ');
 INSERT INTO sports(name, description) VALUES('sailing', 'Sailing specifically refers to the sport of using wind to power sails and propel the boat forward (rather than engines).');
 
-INSERT INTO (start_location, end_location, distance) VALUES('Bairro Alto','Alameda',4);
-INSERT INTO (start_location, end_location, distance) VALUES('ISEL','Alameda',3);
-INSERT INTO (start_location, end_location, distance) VALUES('Bairro Alto','Cais do Sodre',1);
-INSERT INTO (start_location, end_location, distance) VALUES('Belem','Cais do Sodre',7);
-INSERT INTO (start_location, end_location, distance) VALUES('Bairro Alto','Belem',8);
-INSERT INTO (start_location, end_location, distance) VALUES('Bairro Alto','Pontinha',10);
-INSERT INTO (start_location, end_location, distance) VALUES('Bairro Alto','Carcavelos',18);
-INSERT INTO (start_location, end_location, distance) VALUES('Carcavelos','Belem',11);
-INSERT INTO (start_location, end_location, distance) VALUES('Carcavelos','Cascais',8);
-INSERT INTO (start_location, end_location, distance) VALUES('Lisboa','Cascais',30);
+INSERT INTO routes(start_location, end_location, distance) VALUES('Bairro Alto','Alameda',4);
+INSERT INTO routes(start_location, end_location, distance) VALUES('ISEL','Alameda',3);
+INSERT INTO routes(start_location, end_location, distance) VALUES('Bairro Alto','Cais do Sodre',1);
+INSERT INTO routes(start_location, end_location, distance) VALUES('Belem','Cais do Sodre',7);
+INSERT INTO routes(start_location, end_location, distance) VALUES('Bairro Alto','Belem',8);
+INSERT INTO routes(start_location, end_location, distance) VALUES('Bairro Alto','Pontinha',10);
+INSERT INTO routes(start_location, end_location, distance) VALUES('Bairro Alto','Carcavelos',18);
+INSERT INTO routes(start_location, end_location, distance) VALUES('Carcavelos','Belem',11);
+INSERT INTO routes(start_location, end_location, distance) VALUES('Carcavelos','Cascais',8);
+INSERT INTO routes(start_location, end_location, distance) VALUES('Lisboa','Cascais',30);
 
 INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-05','00:00:20',1,1,1);
 INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-06','00:00:21',1,2,1);
