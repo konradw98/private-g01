@@ -57,9 +57,27 @@ public abstract class GetCommandResult implements CommandResult {
         return new Element("td");
     }
 
+    public Element div() {
+        return new Element("div");
+    }
+
+    public Element label() {
+        return new Element("label");
+    }
+
+    public Element input() {
+        return new Element("input");
+    }
+
     public Element aa(String param) {
         return new Element("a", param);
     }
+
+    public Element form(String param) { return new Element("form", param); }
+
+    public Element input(String param) { return new Element("input", param); }
+
+    public Element button(String param) { return new Element("input", param); }
 
     public void printResults(String result) {
         if (!result.equals("")) {

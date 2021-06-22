@@ -58,7 +58,7 @@ public class GetActivitiesResult extends GetCommandResult {
                 }
                 case "application/json" -> str = generateJson();
                 default -> str = http ? generateHtmlWithLinks().generateStringHtml("")
-                        : generateHtml().generateStringHtml("");
+                        : generateHtmlWithLinks().generateStringHtml("");
             }
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));

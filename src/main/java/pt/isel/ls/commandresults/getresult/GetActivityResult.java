@@ -75,15 +75,17 @@ public class GetActivityResult extends GetCommandResult {
 
     public Element generateHtml() {
         Element html = html();
+        Element ul = ul();
 
         html.with(head().with(title().with(new Text("Activity"))));
         html.with(body()).with(h1().with(new Text("Activity Details")),
-                ul().with(
+                ul.with(
                         li().with(new Text("Identifier : " + activity.getAid())),
                         li().with(new Text("Duration Time : " + activity.getDurationTime())),
                         li().with(new Text("Sport Id : " + activity.getSid())),
-                        li().with(new Text("User Id : " + activity.getUid())),
-                        li().with(new Text("Route Id : " + activity.getRid()))));
+                        li().with(new Text("User Id : " + activity.getUid()))));
+
+        if(activity.getRid() != 0) ul.with(li().with(new Text("Route Id : " + activity.getRid())));
 
         return html;
     }
@@ -91,20 +93,23 @@ public class GetActivityResult extends GetCommandResult {
     public Element generateHtmlWithLinks() {
         Element html = html();
         Element body = body();
+        Element ul = ul();
 
         html.with(head().with(title().with(new Text("Activity"))));
         html.with(body);
         body.with(aa("href=\"/\"").with(new Text("Root")));
         body.with(h1().with(new Text("Activity Details")),
-                ul().with(
+                ul.with(
                         li().with(new Text("Identifier : " + activity.getAid())),
                         li().with(new Text("Duration Time : " + activity.getDurationTime())),
                         li().with(new Text("Sport Id : "), aa("href=\"/sports/" + activity.getSid() + "\"")
                                 .with(new Text(activity.getSid()))),
                         li().with(new Text("User Id : "), aa("href=\"/users/" + activity.getUid() + "\"")
-                                .with(new Text(activity.getUid()))),
-                        li().with(new Text("Rid Id : "), aa("href=\"/routes/" + activity.getRid() + "\"")
-                                .with(new Text(activity.getRid())))));
+                                .with(new Text(activity.getUid())))));
+
+        if(activity.getRid() != 0) ul.with(li().with(new Text("Rid Id : "), aa("href=\"/routes/" + activity.getRid()
+                + "\"").with(new Text(activity.getRid()))));
+
         return html;
 
     }

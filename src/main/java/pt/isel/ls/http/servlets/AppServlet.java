@@ -6,6 +6,7 @@ import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
 import pt.isel.ls.handlers.get.gettables.GetTablesHandler;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +16,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
+@WebServlet("/AppServlet")
 public class AppServlet extends HttpServlet {
     private final PGSimpleDataSource dataSource;
 
@@ -104,6 +106,17 @@ public class AppServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        System.out.println("JESTEM W DO POST");
+        System.out.println("name="+req.getParameter("name"));
+        System.out.println("email="+req.getParameter("email"));
+
+        System.out.println("name="+req.getHeader("name"));
+        System.out.println("name="+req.getQueryString());
+        System.out.println("name="+req.getPathInfo());
+
+
+
+
         String accept = req.getHeader("accept");
         String fileName = req.getHeader("file-name");
 

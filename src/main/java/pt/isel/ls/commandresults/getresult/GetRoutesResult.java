@@ -75,7 +75,7 @@ public class GetRoutesResult extends GetCommandResult {
                 }
                 default -> {
                     return http ? generateHtmlWithLinks().generateStringHtml("")
-                            : generateHtml().generateStringHtml("");
+                            : generateHtmlWithLinks().generateStringHtml("");
                 }
             }
         }
