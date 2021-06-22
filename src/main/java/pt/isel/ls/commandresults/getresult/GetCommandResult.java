@@ -65,10 +65,6 @@ public abstract class GetCommandResult implements CommandResult {
         return new Element("label");
     }
 
-    public Element input() {
-        return new Element("input");
-    }
-
     public Element aa(String param) {
         return new Element("a", param);
     }
@@ -77,7 +73,7 @@ public abstract class GetCommandResult implements CommandResult {
 
     public Element input(String param) { return new Element("input", param); }
 
-    public Element button(String param) { return new Element("input", param); }
+    public Element button(String param) { return new Element("button", param); }
 
     public void printResults(String result) {
         if (!result.equals("")) {

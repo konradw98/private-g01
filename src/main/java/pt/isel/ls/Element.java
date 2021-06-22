@@ -55,7 +55,9 @@ public class Element {
         if (text != null) {
             html.append("</").append(name).append(">\n");
         } else {
-            html.append(prefix).append("</").append(name).append(">\n");
+            if(!name.equals("input")) {
+                html.append(prefix).append("</").append(name).append(">\n");
+            }
         }
 
         return String.valueOf(html);
