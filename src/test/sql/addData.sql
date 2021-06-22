@@ -25,3 +25,25 @@ INSERT INTO (start_location, end_location, distance) VALUES('Bairro Alto','Carca
 INSERT INTO (start_location, end_location, distance) VALUES('Carcavelos','Belem',11);
 INSERT INTO (start_location, end_location, distance) VALUES('Carcavelos','Cascais',8);
 INSERT INTO (start_location, end_location, distance) VALUES('Lisboa','Cascais',30);
+
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-05','00:00:20',1,1,1);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-06','00:00:21',1,2,1);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-07','00:00:22',1,3,2);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-08','00:00:23',1,4,2);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-09','00:00:24',1,5,2);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-10','00:00:25',2,1,4);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-01','00:00:26',2,2,5);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-02','00:00:27',2,3,6);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-03','00:00:20',2,4,7);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-04','00:00:20',2,5,8);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-05','00:00:06',2,1,5);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-05','00:00:08',2,1,6);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-05','00:00:09',2,2,1);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-05','00:00:10',2,2,1);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-04-05','00:00:08',1,1,2);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-08','00:00:22',1,1,5);
+INSERT INTO activities(date, duration_time,sid,uid,rid) VALUES('2021-05-09','00:00:34',1,1,6);
+
+
+
+
