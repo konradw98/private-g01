@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<title>Users</title>
+	</head>
+	<body>
+		<a href="/" >Root</a>
+		<table border=1 >
+			<h1>Users Page 1</h1>
+			<tr>
+				<th>Identifier</th>
+				<th>Name</th>
+			</tr>
+			<tr>
+				<td>
+					<a href="/users/1" >1</a>
+				</td>
+				<td>First User</td>
+			</tr>
+		</table>
+		<a href="/users?top=5&skip=5" >Next</a>
+		<form action="/AppServlet" method="POST">
+			<div>
+				<label>
+					name
+					<input type="text" name="name">
+				</label>
+			</div>
+			<div>
+				<label>
+					email
+					<input type="email" email="email">
+				</label>
+			</div>
+			<div>
+				<button type="submit">Submit</button>
+			</div>
+		</form>
+	</body>
+</html>
