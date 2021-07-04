@@ -1,13 +1,21 @@
 package pt.isel.ls;
 
 import org.postgresql.ds.PGSimpleDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pt.isel.ls.http.servlets.AppServlet;
+
 import java.util.Scanner;
 
 public class App {
 
-    public static void main(String[] args) {
-        boolean exit = false;
+    private static Logger log = LoggerFactory.getLogger(App.class);
 
+    public static void main(String[] args) {
+
+        log.info("main started");
+
+        boolean exit = false;
 
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         dataSource.setURL(System.getenv("JDBC_DATABASE_URL"));

@@ -1,6 +1,8 @@
 package pt.isel.ls.http.servlets;
 
 import org.postgresql.ds.PGSimpleDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.isel.ls.*;
 import pt.isel.ls.commandresults.CommandResult;
 import pt.isel.ls.commandresults.WrongParametersResult;
@@ -18,6 +20,7 @@ import java.util.Optional;
 @WebServlet("/AppServlet")
 public class AppServlet extends HttpServlet {
     private final PGSimpleDataSource dataSource;
+    private static Logger log = LoggerFactory.getLogger(AppServlet.class);
 
     public AppServlet(PGSimpleDataSource dataSource) {
         this.dataSource = dataSource;
@@ -25,6 +28,12 @@ public class AppServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        log.info("incoming request: method={}, uri={}, accept={}",
+                req.getMethod(),
+                req.getRequestURI(),
+                req.getHeader("Accept"));
+
         String accept = req.getHeader("accept");
         String fileName = req.getHeader("file-name");
 
@@ -85,20 +94,30 @@ public class AppServlet extends HttpServlet {
 
                 if (fileName.equals("")) {
                     switch (respBody.substring(0, 4)) {
-                        case "Reso" -> //resp.setStatus(404);
-                                resp.sendError(404, "resource not found");
-                        case "Wron" -> //resp.setStatus(400);
-                                resp.sendError(400, respBody);
+                        case "Reso" -> {
+                            log.error("resource not found");
+                            resp.sendError(404, "resource not found");
+                        }//resp.setStatus(404);
+                        case "Wron" -> {
+                            log.error("wrong parameters");
+                            resp.sendError(400, respBody);
+                        }//resp.setStatus(400);
+
                         default -> resp.setStatus(200);
                     }
                 }
 
 
                 resp.setContentLength(respBodyBytes.length);
-                System.out.println(resp.toString());
+                //System.out.println(resp.toString());
                 OutputStream os = resp.getOutputStream();
                 os.write(respBodyBytes);
                 os.flush();
+                log.info("outgoing response: method={}, uri={}, Content-type={}",
+                        req.getMethod(),
+                        req.getRequestURI(),
+                        resp.getStatus(),
+                        resp.getHeader("Content-Type"));
             }
         }
     }
