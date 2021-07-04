@@ -36,12 +36,6 @@ We highlight the following aspects of this model:
 
 ### Command Processing
 
-(_describe the command handling interface_)
-
-(_describe any additional classes used internally by the command handlers_)
-
-(_describe how command parameters are obtained and validated_)
-
 PHASE 1
 * Command Processing begins in InteractiveMode class, input is validated there and prepared for the following actions.
 * If command is correct, the corresponding Handler is called. Otherwise, the user is informed about the mistake in command.
@@ -57,17 +51,21 @@ We also have another abstract superclass for a sequence result handlers, which i
 * There are also classes that are used to format and store parameters from command - Parameters, PathParameters and Headers.
 Each of them has a Hashmap with name of corresponding parameter and value.
 They are passed and validated in every handler according to handler's specific conditions.
-* Headers are passed to CommandResults, in order to determine how to return our Models passed by handler.
+* Headers are passed to CommandResults, in order to determine how to return our Models passed by a handler.
 
 PHASE 3
 * Command processing through the console works the same as in the previous Phases.
 * The new functionality, which is http request processing was added. According to it, we have now special command - LISTEN / 
-which starts listening the server. We're processing http requests in AppServlet. It is the bride between server and the rest of our application.
+which starts listening the server. We're processing http requests in AppServlet. It is the bridge between server and the rest of our application.
 After this, everything works exactly the same as in the console version.
 * We can now navigate through application with URI and also using Postman.
-### Command routing
 
-(_describe how the router works and how path parameters are extracted_)
+PHASE 4
+* Now, except the simple GET commands obtained from the URI or Postman, we are capable of processing the POST commands.
+We are using html forms and buttons to write and submit the parameters needed for each posting and then retrieving them from the body of http request.
+* Then, we are using the Parameter class to write each parameter down to the map from the whole input string.
+
+### Command routing
 
 PHASE 1
 
@@ -81,10 +79,16 @@ PHASE 2
 
 PHASE 3
 * The router works exactly the same as in previous phases. 
+* We also have two Servlets, which are used to ensure the http connection. One is responsible for GET commands for the only one response information, e.x. getUserById and the other one for multiple response information, e.x. getUsers.
+* They are responsible for finding the route for the path passed in the http request and then pass it to CommandExecutor to process the whole command.
+
+PHASE 4
+* The router functionality is the same as in previous phases.
+* Now, we have only one Servlet responsible for all the http request. To make that happen we are using the Router functionality, which helps us to simplify the code without any need to repeat the same actions in servlets.
+* Servlet is now ensuring the connection between http server and the application.
+
 
 ### Connection Management
-
-(_describe how connections are created, used and disposed_, namely its relation with transaction scopes).
 
 PHASE 1
 
@@ -94,24 +98,30 @@ PHASE 2
 * Data access is handled the same way as in the phase 1.
 
 PHASE 3
-* The router works exactly the same as in previous phases.
+* Data access works exactly the same as in previous phases.
+
+PHASE 4
+* The connection management works the same as in previous phases.
 
 ### Data Access
-
-(_describe any created classes to help on data access_).
 
 PHASE 1
 * Connection to the database is prepared in main method, but the process of opening and closing connection is held only in Handlers.
 * Queries to database are made in handlers directly.
 
 PHASE 2 
-* It is done the same way as it was in the phase 1.
+* Now we've added classes which are responsible for processing strings corresponding to each segment of the command.
+* We have Parameters, PathParameters and Headers classes. They are holding all information needed to run the command properly.
+* They consist of HashMap with key being a string name of the parameter, and value being the string value corresponding to the parameter name.
+* Then, in each handler the parameters are being validated and check if for example, parsing to int is possible.
 
 PHASE 3
-* It is done the same way as it was in the previous phases.
-### Error Handling/Processing
+* It is done the same way as it was in the previous phase.
 
-(_describe how errors are handled and communicated to the application user_).
+PHASE 4
+* It works the same way as in the previous phases.
+
+### Error Handling/Processing
 
 PHASE 1
 
@@ -128,6 +138,12 @@ PHASE 3
 * While application is running, we're checking the possible errors (the same as in the previous phases).
   If any occurs, we return the appropriate result with the message about the error.
 * According to new functionality, we handle http response status codes - we are checking the result handler and sending the appropriate code to the server.
+
+PHASE 4
+* In this phase we've added the Log functionality which ensures the communication between the client, and the app without any need to break the control flow.
+* In the cases when some error occurs, e.x. the server has already been started the information about that is being printed.
+* It is not only used to inform the client about errors, but also to inform about some ongoing actions - e.x. information about starting or stopping the whole application.
+
 ## Critical Evaluation
 
 (_enumerate the functionality that is not concluded and the identified defects_)
