@@ -5,7 +5,7 @@ import pt.isel.ls.handlers.ListenHandler;
 public class ExitResult implements CommandResult {
     @Override
     public boolean results(boolean http) {
-        log.info("Application stopped");
+        log.info(generateResults(http));
         return true;
     }
 
@@ -15,6 +15,6 @@ public class ExitResult implements CommandResult {
             ListenHandler.ListenThread.stop();
         } catch (Exception e) {
             //the server was not started
-        } return null;
+        } return "Application stopped";
     }
 }
