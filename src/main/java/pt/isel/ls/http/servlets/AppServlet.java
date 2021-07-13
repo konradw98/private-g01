@@ -97,11 +97,11 @@ public class AppServlet extends HttpServlet {
                         case "Reso" -> {
                             log.error("resource not found");
                             resp.sendError(404, "resource not found");
-                        }//resp.setStatus(404);
+                        } //resp.setStatus(404);
                         case "Wron" -> {
                             log.error("wrong parameters");
                             resp.sendError(400, respBody);
-                        }//resp.setStatus(400);
+                        } //resp.setStatus(400);
 
                         default -> resp.setStatus(200);
                     }

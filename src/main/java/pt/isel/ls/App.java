@@ -3,8 +3,6 @@ package pt.isel.ls;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pt.isel.ls.http.servlets.AppServlet;
-
 import java.util.Scanner;
 
 public class App {

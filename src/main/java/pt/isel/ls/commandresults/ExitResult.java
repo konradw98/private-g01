@@ -15,6 +15,7 @@ public class ExitResult implements CommandResult {
             ListenHandler.ListenThread.stop();
         } catch (Exception e) {
             //the server was not started
-        } return "Application stopped";
+        }
+        return "Application stopped";
     }
 }
