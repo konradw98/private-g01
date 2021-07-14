@@ -22,6 +22,7 @@ public class Parameters {
                     if (parameters[i].contains("=")) {
                         parameters[i] = parameters[i].replace('+', ' ');
                         parameters[i] = parameters[i].replace("%3A", ":");
+                        parameters[i] = parameters[i].replace("%40", "@");
                         String[] value = parameters[i].split("=");
                         if (value[0].equals("activity")) {
                             value[0] += i;
