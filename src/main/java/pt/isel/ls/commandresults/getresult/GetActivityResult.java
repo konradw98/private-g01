@@ -99,6 +99,7 @@ public class GetActivityResult extends GetCommandResult {
         Element body = body();
         html.with(body);
         body.with(aa("href=\"/\"").with(new Text("Root")));
+        body.with(aa("href=\"/sports/" + activity.getSid() + "/activities\"").with(new Text("Activities")));
         Element ul = ul();
         body.with(h1().with(new Text("Activity Details")),
                 ul.with(

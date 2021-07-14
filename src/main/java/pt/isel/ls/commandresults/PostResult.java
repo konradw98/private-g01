@@ -1,5 +1,8 @@
 package pt.isel.ls.commandresults;
 
+import pt.isel.ls.Element;
+import pt.isel.ls.Text;
+
 public class PostResult implements CommandResult {
     int id;
     String label;
@@ -25,6 +28,19 @@ public class PostResult implements CommandResult {
 
     @Override
     public String generateResults(boolean http) {
-        return label + ": " + id;
+        Element rootHerf = new Element("a", "href=\"/\"").with(new Text("Root"));
+        Element herf = switch (label) {
+            case "sid" -> new Element("a", "href=\"/sports\"").with(new Text("Sports"));
+            case "uid" -> new Element("a", "href=\"/users\"").with(new Text("Users"));
+            case "rid" -> new Element("a", "href=\"/routes\"").with(new Text("Routes"));
+            default -> null;
+        };
+        Element html = new Element("html");
+        if (herf == null) {
+            html.with(new Element("body").with(rootHerf, new Element("br")));
+        } else {
+            html.with(new Element("body").with(rootHerf, herf, new Element("br")));
+        }
+        return html.generateStringHtml("") + label + ": " + id;
     }
 }
