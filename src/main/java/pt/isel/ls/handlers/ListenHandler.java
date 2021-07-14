@@ -36,8 +36,7 @@ public class ListenHandler implements CommandHandler {
         @Override
         public void run() {
             if (server == null) {
-                Parameters parameters = commandRequest.getParameters();
-                String portDef = parameters == null ? null : parameters.get("port");
+                String portDef = System.getenv("PORT");
                 int port = portDef != null ? Integer.parseInt(portDef) : LISTEN_PORT;
 
                 log.info("Server started listening on port {}", port);
