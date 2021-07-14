@@ -23,15 +23,15 @@ public class CommandExecutor {
         router.addHandlers();
     }
 
-    public static boolean runCommand(String line, PGSimpleDataSource dataSource) {
+    public boolean runCommand(String line, PGSimpleDataSource dataSource) {
         return executeCommand(line.split("\\s+"), line, router, dataSource);
     }
 
-    public static boolean runCommand(String[] command, PGSimpleDataSource dataSource) {
+    public boolean runCommand(String[] command, PGSimpleDataSource dataSource) {
         return executeCommand(command, String.join(" ", command), router, dataSource);
     }
 
-    private static boolean executeCommand(String[] command, String line, Router router, PGSimpleDataSource dataSource) {
+    private boolean executeCommand(String[] command, String line, Router router, PGSimpleDataSource dataSource) {
         boolean exit = false;
         if (command.length >= SIMPLEST_COMMAND_SEGMENTS && command.length <= COMMAND_WITH_HEADERS) {
             Method method = validateMethod(command[METHOD_INDEX]);
@@ -51,7 +51,7 @@ public class CommandExecutor {
         return exit;
     }
 
-    private static Method validateMethod(String command) {
+    private Method validateMethod(String command) {
         switch (command) {
             case "GET" -> {
                 return Method.GET;
@@ -77,7 +77,7 @@ public class CommandExecutor {
         }
     }
 
-    private static boolean executeProperCommand(RouteResult routeResult, String[] command,
+    private boolean executeProperCommand(RouteResult routeResult, String[] command,
                                                 PGSimpleDataSource dataSource) {
         boolean exit;
         CommandRequest commandRequest = chooseRequest(command, routeResult, dataSource);
@@ -85,14 +85,13 @@ public class CommandExecutor {
         try {
             CommandResult commandResult = routeResult.getHandler().execute(commandRequest);
             exit = commandResult.results(http);
-            //TODO: not exception
         } catch (Exception e) {
             return new WrongParametersResult().results(http);
         }
         return exit;
     }
 
-    private static CommandRequest chooseRequest(String[] command, RouteResult routeResult,
+    private CommandRequest chooseRequest(String[] command, RouteResult routeResult,
                                                 PGSimpleDataSource dataSource) {
         CommandRequest commandRequest;
         if (command.length == SIMPLEST_COMMAND_SEGMENTS) {
