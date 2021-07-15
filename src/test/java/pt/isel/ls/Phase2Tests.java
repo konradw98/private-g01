@@ -27,6 +27,7 @@ public class Phase2Tests {
 
     private Router router;
     private PGSimpleDataSource dataSource;
+    private CommandExecutor commandExecutor;
 
     @Before
     public void init() {
@@ -36,6 +37,8 @@ public class Phase2Tests {
         dataSource.setURL("jdbc:postgresql://127.0.0.1:5432/test");
         dataSource.setPassword("password");
         dataSource.setUser("postgres");
+        commandExecutor = new CommandExecutor();
+
     }
 
     @Test
@@ -160,7 +163,7 @@ public class Phase2Tests {
     @Test
     public void getUsersPlainTest() {
 
-        CommandExecutor.runCommand("GET /users/ accept:text/plain|file-name:src/test/files/usersPlain.txt "
+        commandExecutor.runCommand("GET /users/ accept:text/plain|file-name:src/test/files/usersPlain.txt "
                 + "skip=0&top=1", dataSource);
         String data = "";
         try {
@@ -184,7 +187,7 @@ public class Phase2Tests {
     @Test
     public void getSportsPlainTest() {
 
-        CommandExecutor.runCommand("GET /sports/ accept:text/plain|file-name:src/test/files/sportsPlain.txt "
+        commandExecutor.runCommand("GET /sports/ accept:text/plain|file-name:src/test/files/sportsPlain.txt "
                + "skip=0&top=3", dataSource);
         String data = "";
         try {
@@ -210,7 +213,7 @@ public class Phase2Tests {
     @Test
     public void getRoutesPlainTest() {
 
-        CommandExecutor.runCommand("GET /routes/ accept:text/plain|file-name:src/test/files/routesPlain1.txt "
+        commandExecutor.runCommand("GET /routes/ accept:text/plain|file-name:src/test/files/routesPlain1.txt "
                 + "skip=0&top=3", dataSource);
         String data = "";
         try {
@@ -235,7 +238,7 @@ public class Phase2Tests {
     @Test
     public void getRoutesByIdPlainTest() {
 
-        CommandExecutor.runCommand("GET /routes/2 accept:text/plain|file-name:src/test/files/routesPlain2.txt",
+        commandExecutor.runCommand("GET /routes/2 accept:text/plain|file-name:src/test/files/routesPlain2.txt",
                 dataSource);
         String data = "";
         try {
@@ -260,7 +263,7 @@ public class Phase2Tests {
     @Test
     public void getActivitiesPlainTest() {
 
-        CommandExecutor.runCommand("GET /tops/activities  "
+        commandExecutor.runCommand("GET /tops/activities  "
                 + "accept:text/plain|file-name:src/test/files/activitiesPlain1.txt"
                 + " sid=3&orderBy=desc&rid=2&distance=1&skip=0&top=3", dataSource);
         String data = "";
@@ -380,7 +383,7 @@ public class Phase2Tests {
         int activity1 = 5;
         int activity2 = 8;
 
-        CommandExecutor.runCommand("DELETE /users/" + uid + "/activities activity=" + activity1
+        commandExecutor.runCommand("DELETE /users/" + uid + "/activities activity=" + activity1
                 + "&activity=" + activity2, dataSource);
 
         Connection conn = dataSource.getConnection();

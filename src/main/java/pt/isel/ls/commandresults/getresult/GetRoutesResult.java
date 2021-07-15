@@ -12,12 +12,14 @@ import java.util.ArrayList;
 public class GetRoutesResult extends GetCommandResult {
     private final ArrayList<Route> routes;
     private Headers headers;
+    private int maxRid;
     private int skip;
     private int top;
 
-    public GetRoutesResult(ArrayList<Route> routes, Headers headers, Parameters parameters) {
+    public GetRoutesResult(ArrayList<Route> routes, int maxRid, Headers headers, Parameters parameters) {
         this.headers = headers;
         this.routes = routes;
+        this.maxRid = maxRid;
         this.skip = Integer.parseInt(parameters.get("skip"));
         this.top = Integer.parseInt(parameters.get("top"));
     }
@@ -156,7 +158,7 @@ public class GetRoutesResult extends GetCommandResult {
                     td().with(new Text(route.getDistance()))));
         }
 
-        if (routes.size() == 5) {
+        if (pageNumber * 5 < maxRid) {
             body.with(aa("href=\"/routes?top=5&skip=" + (skip + 5) + "\"").with(new Text("Next")));
         }
         if (skip >= 5) {

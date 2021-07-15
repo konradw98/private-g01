@@ -12,12 +12,14 @@ import java.util.ArrayList;
 public class GetSportsResult extends GetCommandResult {
     private ArrayList<Sport> sports;
     private Headers headers;
+    private int maxSid;
     private int skip;
     private int top;
 
-    public GetSportsResult(ArrayList<Sport> sports, Headers headers, Parameters parameters) {
+    public GetSportsResult(ArrayList<Sport> sports, int maxSid, Headers headers, Parameters parameters) {
         this.headers = headers;
         this.sports = sports;
+        this.maxSid = maxSid;
         this.skip = Integer.parseInt(parameters.get("skip"));
         this.top = Integer.parseInt(parameters.get("top"));
     }
@@ -152,7 +154,7 @@ public class GetSportsResult extends GetCommandResult {
                     td().with(new Text(sport.getName()))));
         }
 
-        if (sports.size() == 5) {
+        if (pageNumber * 5 < maxSid) {
             body.with(aa("href=\"/sports?top=5&skip=" + (skip + 5) + "\"").with(new Text("Next")));
         }
         if (skip >= 5) {

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class GetActivitiesResult extends GetCommandResult {
     private ArrayList<Activity> activities;
     private final Headers headers;
+    private int maxAid;
     private int skip;
     private int top;
 
@@ -21,9 +22,10 @@ public class GetActivitiesResult extends GetCommandResult {
         this.activities = activities;
     }
 
-    public GetActivitiesResult(ArrayList<Activity> activities, Headers headers, Parameters parameters) {
+    public GetActivitiesResult(ArrayList<Activity> activities, int maxAid, Headers headers, Parameters parameters) {
         this.headers = headers;
         this.activities = activities;
+        this.maxAid = maxAid;
         this.skip = Integer.parseInt(parameters.get("skip"));
         this.top = Integer.parseInt(parameters.get("top"));
     }
@@ -168,7 +170,7 @@ public class GetActivitiesResult extends GetCommandResult {
                     td().with(new Text(activity.getDate()))));
         }
 
-        if (activities.size() == 5) {
+        if (pageNumber * 5 < maxAid) {
             body.with(aa("href=\"/sports/" + activities.get(0).getSid() + "/activities?top=5&skip="
                     + (skip + 5) + "\"").with(new Text("Next")));
         }

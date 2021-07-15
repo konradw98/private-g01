@@ -43,9 +43,21 @@ public class GetUsersHandler extends GetTablesHandler implements CommandHandler 
                 return emptyTableResult.get();
             }
 
-            String sql1 = "SELECT * FROM users ORDER BY uid";
-            PreparedStatement pstmt = conn.prepareStatement(sql1);
-            ResultSet resultSet = pstmt.executeQuery();
+            String sql1 = "SELECT MAX(uid) FROM users";
+            PreparedStatement pstmt1 = conn.prepareStatement(sql1);
+            ResultSet resultSet = pstmt1.executeQuery();
+
+            int maxUid = 0;
+
+            if (resultSet.next()) {
+                maxUid = resultSet.getInt("max");
+            } else {
+                return new WrongParametersResult(wrongParameters);
+            }
+
+            String sql2 = "SELECT * FROM users ORDER BY uid";
+            PreparedStatement pstmt2 = conn.prepareStatement(sql2);
+            resultSet = pstmt2.executeQuery();
 
             int uid;
             String name;
@@ -67,7 +79,7 @@ public class GetUsersHandler extends GetTablesHandler implements CommandHandler 
             if (users.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetUsersResult(users, commandRequest.getHeaders(), commandRequest.getParameters());
+                return new GetUsersResult(users, maxUid, commandRequest.getHeaders(), commandRequest.getParameters());
             }
         }
     }

@@ -43,9 +43,20 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
                 return emptyTableResult.get();
             }
 
-            String sql1 = "SELECT * FROM routes ORDER BY rid";
-            PreparedStatement pstmt = conn.prepareStatement(sql1);
-            ResultSet resultSet = pstmt.executeQuery();
+            int maxRid = 0;
+
+            String sql1 = "SELECT MAX(rid) FROM routes";
+            PreparedStatement pstmt1 = conn.prepareStatement(sql1);
+            ResultSet resultSet = pstmt1.executeQuery();
+            if (resultSet.next()) {
+                maxRid = resultSet.getInt("max");
+            } else {
+                return new WrongParametersResult(wrongParameters);
+            }
+
+            String sql2 = "SELECT * FROM routes ORDER BY rid";
+            PreparedStatement pstmt2 = conn.prepareStatement(sql2);
+            resultSet = pstmt2.executeQuery();
 
             int rid;
             String startLocation;
@@ -69,7 +80,7 @@ public class GetRoutesHandler extends GetTablesHandler implements CommandHandler
             if (routes.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetRoutesResult(routes, commandRequest.getHeaders(), commandRequest.getParameters());
+                return new GetRoutesResult(routes, maxRid, commandRequest.getHeaders(), commandRequest.getParameters());
             }
 
         }

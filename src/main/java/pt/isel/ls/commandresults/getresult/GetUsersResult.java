@@ -14,11 +14,13 @@ public class GetUsersResult extends GetCommandResult {
     private Headers headers;
     private int skip;
     private int top;
+    private int maxUid;
 
 
-    public GetUsersResult(ArrayList<User> users, Headers headers, Parameters parameters) {
+    public GetUsersResult(ArrayList<User> users, int maxUid, Headers headers, Parameters parameters) {
         this.headers = headers;
         this.users = users;
+        this.maxUid = maxUid;
         this.skip = Integer.parseInt(parameters.get("skip"));
         this.top = Integer.parseInt(parameters.get("top"));
     }
@@ -165,7 +167,7 @@ public class GetUsersResult extends GetCommandResult {
                     td().with(new Text(user.getName()))));
         }
 
-        if (users.size() == 5) {
+        if (pageNumber * 5 < maxUid) {
             body.with(aa("href=\"/users?top=5&skip=" + (skip + 5) + "\"").with(new Text("Next")));
         }
         if (skip >= 5) {

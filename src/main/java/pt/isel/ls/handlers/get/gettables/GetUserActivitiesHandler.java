@@ -40,8 +40,9 @@ public class GetUserActivitiesHandler extends GetTablesHandler implements Comman
 
         int skipInt = Integer.parseInt(skip);
         try (Connection conn = commandRequest.getDataSource().getConnection()) {
-            String sql = "SELECT COUNT(*) FROM activities";
+            String sql = "SELECT COUNT(*) FROM activities WHERE uid=? AND timestamp IS NULL";
             PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, Integer.parseInt(stringUid));
             ResultSet resultSet = pstmt.executeQuery();
             int count = 1;
             if (resultSet.next()) {
@@ -51,8 +52,8 @@ public class GetUserActivitiesHandler extends GetTablesHandler implements Comman
                 return new EmptyTableResult("activities");
             }
 
-            String sql1 = "SELECT * FROM activities WHERE uid=? AND timestamp IS NULL";
-            pstmt = conn.prepareStatement(sql1);
+            String sql2 = "SELECT * FROM activities WHERE uid=? AND timestamp IS NULL";
+            pstmt = conn.prepareStatement(sql2);
             pstmt.setInt(1, Integer.parseInt(stringUid));
             resultSet = pstmt.executeQuery();
 
@@ -82,7 +83,8 @@ public class GetUserActivitiesHandler extends GetTablesHandler implements Comman
             if (activities.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetActivitiesResult(activities, commandRequest.getHeaders(), commandRequest.getParameters());
+                return new GetActivitiesResult(activities, count, commandRequest.getHeaders(),
+                        commandRequest.getParameters());
             }
         }
     }

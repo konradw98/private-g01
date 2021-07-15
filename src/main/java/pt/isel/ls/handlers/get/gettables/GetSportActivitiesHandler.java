@@ -37,8 +37,9 @@ public class GetSportActivitiesHandler extends GetTablesHandler implements Comma
 
         int skipInt = Integer.parseInt(skip);
         try (Connection conn = commandRequest.getDataSource().getConnection()) {
-            String sql = "SELECT COUNT(*) FROM activities";
+            String sql = "SELECT COUNT(*) FROM activities WHERE sid=? AND timestamp IS NULL";
             PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, Integer.parseInt(stringSid));
             ResultSet resultSet = pstmt.executeQuery();
             int count = 1;
             if (resultSet.next()) {
@@ -48,8 +49,8 @@ public class GetSportActivitiesHandler extends GetTablesHandler implements Comma
                 return new EmptyTableResult("activites");
             }
 
-            String sql1 = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL";
-            pstmt = conn.prepareStatement(sql1);
+            String sql2 = "SELECT * FROM activities WHERE sid=? AND timestamp IS NULL";
+            pstmt = conn.prepareStatement(sql2);
             pstmt.setInt(1, Integer.parseInt(stringSid));
             resultSet = pstmt.executeQuery();
 
@@ -79,7 +80,8 @@ public class GetSportActivitiesHandler extends GetTablesHandler implements Comma
             if (activities.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetActivitiesResult(activities, commandRequest.getHeaders(), commandRequest.getParameters());
+                return new GetActivitiesResult(activities, count, commandRequest.getHeaders(),
+                        commandRequest.getParameters());
             }
         }
     }

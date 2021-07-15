@@ -44,9 +44,20 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
                 return emptyTableResult.get();
             }
 
-            String sql1 = "SELECT * FROM sports ORDER BY sid";
-            PreparedStatement pstmt = conn.prepareStatement(sql1);
-            ResultSet resultSet = pstmt.executeQuery();
+            int maxSid = 0;
+
+            String sql1 = "SELECT MAX(sid) FROM sports";
+            PreparedStatement pstmt1 = conn.prepareStatement(sql1);
+            ResultSet resultSet = pstmt1.executeQuery();
+            if (resultSet.next()) {
+                maxSid = resultSet.getInt("max");
+            } else {
+                return new WrongParametersResult(wrongParameters);
+            }
+
+            String sql2 = "SELECT * FROM sports ORDER BY sid";
+            PreparedStatement pstmt2 = conn.prepareStatement(sql2);
+            resultSet = pstmt2.executeQuery();
 
             int sid;
             String name;
@@ -68,7 +79,7 @@ public class GetSportsHandler extends GetTablesHandler implements CommandHandler
             if (sports.size() == 0) {
                 return new WrongParametersResult();
             } else {
-                return new GetSportsResult(sports, commandRequest.getHeaders(), commandRequest.getParameters());
+                return new GetSportsResult(sports, maxSid, commandRequest.getHeaders(), commandRequest.getParameters());
             }
         }
     }
